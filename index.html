@@ -110,6 +110,29 @@
   </div>
 </div>
 
+<div style="background:linear-gradient(135deg,#f0faf6,#e8f5f0);border-bottom:1px solid #d0ede3;padding:12px 24px">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:14px;flex:1">
+      <div style="width:48px;height:48px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0">SA</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#0F6E56">Sali Aljehani</div>
+        <div style="font-size:11px;color:#1D9E75;margin-top:1px">Team Lead · Inbound Contact Center · Petromin Group</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
+        <span style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc">🪪 22952</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
+        <span style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc">📱 552705577</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
+        <a href="mailto:sali.aljehani@petromin.com" style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc;text-decoration:none;color:#0F6E56">📧 sali.aljehani@petromin.com</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="tabs">
   <div class="tab active" onclick="switchTab('inbound',this)">📋 Inbound Work</div>
   <div class="tab" onclick="switchTab('workdone',this)">✅ Work Done</div>
@@ -121,7 +144,18 @@
 <div class="content">
   <div class="tab-panel active" id="tab-inbound"><div id="inbound-content"><div class="loading">⏳ Loading...</div></div></div>
   <div class="tab-panel" id="tab-workdone"><div id="workdone-content"><div class="loading">⏳ Loading...</div></div></div>
-  <div class="tab-panel" id="tab-kpis"><div id="kpis-content"><div class="loading">⏳ Loading...</div></div></div>
+  <div class="tab-panel" id="tab-kpis">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid #e8eae3;padding-bottom:12px">
+      <button id="kbtn-overview" onclick="switchKpiTab('overview')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #1D9E75;background:#E1F5EE;color:#0F6E56;font-size:12px;font-weight:700;cursor:pointer">📊 KPI Overview</button>
+      <button id="kbtn-coaching" onclick="switchKpiTab('coaching')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">🎯 Coaching Sessions</button>
+      <button id="kbtn-improvement" onclick="switchKpiTab('improvement')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">📈 Improvement Plans</button>
+      <button id="kbtn-perfgap" onclick="switchKpiTab('perfgap')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">🔍 Performance Gap</button>
+    </div>
+    <div id="kpis-overview"><div id="kpis-content"><div class="loading">⏳ Loading...</div></div></div>
+    <div id="kpis-coaching" style="display:none"><div id="coaching-content"><div class="loading">⏳ Loading...</div></div></div>
+    <div id="kpis-improvement" style="display:none"><div id="improvement-content"><div class="loading">⏳ Loading...</div></div></div>
+    <div id="kpis-perfgap" style="display:none"><div id="perfgap-content"><div class="loading">⏳ Loading...</div></div></div>
+  </div>
   <div class="tab-panel" id="tab-attendance"><div id="attendance-content"><div class="loading">⏳ Loading...</div></div></div>
   <div class="tab-panel" id="tab-checklist"><div id="checklist-content"><div class="loading">⏳ Loading...</div></div></div>
 </div>
@@ -176,31 +210,238 @@ function parseCSV(text){
 
 // Sheet GIDs
 const GID = {
-  inbound:    '0',
-  attendance: '209241740',
-  kpis:       '72593736',
-  checklist:  '1272140156'
+  inbound:      '0',
+  attendance:   '209241740',
+  kpis:         '72593736',
+  checklist:    '1272140156',
+  coaching:     '144857263',
+  improvement:  '115510114',
+  perfgap:      '1669804764'
 };
+
+// 18 agents from Check List
+const AGENTS = [
+  'Bayan Jazzar','Hanin Yajzi','Nada Abdulrahman','Sara Saleh',
+  'Ghadeer Motadares','Manar Alshehri','Mawaddah Essam','Nesreen Mansour',
+  'Yosra Salami','Asmaa Bawayan','Ahdab Shalbi','Mashael Alshehri',
+  'Wejdan Mustafa','Walaa Meezi','Shatha Bawayan','Gofran Rafie',
+  'Hiba Almuwallad','Reham Hakami'
+];
+
+function switchKpiTab(name){
+  ['overview','coaching','improvement','perfgap'].forEach(t=>{
+    document.getElementById('kpis-'+t).style.display = t===name ? 'block' : 'none';
+    const btn = document.getElementById('kbtn-'+t);
+    if(btn){
+      btn.style.background = t===name ? '#E1F5EE' : '#fff';
+      btn.style.color = t===name ? '#0F6E56' : '#666';
+      btn.style.borderColor = t===name ? '#1D9E75' : '#ddd';
+    }
+  });
+}
+
+// ══ COACHING SESSIONS ══
+function renderCoaching(rows, clRows){
+  // Build last session map from coaching rows
+  const sessionMap={};
+  rows.slice(1).forEach(r=>{
+    const name=(r[0]||'').trim();
+    if(!name) return;
+    if(!sessionMap[name]) sessionMap[name]=[];
+    sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
+  });
+
+  const done = Object.keys(sessionMap).length;
+  const pending = AGENTS.length - done;
+  const totalSessions = rows.slice(1).filter(r=>r[0]).length;
+
+  let html=`<div class="stat-grid" style="margin-bottom:16px">
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${totalSessions}</div><div class="stat-label">Total sessions</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-label">Agents coached</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${pending}</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card"><div class="stat-num">${AGENTS.length}</div><div class="stat-label">Total agents</div></div>
+  </div>
+  <div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
+    <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
+      <span>🎯 Coaching Sessions Tracker</span>
+      <span style="font-size:11px;color:#aaa;font-weight:500">1 session per agent per month</span>
+    </div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#f8f8f8">
+        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee;width:36px">#</th>
+        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Agent Name</th>
+        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Sessions</th>
+        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Last Date</th>
+        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Notes</th>
+        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Next Session</th>
+        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
+      </tr></thead><tbody>`;
+
+  AGENTS.forEach((agent,i)=>{
+    const sessions = sessionMap[agent]||[];
+    const last = sessions[sessions.length-1]||null;
+    const hasSessions = sessions.length > 0;
+    const init = agent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const colors = [
+      {bg:'#F0DEDE',text:'#9B4A4A'},{bg:'#E3E1DC',text:'#6B6862'},
+      {bg:'#DCE6E0',text:'#516B5C'},{bg:'#E8E2D8',text:'#8A7456'},
+      {bg:'#E1E2E8',text:'#5C6178'},{bg:'#E6DEE3',text:'#7C5C6B'}
+    ];
+    const c = colors[i%colors.length];
+    html += `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
+      <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700;text-align:center">${i+1}</td>
+      <td style="padding:9px 14px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div style="width:30px;height:30px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${init}</div>
+          <span style="font-weight:600;color:#1a1a2e;font-size:13px">${agent}</span>
+        </div>
+      </td>
+      <td style="padding:9px 14px;text-align:center">
+        <span style="background:${hasSessions?'#E1F5EE':'#f5f5f5'};color:${hasSessions?'#0F6E56':'#aaa'};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${sessions.length}</span>
+      </td>
+      <td style="padding:9px 14px;text-align:center;font-size:12px;color:#555">${last?last.date:'—'}</td>
+      <td style="padding:9px 14px;font-size:12px;color:#666;max-width:200px">${last?last.notes:'—'}</td>
+      <td style="padding:9px 14px;text-align:center;font-size:12px;color:#555">${last&&last.next?last.next:'—'}</td>
+      <td style="padding:9px 14px;text-align:center">
+        ${hasSessions
+          ? '<span style="background:#E1F5EE;color:#0F6E56;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">✓ Done</span>'
+          : '<span style="background:#FAEEDA;color:#BA7517;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">Pending</span>'}
+      </td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div></div>`;
+  document.getElementById('coaching-content').innerHTML = html;
+}
+
+// ══ IMPROVEMENT PLANS ══
+function renderImprovement(rows){
+  const plans = rows.slice(1).filter(r=>r[0]);
+  const active = plans.filter(r=>(r[3]||'').toLowerCase().includes('progress')).length;
+  const done2 = plans.filter(r=>(r[3]||'').toLowerCase().includes('done')||r[3]==='Completed').length;
+
+  const statusStyle = s => {
+    const v=(s||'').toLowerCase();
+    if(v.includes('progress')) return {bg:'#FAEEDA',color:'#BA7517',label:'In Progress'};
+    if(v.includes('done')||v.includes('complet')) return {bg:'#E1F5EE',color:'#0F6E56',label:'Done'};
+    if(v.includes('pending')) return {bg:'#f5f5f5',color:'#888',label:'Pending'};
+    return {bg:'#f5f5f5',color:'#888',label:s||'—'};
+  };
+
+  let html=`<div class="stat-grid" style="margin-bottom:16px">
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-label">Total plans</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-label">In progress</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done2}</div><div class="stat-label">Completed</div></div>
+  </div>`;
+
+  if(!plans.length){
+    html += '<div style="text-align:center;padding:48px;color:#aaa"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-size:14px;font-weight:600">No improvement plans yet</div><div style="font-size:12px;margin-top:6px">Add data in Google Sheets → Improvement Plans</div></div>';
+  } else {
+    html += `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
+      <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0">📈 Improvement Plans</div>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:#f8f8f8">
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">#</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Agent</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Reason</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Start Date</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Notes</th>
+        </tr></thead><tbody>
+        ${plans.map((r,i)=>{
+          const s=statusStyle(r[3]);
+          return `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
+            <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700">${i+1}</td>
+            <td style="padding:9px 14px;font-weight:600;color:#1a1a2e">${r[0]||'—'}</td>
+            <td style="padding:9px 14px;color:#555">${r[1]||'—'}</td>
+            <td style="padding:9px 14px;text-align:center;color:#555">${r[2]||'—'}</td>
+            <td style="padding:9px 14px;text-align:center"><span style="background:${s.bg};color:${s.color};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${s.label}</span></td>
+            <td style="padding:9px 14px;color:#666">${r[4]||'—'}</td>
+          </tr>`;
+        }).join('')}
+        </tbody></table></div></div>`;
+  }
+  document.getElementById('improvement-content').innerHTML = html;
+}
+
+// ══ PERFORMANCE GAP ══
+function renderPerfGap(rows){
+  const gaps = rows.slice(1).filter(r=>r[0]);
+  const open = gaps.filter(r=>!(r[3]||'').toLowerCase().includes('done')).length;
+  const resolved = gaps.filter(r=>(r[3]||'').toLowerCase().includes('done')).length;
+
+  const statusStyle = s => {
+    const v=(s||'').toLowerCase();
+    if(v.includes('done')||v.includes('resolved')) return {bg:'#E1F5EE',color:'#0F6E56',label:'Resolved'};
+    if(v.includes('progress')) return {bg:'#FAEEDA',color:'#BA7517',label:'In Progress'};
+    if(v.includes('pending')) return {bg:'#f5f5f5',color:'#888',label:'Pending'};
+    return {bg:'#FCEBEB',color:'#A32D2D',label:s||'Open'};
+  };
+
+  let html=`<div class="stat-grid" style="margin-bottom:16px">
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${gaps.length}</div><div class="stat-label">Total gaps identified</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-label">Open</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-label">Resolved</div></div>
+  </div>`;
+
+  if(!gaps.length){
+    html += '<div style="text-align:center;padding:48px;color:#aaa"><div style="font-size:40px;margin-bottom:12px">🔍</div><div style="font-size:14px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:12px;margin-top:6px">Add data in Google Sheets → Performance Gap</div></div>';
+  } else {
+    html += `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
+      <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
+        <span>🔍 Performance Gap Tracker</span>
+        <span style="font-size:11px;color:#aaa;font-weight:500">Min. 1 gap per week</span>
+      </div>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:#f8f8f8">
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">#</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Week</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Gap Identified</th>
+          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Action Plan</th>
+          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
+        </tr></thead><tbody>
+        ${gaps.map((r,i)=>{
+          const s=statusStyle(r[3]);
+          return `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
+            <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700">${i+1}</td>
+            <td style="padding:9px 14px;text-align:center"><span style="background:#f0f4ff;color:#534AB7;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${r[0]||'—'}</span></td>
+            <td style="padding:9px 14px;color:#1a1a2e;font-weight:500">${r[1]||'—'}</td>
+            <td style="padding:9px 14px;color:#555">${r[2]||'—'}</td>
+            <td style="padding:9px 14px;text-align:center"><span style="background:${s.bg};color:${s.color};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${s.label}</span></td>
+          </tr>`;
+        }).join('')}
+        </tbody></table></div></div>`;
+  }
+  document.getElementById('perfgap-content').innerHTML = html;
+}
 
 async function loadAll(){
   ['inbound','workdone','kpis','attendance','checklist'].forEach(id=>
     document.getElementById(id+'-content').innerHTML='<div class="loading">⏳ Loading...</div>');
   try{
-    const [inbRows, attRows, kpiRows, clRows] = await Promise.all([
+    const [inbRows, attRows, kpiRows, clRows, coachRows, impRows, gapRows] = await Promise.all([
       fetchCSV(GID.inbound),
       fetchCSV(GID.attendance),
       fetchCSV(GID.kpis),
-      fetchCSV(GID.checklist)
+      fetchCSV(GID.checklist),
+      fetchCSV(GID.coaching),
+      fetchCSV(GID.improvement),
+      fetchCSV(GID.perfgap)
     ]);
     renderInbound(inbRows);
     renderWorkDone(inbRows);
     renderKPIs(kpiRows);
     renderAttendance(attRows);
     renderChecklist(clRows);
+    renderCoaching(coachRows, clRows);
+    renderImprovement(impRows);
+    renderPerfGap(gapRows);
   }catch(e){
-    ['inbound','workdone','kpis','attendance','checklist'].forEach(id=>
-      document.getElementById(id+'-content').innerHTML=
-        '<div class="error-msg">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>');
+    ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
+      const el=document.getElementById(id+'-content');
+      if(el) el.innerHTML='<div class="error-msg">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+    });
   }
 }
 
@@ -283,20 +524,39 @@ function renderWorkDone(rows){
     if(!inSection||!a)return;
     items.push(a);
   });
-  document.getElementById('workdone-content').innerHTML=`
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>
-        Achievements — Jan to Jun 2026
-        <span class="badge b-teal" style="margin-left:auto">${items.length} items</span>
-      </div>
-      <div class="tags-wrap">${items.map(i=>'<span class="work-tag">'+i+'</span>').join('')}</div>
+
+  // Categorize each item
+  function getCategory(item){
+    const t=item.toLowerCase();
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference')) return {label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation')) return {label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support')) return {label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist')) return {label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
+    if(t.includes('survey')||t.includes('quality')||t.includes('email')) return {label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
+    if(t.includes('vacation')||t.includes('schedule')) return {label:'Admin',color:'#5F5E5A',bg:'#F1EFE8',dot:'#888'};
+    return {label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+  }
+
+  const html=`
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Total achievements</div></div>
+      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months (Jan–Jun)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current</div></div>
     </div>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Completed items</div></div>
-      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start month</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current month</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+      ${items.map((item,i)=>{
+        const cat=getCategory(item);
+        return `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;padding:14px 16px;border-left:4px solid ${cat.dot};display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:13px;font-weight:600;color:#1A1A1A;line-height:1.4">${item}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+            <span style="font-size:11px;color:#aaa;font-weight:600">#${i+1}</span>
+          </div>
+        </div>`;
+      }).join('')}
     </div>`;
+  document.getElementById('workdone-content').innerHTML=html;
 }
 
 // ══════════════════════════════════════════════════
