@@ -6,113 +6,133 @@
 <title>Sali KPIs Dashboard</title>
 <style>
   :root {
-    --bg: #F7F6F2; --surface: #FFFFFF; --border: #E4E2DA;
-    --text: #1A1A1A; --text-muted: #6B6B6B;
-    --teal: #0F6E56; --teal-light: #E1F5EE; --teal-mid: #1D9E75;
-    --amber: #BA7517; --amber-light: #FAEEDA;
-    --red: #A32D2D; --red-light: #FCEBEB;
-    --purple: #534AB7; --purple-light: #EEEDFE;
-    --gray-light: #F1EFE8; --radius: 12px; --radius-sm: 8px;
+    --bg:#F7F6F2;--surface:#FFFFFF;--border:#E4E2DA;
+    --text:#1A1A1A;--text-muted:#6B6B6B;
+    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;
+    --amber:#BA7517;--amber-light:#FAEEDA;
+    --red:#A32D2D;--red-light:#FCEBEB;
+    --purple:#534AB7;--purple-light:#EEEDFE;
+    --gray-light:#F1EFE8;--radius:12px;--radius-sm:8px;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .header-left { display: flex; align-items: center; gap: 12px; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--teal-light); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; color: var(--teal); }
-  .header-name { font-size: 15px; font-weight: 600; }
-  .header-role { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-  .header-right { display: flex; align-items: center; gap: 8px; }
-  .date-pill { background: var(--gray-light); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--text-muted); }
-  .refresh-btn { background: var(--teal-light); color: var(--teal); border: none; border-radius: 20px; padding: 5px 14px; font-size: 12px; cursor: pointer; font-weight: 500; }
-  .refresh-btn:hover { background: #c5eadf; }
-  .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
-  .tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
-  .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
-  .content { padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
-  .tab-panel { display: none; } .tab-panel.active { display: block; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
-  .card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
-  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .stat-card { background: var(--gray-light); border-radius: var(--radius-sm); padding: 14px 16px; }
-  .stat-num { font-size: 26px; font-weight: 700; line-height: 1; }
-  .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-  .badge { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .b-green { background: #EAF3DE; color: #3B6D11; } .b-amber { background: var(--amber-light); color: var(--amber); }
-  .b-teal { background: var(--teal-light); color: var(--teal); } .b-gray { background: var(--gray-light); color: #5F5E5A; }
-  .kpi-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 8px; }
-  .kpi-row:last-child { border-bottom: none; }
-  .kpi-left { flex: 1; } .kpi-name { font-size: 13px; font-weight: 500; }
-  .kpi-measure { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
-  .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; cursor: pointer; }
-  .check-item:last-child { border-bottom: none; }
-  .check-item .freq { font-size: 10px; color: var(--text-muted); margin-left: auto; }
-  .check-icon { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .check-icon.done { background: var(--teal-mid); border-color: var(--teal-mid); }
-  .check-icon.done::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
-  .tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-  .work-tag { background: var(--teal-light); color: var(--teal); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 500; }
-  .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
-  .cal-day-name { font-size: 10px; color: var(--text-muted); text-align: center; padding: 3px 0; font-weight: 500; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-  .cal-cell { height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
-  .cal-empty { background: transparent; } .cal-office { background: var(--teal-light); color: var(--teal); }
-  .cal-off { background: var(--gray-light); color: #888; } .cal-vacation { background: var(--amber-light); color: var(--amber); }
-  .cal-sick { background: var(--red-light); color: var(--red); } .cal-remote { background: var(--purple-light); color: var(--purple); }
-  .cal-future { background: #F7F6F2; color: #CCC; border: 1px dashed #E0DEDB; }
-  .att-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-  .att-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
-  .att-dot { width: 10px; height: 10px; border-radius: 2px; }
-  .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .month-nav button { background: var(--gray-light); border: none; border-radius: var(--radius-sm); padding: 5px 12px; cursor: pointer; font-size: 13px; }
-  .month-nav .month-label { font-size: 14px; font-weight: 600; min-width: 140px; text-align: center; }
-  .att-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 16px; }
-  .att-stat { padding: 10px 12px; border-radius: var(--radius-sm); }
-  .att-stat .num { font-size: 22px; font-weight: 700; } .att-stat .lbl { font-size: 10px; margin-top: 2px; }
-  .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
-  .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
-  .error-msg { background: var(--red-light); color: var(--red); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
-  @media (max-width: 600px) { .content { padding: 14px 12px; } .grid-2 { grid-template-columns: 1fr; } }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .avatar{width:42px;height:42px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--teal);flex-shrink:0}
+  .header-name{font-size:15px;font-weight:700}
+  .header-role{font-size:11px;color:var(--text-muted);margin-top:1px}
+  .date-pill{background:var(--gray-light);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text-muted)}
+  .refresh-btn{background:var(--teal-light);color:var(--teal);border:none;border-radius:20px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:600}
+  .refresh-btn:hover{background:#c5eadf}
+  .tabs{display:flex;background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;overflow-x:auto;gap:0}
+  .tab{padding:13px 22px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s}
+  .tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:700}
+  .tab:hover:not(.active){color:var(--text);background:var(--gray-light)}
+  .content{padding:20px 24px;max-width:1100px;margin:0 auto}
+  .tab-panel{display:none}.tab-panel.active{display:block}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px}
+  .card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+  .stat-card{background:var(--gray-light);border-radius:var(--radius-sm);padding:14px 16px}
+  .stat-num{font-size:26px;font-weight:700;line-height:1}
+  .stat-label{font-size:11px;color:var(--text-muted);margin-top:4px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600}
+  .b-green{background:#EAF3DE;color:#3B6D11}.b-amber{background:var(--amber-light);color:var(--amber)}
+  .b-teal{background:var(--teal-light);color:var(--teal)}.b-gray{background:var(--gray-light);color:#5F5E5A}
+  .b-red{background:var(--red-light);color:var(--red)}
+  .kpi-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:10px}
+  .kpi-row:last-child{border-bottom:none}
+  .kpi-name{font-size:13px;font-weight:600}
+  .kpi-measure{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.5}
+  .check-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;transition:.1s}
+  .check-item:last-child{border-bottom:none}
+  .check-item:hover{background:#fafafa;margin:0 -4px;padding:9px 4px;border-radius:6px}
+  .freq{font-size:10px;color:var(--text-muted);margin-left:auto;white-space:nowrap;background:var(--gray-light);padding:2px 8px;border-radius:10px}
+  .check-icon{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.15s}
+  .check-icon.done{background:var(--teal-mid);border-color:var(--teal-mid)}
+  .check-icon.done::after{content:'✓';color:white;font-size:11px;font-weight:700}
+  .tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
+  .work-tag{background:var(--teal-light);color:var(--teal);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500}
+  /* Calendar */
+  .cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:5px}
+  .cal-day-name{font-size:10px;color:var(--text-muted);text-align:center;padding:4px 0;font-weight:600}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-cell{height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .cal-empty{background:transparent}
+  .cal-office{background:var(--teal-light);color:var(--teal)}
+  .cal-off{background:var(--gray-light);color:#999}
+  .cal-vacation{background:var(--amber-light);color:var(--amber)}
+  .cal-workvac{background:#FFF9C4;color:#856400}
+  .cal-sick{background:var(--red-light);color:var(--red)}
+  .cal-remote{background:var(--purple-light);color:var(--purple)}
+  .cal-future{background:#F7F6F2;color:#CCC;border:1px dashed #E0DEDB}
+  .att-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+  .att-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted)}
+  .att-dot{width:10px;height:10px;border-radius:3px}
+  .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .month-nav button{background:var(--gray-light);border:none;border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;font-size:14px;font-weight:600}
+  .month-nav button:hover{background:#e0ddd6}
+  .month-label{font-size:15px;font-weight:700;min-width:150px;text-align:center}
+  .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:16px}
+  .att-stat{padding:10px 12px;border-radius:var(--radius-sm);text-align:center}
+  .att-stat .num{font-size:24px;font-weight:700}
+  .att-stat .lbl{font-size:10px;margin-top:2px;font-weight:600}
+  .section-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;margin-top:4px}
+  .loading{text-align:center;padding:50px;color:var(--text-muted);font-size:13px}
+  .error-msg{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
+  .progress-bar{height:5px;background:var(--border);border-radius:3px;margin-top:8px;overflow:hidden}
+  .progress-fill{height:100%;background:var(--teal-mid);border-radius:3px;transition:.4s}
+  /* Checklist brand badges */
+  .brand-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
+  .brand-nissan{background:#fef2f2;color:#c0272d}
+  .brand-stellantis{background:#e3f2fd;color:#1565c0}
+  .brand-pe{background:#FAEEDA;color:#BA7517}
+  .brand-nos{background:#e8f5e9;color:#2e7d32}
+  .brand-foton{background:#eceff1;color:#546e7a}
+  .brand-electromin{background:#ede7f6;color:#4527a0}
+  @media(max-width:600px){.content{padding:14px 12px}.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-left">
+  <div style="display:flex;align-items:center;gap:12px">
     <div class="avatar">SA</div>
     <div>
       <div class="header-name">Sali Aljehani</div>
       <div class="header-role">Team Lead · Inbound Contact Center · Petromin Group</div>
     </div>
   </div>
-  <div class="header-right">
+  <div style="display:flex;align-items:center;gap:8px">
     <div class="date-pill" id="todayDate">—</div>
     <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
   </div>
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('inbound',this)">Inbound</div>
-  <div class="tab" onclick="switchTab('workdone',this)">Work Done</div>
-  <div class="tab" onclick="switchTab('kpis',this)">Sali KPIs</div>
-  <div class="tab" onclick="switchTab('attendance',this)">Attendance</div>
+  <div class="tab active" onclick="switchTab('inbound',this)">📋 Inbound Work</div>
+  <div class="tab" onclick="switchTab('workdone',this)">✅ Work Done</div>
+  <div class="tab" onclick="switchTab('kpis',this)">🎯 Sali KPIs</div>
+  <div class="tab" onclick="switchTab('attendance',this)">📅 Attendance</div>
+  <div class="tab" onclick="switchTab('checklist',this)">👥 Check List</div>
 </div>
 
 <div class="content">
-  <div class="tab-panel active" id="tab-inbound"><div id="inbound-content"><div class="loading">Loading...</div></div></div>
-  <div class="tab-panel" id="tab-workdone"><div id="workdone-content"><div class="loading">Loading...</div></div></div>
-  <div class="tab-panel" id="tab-kpis"><div id="kpis-content"><div class="loading">Loading...</div></div></div>
-  <div class="tab-panel" id="tab-attendance"><div id="attendance-content"><div class="loading">Loading...</div></div></div>
+  <div class="tab-panel active" id="tab-inbound"><div id="inbound-content"><div class="loading">⏳ Loading...</div></div></div>
+  <div class="tab-panel" id="tab-workdone"><div id="workdone-content"><div class="loading">⏳ Loading...</div></div></div>
+  <div class="tab-panel" id="tab-kpis"><div id="kpis-content"><div class="loading">⏳ Loading...</div></div></div>
+  <div class="tab-panel" id="tab-attendance"><div id="attendance-content"><div class="loading">⏳ Loading...</div></div></div>
+  <div class="tab-panel" id="tab-checklist"><div id="checklist-content"><div class="loading">⏳ Loading...</div></div></div>
 </div>
 
 <script>
-// ✅ قراءة مباشرة من Google Sheets بدون Apps Script
+// ── DATA (hardcoded from Google Sheets — update manually or via refresh) ──
 const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
-const GID = { inbound: '0', kpis: '72593736', attendance: '209241740' };
 
-let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
-const today = new Date();
+let calMonth = new Date().getMonth();
+let calYear  = new Date().getFullYear();
+const today  = new Date();
 
 document.getElementById('todayDate').textContent =
   today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
@@ -124,245 +144,360 @@ function switchTab(name,el){
   document.getElementById('tab-'+name).classList.add('active');
 }
 
-function fetchGVIZ(gid) {
-  return new Promise(function(resolve, reject) {
-    const cb = 'gviz_' + gid + '_' + Date.now();
-    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
-      '/gviz/tq?tqx=out:json&tq=select+*&gid=' + gid + '&tqx=responseHandler:' + cb;
-    const script = document.createElement('script');
-    const timer = setTimeout(function(){
-      delete window[cb]; document.body.removeChild(script);
-      reject(new Error('Timeout'));
-    }, 10000);
-    window[cb] = function(data) {
-      clearTimeout(timer); delete window[cb]; document.body.removeChild(script);
-      try {
-        const cols = data.table.cols.map(function(c){ return c.label; });
-        const rows = data.table.rows.map(function(r){
-          return r.c.map(function(cell){ return cell ? (cell.f || cell.v || '') : ''; });
-        });
-        resolve({cols: cols, rows: rows});
-      } catch(e) { reject(e); }
-    };
-    script.src = url;
-    script.onerror = function(){ clearTimeout(timer); delete window[cb]; document.body.removeChild(script); reject(new Error('Load error')); };
-    document.body.appendChild(script);
-  });
+// ── FETCH via CSV export (public sheets) ──
+async function fetchCSV(gid){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  const res  = await fetch(url);
+  if(!res.ok) throw new Error('Cannot load sheet (make sure it is public): '+res.status);
+  const text = await res.text();
+  return parseCSV(text);
 }
 
+function parseCSV(text){
+  const rows=[];
+  let row=[],field='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(inQ){
+      if(c==='"'&&n==='"'){field+='"';i++;}
+      else if(c==='"')inQ=false;
+      else field+=c;
+    }else{
+      if(c==='"')inQ=true;
+      else if(c===','){row.push(field.trim());field='';}
+      else if(c==='\r'){}
+      else if(c==='\n'){row.push(field.trim());if(row.some(v=>v))rows.push(row);row=[];field='';}
+      else field+=c;
+    }
+  }
+  if(field!==''||row.length){row.push(field.trim());if(row.some(v=>v))rows.push(row);}
+  return rows;
+}
+
+// Sheet GIDs
+const GID = {
+  inbound:    '0',
+  attendance: '209241740',
+  kpis:       '72593736',
+  checklist:  '1272140156'
+};
+
 async function loadAll(){
-  ['inbound','workdone','kpis','attendance'].forEach(id=>
-    document.getElementById(id+'-content').innerHTML='<div class="loading">Loading...</div>');
-  try {
-    const [iData, kData, aData] = await Promise.all([
-      fetchGVIZ(GID.inbound),
-      fetchGVIZ(GID.kpis),
-      fetchGVIZ(GID.attendance)
+  ['inbound','workdone','kpis','attendance','checklist'].forEach(id=>
+    document.getElementById(id+'-content').innerHTML='<div class="loading">⏳ Loading...</div>');
+  try{
+    const [inbRows, attRows, kpiRows, clRows] = await Promise.all([
+      fetchCSV(GID.inbound),
+      fetchCSV(GID.attendance),
+      fetchCSV(GID.kpis),
+      fetchCSV(GID.checklist)
     ]);
-    renderInbound(iData.rows);
-    renderWorkDone(iData.rows);
-    renderKPIs(kData.rows);
-    renderAttendance(aData.rows);
-  } catch(e) {
-    document.getElementById('inbound-content').innerHTML='<div class="error-msg">خطأ: '+e.message+'</div>';
+    renderInbound(inbRows);
+    renderWorkDone(inbRows);
+    renderKPIs(kpiRows);
+    renderAttendance(attRows);
+    renderChecklist(clRows);
+  }catch(e){
+    ['inbound','workdone','kpis','attendance','checklist'].forEach(id=>
+      document.getElementById(id+'-content').innerHTML=
+        '<div class="error-msg">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>');
   }
 }
 
-// ===== INBOUND =====
-// عمود 0 = Task, عمود 1 = Frequency
+// ══════════════════════════════════════════════════
+// INBOUND WORK
+// ══════════════════════════════════════════════════
 function renderInbound(rows){
-  const daily=[], weekly=[], other=[];
+  const daily=[],weekly=[],other=[];
   let inTasks=false;
-  rows.forEach(function(r){
-    const a=(r[0]||'').toString().trim();
-    const b=(r[1]||'').toString().trim();
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(), b=(r[1]||'').trim();
     if(a.includes('Daily Inbound Work')){inTasks=true;return;}
     if(a==='Work Done'){inTasks=false;return;}
     if(!inTasks||!a)return;
-    if(b==='Daily') daily.push(a);
-    else if(b==='Weekly') weekly.push(a);
-    else other.push({name:a,freq:b});
+    if(b==='Daily')daily.push(a);
+    else if(b==='Weekly')weekly.push(a);
+    else if(b)other.push({name:a,freq:b});
+    else other.push({name:a,freq:'—'});
   });
 
   const dk='inbound_done_'+today.toLocaleDateString('en-US');
-  var done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
+  let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
   const pct=daily.length?Math.round(done.size/daily.length*100):0;
+  const pctColor=pct===100?'var(--teal-mid)':pct>=50?'var(--amber)':'var(--red)';
 
   let html=`<div class="stat-grid">
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done.size}/${daily.length}</div><div class="stat-label">Tasks done today</div></div>
-    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Daily progress</div>
-      <div style="height:4px;background:var(--border);border-radius:2px;margin-top:6px"><div style="height:100%;width:${pct}%;background:var(--teal-mid);border-radius:2px"></div></div></div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--teal)">${done.size}<span style="font-size:14px;color:var(--text-muted)">/${daily.length}</span></div>
+      <div class="stat-label">Tasks done today</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pctColor}"></div></div>
+    </div>
+    <div class="stat-card"><div class="stat-num" style="color:${pctColor}">${pct}%</div><div class="stat-label">Daily progress</div></div>
     <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-label">Weekly tasks</div></div>
     <div class="stat-card"><div class="stat-num">${other.length}</div><div class="stat-label">Other tasks</div></div>
   </div>
-  <div class="grid-2"><div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>
+        Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}
+        <span class="badge b-teal" style="margin-left:auto">${done.size}/${daily.length}</span>
+      </div>`;
 
-  daily.forEach(function(t){
+  daily.forEach(t=>{
     const isDone=done.has(t);
-    const safe=t.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const safe=encodeURIComponent(t);
     html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')">
       <div class="check-icon ${isDone?'done':''}"></div>
       <span style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t}</span>
       <span class="freq">Daily</span></div>`;
   });
-
   html+=`</div><div>
-    <div class="card" style="margin-bottom:12px">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
-  weekly.forEach(function(t){html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
-  html+=`</div><div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
-  other.forEach(function(t){html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
+  weekly.forEach(t=>{ html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`; });
+  html+=`</div><div class="card" style="margin-top:12px">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
+  other.forEach(t=>{ html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`; });
   html+=`</div></div></div>`;
 
   document.getElementById('inbound-content').innerHTML=html;
-  window.toggleTask=function(task,key){
-    var ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+
+  window.toggleTask=function(safe,key){
+    const task=decodeURIComponent(safe);
+    const ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
     if(ds.has(task))ds.delete(task);else ds.add(task);
     localStorage.setItem(key,JSON.stringify([...ds]));
     renderInbound(rows);
   };
 }
 
-// ===== WORK DONE =====
+// ══════════════════════════════════════════════════
+// WORK DONE
+// ══════════════════════════════════════════════════
 function renderWorkDone(rows){
   const items=[];
   let inSection=false;
-  rows.forEach(function(r){
-    const a=(r[0]||'').toString().trim();
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim();
     if(a==='Work Done'){inSection=true;return;}
     if(!inSection||!a)return;
     items.push(a);
   });
   document.getElementById('workdone-content').innerHTML=`
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Achievements — 6 months (Jan – Jun 2026)</div>
-      <div class="tags-wrap">${items.map(function(i){return '<span class="work-tag">'+i+'</span>';}).join('')}</div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>
+        Achievements — Jan to Jun 2026
+        <span class="badge b-teal" style="margin-left:auto">${items.length} items</span>
+      </div>
+      <div class="tags-wrap">${items.map(i=>'<span class="work-tag">'+i+'</span>').join('')}</div>
     </div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Summary</div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Completed items</div></div>
-        <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current</div></div>
-      </div></div>`;
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Completed items</div></div>
+      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start month</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current month</div></div>
+    </div>`;
 }
 
-// ===== KPIs =====
+// ══════════════════════════════════════════════════
+// KPIs
+// ══════════════════════════════════════════════════
 function renderKPIs(rows){
-  const inboundPerf=[], supervisorKPIs=[];
+  const inboundPerf=[],supervisorKPIs=[];
   let phase='';
-  rows.forEach(function(r){
-    const a=(r[0]||'').toString().trim();
-    const b=(r[1]||'').toString().trim();
-    const c=(r[2]||'').toString().trim();
-    if(a==='Inbound Performance'||(a==='Category'&&b==='KPIs Covered')){phase='inbound';return;}
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim(),c=(r[2]||'').trim();
+    if(a==='Inbound Performance'){phase='';return;}
+    if(a==='Category'&&b==='KPIs Covered'){phase='inbound';return;}
     if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
     if(a==='Final Total'||!a)return;
-    if(phase==='inbound'&&b) inboundPerf.push({cat:a,kpis:b,weight:c});
-    if(phase==='supervisor'&&b&&c) supervisorKPIs.push({cat:a,measure:b,weight:c});
+    if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
+    if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
   });
 
-  const sColor={'Team KPI Achievement':'b-green','QA Monitoring':'b-green','Inbound Booking Accuracy':'b-amber',
-    'Escalation Resolution':'b-green','Coaching Sessions':'b-teal','Improvement Plans':'b-green',
-    'Process Enhancement':'b-gray','Performance Gap Identification & Development Plan':'b-green'};
-  const sText={'Team KPI Achievement':'✓ On track','QA Monitoring':'✓ On track','Inbound Booking Accuracy':'In progress',
-    'Escalation Resolution':'✓ 96%','Coaching Sessions':'14/18','Improvement Plans':'✓ Done',
-    'Process Enhancement':'Pending','Performance Gap Identification & Development Plan':'✓ Weekly'};
+  const STATUS={
+    'Team KPI Achievement':       {cls:'b-green',txt:'✓ On track'},
+    'QA Monitoring':              {cls:'b-green',txt:'✓ On track'},
+    'Inbound Booking Accuracy':   {cls:'b-amber',txt:'In progress'},
+    'Escalation Resolution':      {cls:'b-green',txt:'✓ 96%'},
+    'Coaching Sessions':          {cls:'b-teal', txt:'In progress'},
+    'Improvement Plans':          {cls:'b-green',txt:'✓ Done'},
+    'Process Enhancement':        {cls:'b-gray', txt:'Pending'},
+    'Performance Gap Identification & Development Plan':{cls:'b-green',txt:'✓ Weekly'}
+  };
 
-  let html=`<div class="section-label">Supervisor KPIs</div>
-    <div class="card" style="margin-bottom:14px">
-    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
-  supervisorKPIs.forEach(function(k){
-    html+=`<div class="kpi-row"><div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-        <span class="badge ${sColor[k.cat]||'b-gray'}">${sText[k.cat]||'—'}</span>
-        <span style="font-size:11px;color:var(--text-muted)">${k.weight}</span>
+  let html=`<div class="section-label">👑 Supervisor KPIs</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — Supervisor Performance Indicators</div>`;
+
+  supervisorKPIs.forEach(k=>{
+    const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${k.measure}</div>
+        ${k.note?`<div style="font-size:10px;color:var(--teal);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
+        <span class="badge ${s.cls}">${s.txt}</span>
+        <span style="font-size:12px;font-weight:700;color:var(--teal)">${k.weight}</span>
       </div></div>`;
   });
-  html+=`</div><div class="section-label">Inbound performance KPIs</div>
-    <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
-  inboundPerf.forEach(function(k){
-    html+=`<div class="kpi-row"><div class="kpi-left"><div class="kpi-name">${k.cat}</div>
-      <div class="kpi-measure">${k.kpis.split('\n').filter(function(x){return x.trim();}).map(function(x){return '• '+x.trim();}).join('<br>')}</div></div>
-      <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div></div>`;
+
+  html+=`</div><div class="section-label">📊 Inbound Performance KPIs</div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent Team — Performance Standards</div>`;
+
+  inboundPerf.forEach(k=>{
+    const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${bullets.map(b=>'• '+b).join('<br>')}</div>
+      </div>
+      <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div>
+    </div>`;
   });
   html+=`</div>`;
   document.getElementById('kpis-content').innerHTML=html;
 }
 
-// ===== ATTENDANCE =====
-const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+// ══════════════════════════════════════════════════
+// ATTENDANCE
+// ══════════════════════════════════════════════════
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function statusClass(s){
-  if(!s)return 'cal-future';
-  s=s.toLowerCase();
-  if(s==='office')return 'cal-office';
-  if(s==='off')return 'cal-off';
-  if(s.includes('vacation')||s.includes('vaction'))return 'cal-vacation';
-  if(s.includes('sick'))return 'cal-sick';
-  if(s.includes('work r'))return 'cal-remote';
-  return 'cal-off';
+function normStatus(s){
+  if(!s)return '';
+  const v=s.toLowerCase().trim();
+  if(v==='office')return 'office';
+  if(v==='off')return 'off';
+  if(v.includes('work vac')||v.includes('work v'))return 'workvac';
+  if(v.includes('vacation')||v.includes('vac'))return 'vacation';
+  if(v.includes('sick'))return 'sick';
+  if(v.includes('work r')||v==='remote')return 'remote';
+  return 'off';
 }
+
+function statusCls(s){ return s?'cal-'+s:'cal-future'; }
+function statusLabel(s){
+  return {office:'Office',off:'Off',vacation:'Vacation',workvac:'Work Vacation',sick:'Sick Leave',remote:'Remote'}[s]||'—';
+}
+
+let _attMap={};
 
 function renderAttendance(rows){
-  const map={};
-  rows.forEach(function(r){
-    const d=(r[0]||'').toString().trim();
-    const s=(r[1]||'').toString().trim();
-    if(d&&d.includes('/'))map[d]=s;
+  _attMap={};
+  rows.slice(1).forEach(r=>{
+    const d=(r[0]||'').trim(), s=(r[1]||'').trim();
+    if(!d)return;
+    // date format M/D/YYYY
+    const parts=d.split('/');
+    if(parts.length===3){
+      const key=parts[0].padStart(2,'0')+'/'+parts[1].padStart(2,'0')+'/'+parts[2];
+      _attMap[key]=normStatus(s);
+    }
   });
-  renderCal(map);
+  renderCal();
 }
 
-function renderCal(map){
+function renderCal(){
   const firstDay=new Date(calYear,calMonth,1).getDay();
   const dim=new Date(calYear,calMonth+1,0).getDate();
-  let office=0,vac=0,sick=0,off=0,remote=0;
+  const counts={office:0,off:0,vacation:0,workvac:0,sick:0,remote:0};
+
   for(let d=1;d<=dim;d++){
-    const s=(map[(calMonth+1)+'/'+d+'/'+calYear]||'').toLowerCase();
-    if(s==='office')office++;
-    else if(s.includes('vacation')||s.includes('vaction'))vac++;
-    else if(s.includes('sick'))sick++;
-    else if(s.includes('work r'))remote++;
-    else if(s==='off')off++;
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key];
+    if(s&&counts[s]!==undefined)counts[s]++;
   }
+
   let html=`<div class="month-nav">
     <button onclick="changeMonth(-1)">‹</button>
-    <div class="month-label">${MONTHS_EN[calMonth]} ${calYear}</div>
+    <div class="month-label">${MONTHS[calMonth]} ${calYear}</div>
     <button onclick="changeMonth(1)">›</button>
   </div>
   <div class="att-stats">
-    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
-    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${vac}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
-    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
-    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
-    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Off</div></div>
+    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${counts.office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
+    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${counts.remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
+    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${counts.vacation}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
+    <div class="att-stat" style="background:#FFF9C4"><div class="num" style="color:#856400">${counts.workvac}</div><div class="lbl" style="color:#856400">Work Vac</div></div>
+    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${counts.sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
+    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
   </div>
   <div class="card">
-    <div class="cal-header">${DAYS_EN.map(function(d){return '<div class="cal-day-name">'+d+'</div>';}).join('')}</div>
+    <div class="cal-header">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
     <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
+
   for(let d=1;d<=dim;d++){
-    const key=(calMonth+1)+'/'+d+'/'+calYear;
-    const st=map[key]||'';
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key]||'';
     const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
-    html+=`<div class="cal-cell ${statusClass(st)}" style="${isToday?'outline:2px solid var(--teal);outline-offset:1px;':''}" title="${st||'—'}">${d}</div>`;
+    const isFuture=new Date(calYear,calMonth,d)>today&&!s;
+    html+=`<div class="cal-cell ${isFuture?'cal-future':statusCls(s)}" 
+      style="${isToday?'outline:2px solid var(--teal);outline-offset:2px;font-weight:700':''}" 
+      title="${statusLabel(s)||'—'}">${d}</div>`;
   }
-  html+=`</div><div class="att-legend">
+
+  html+=`</div>
+  <div class="att-legend">
     <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick Leave</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Off</div>
   </div></div>`;
+
   document.getElementById('attendance-content').innerHTML=html;
   window.changeMonth=function(dir){
     calMonth+=dir;
     if(calMonth<0){calMonth=11;calYear--;}
     if(calMonth>11){calMonth=0;calYear++;}
-    renderCal(map);
+    renderCal();
   };
+}
+
+// ══════════════════════════════════════════════════
+// CHECK LIST
+// ══════════════════════════════════════════════════
+function renderChecklist(rows){
+  if(!rows.length){document.getElementById('checklist-content').innerHTML='<div class="error-msg">No data</div>';return;}
+  const headers=rows[0]; // Agent,Badge,Nissan,Stellantis,PE,NOS,Foton,Electromin
+  const brands=headers.slice(2);
+  const brandCls=['brand-nissan','brand-stellantis','brand-pe','brand-nos','brand-foton','brand-electromin'];
+  const agents=rows.slice(1).filter(r=>r[0]);
+
+  let html=`<div class="stat-grid" style="margin-bottom:16px">
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${agents.length}</div><div class="stat-label">Total agents</div></div>
+    <div class="stat-card"><div class="stat-num">${brands.length}</div><div class="stat-label">Brands/programs</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Agent Brand Assignment</div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:var(--gray-light)">
+        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">#</th>
+        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">Agent</th>
+        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">Badge</th>
+        ${brands.map((b,i)=>`<th style="padding:8px 12px;text-align:center;font-weight:700;border-bottom:2px solid var(--border)"><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
+      </tr></thead>
+      <tbody>
+      ${agents.map((r,i)=>`<tr style="border-bottom:1px solid var(--border);${i%2===0?'':'background:#fafafa'}">
+        <td style="padding:7px 12px;color:var(--text-muted);font-size:11px">${i+1}</td>
+        <td style="padding:7px 12px;font-weight:600">${r[0]||''}</td>
+        <td style="padding:7px 12px;color:var(--text-muted)">${r[1]||''}</td>
+        ${brands.map((_,bi)=>{
+          const val=(r[bi+2]||'').toUpperCase();
+          const yes=val==='TRUE'||val==='✓'||val==='YES'||val==='1';
+          return `<td style="padding:7px 12px;text-align:center">${yes?'<span style="color:var(--teal);font-size:16px;font-weight:700">✓</span>':'<span style="color:#ddd">—</span>'}</td>`;
+        }).join('')}
+      </tr>`).join('')}
+      </tbody>
+    </table></div>
+  </div>`;
+  document.getElementById('checklist-content').innerHTML=html;
 }
 
 loadAll();
