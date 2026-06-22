@@ -109,8 +109,7 @@
 </div>
 
 <script>
-const PROXY    = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
-const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
 const today = new Date();
@@ -125,11 +124,33 @@ function switchTab(name,el){
   document.getElementById('tab-'+name).classList.add('active');
 }
 
-async function fetchSheet(sheetName){
-  const url = PROXY+'?sheetName='+encodeURIComponent(sheetName);
-  const res = await fetch(url,{redirect:'follow'});
-  const data = JSON.parse(await res.text());
-  return Array.isArray(data)?data:[];
+// ✅ JSONP — يتجاوز مشكلة CORS
+function fetchJSONP(sheetName) {
+  return new Promise(function(resolve, reject) {
+    const cbName = 'cb_' + sheetName.replace(/\s/g,'_') + '_' + Date.now();
+    const script = document.createElement('script');
+    const timer = setTimeout(function() {
+      delete window[cbName];
+      document.body.removeChild(script);
+      reject(new Error('Timeout: ' + sheetName));
+    }, 10000);
+
+    window[cbName] = function(data) {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.body.removeChild(script);
+      resolve(Array.isArray(data) ? data : []);
+    };
+
+    script.src = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+    script.onerror = function() {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.body.removeChild(script);
+      reject(new Error('Script error: ' + sheetName));
+    };
+    document.body.appendChild(script);
+  });
 }
 
 async function loadAll(){
@@ -137,26 +158,24 @@ async function loadAll(){
     document.getElementById(id+'-content').innerHTML='<div class="loading">Loading...</div>');
   try{
     const [iRows,kRows,aRows] = await Promise.all([
-      fetchSheet('Inbound Work'),
-      fetchSheet('Sali KPIs'),
-      fetchSheet('Sali Attendance')
+      fetchJSONP('Inbound Work'),
+      fetchJSONP('Sali KPIs'),
+      fetchJSONP('Sali Attendance')
     ]);
     renderInbound(iRows);
     renderWorkDone(iRows);
     renderKPIs(kRows);
     renderAttendance(aRows);
-  }catch(e){
+  } catch(e) {
     document.getElementById('inbound-content').innerHTML=
       '<div class="error-msg">خطأ: '+e.message+'</div>';
   }
 }
 
 // ===== INBOUND =====
-// أعمدة الشيت: "Agent Name" = Task/section, "Badge #" = Frequency
 function renderInbound(rows){
   const daily=[], weekly=[], other=[];
-  let inTasks=false, inWorkDone=false;
-
+  let inTasks=false;
   rows.forEach(r=>{
     const a=(r['Agent Name']||'').trim();
     const b=(r['Badge #']||'').trim();
@@ -234,41 +253,31 @@ function renderWorkDone(rows){
 }
 
 // ===== KPIs =====
-// أعمدة شيت Sali KPIs: "Category","KPIs Covered","Measurement" ثم "Category","Measurement","Weight"
 function renderKPIs(rows){
   const inboundPerf=[], supervisorKPIs=[];
   let phase='';
-
   rows.forEach(r=>{
-    // نحاول نقرأ القيم من أول 3 أعمدة بغض النظر عن أسماءها
     const vals=Object.values(r);
     const a=(vals[0]||'').toString().trim();
     const b=(vals[1]||'').toString().trim();
     const c=(vals[2]||'').toString().trim();
-
-    if(a==='Inbound Performance'){phase='inbound';return;}
-    if(a==='Category'&&b==='KPIs Covered'){phase='inbound';return;}
+    if(a==='Inbound Performance'||( a==='Category'&&b==='KPIs Covered')){phase='inbound';return;}
     if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
-    if(a==='Final Total')return;
-    if(!a)return;
-
-    if(phase==='inbound'&&a&&b) inboundPerf.push({cat:a,kpis:b,weight:c});
-    if(phase==='supervisor'&&a&&b&&c) supervisorKPIs.push({cat:a,measure:b,weight:c});
+    if(a==='Final Total'||!a)return;
+    if(phase==='inbound'&&b) inboundPerf.push({cat:a,kpis:b,weight:c});
+    if(phase==='supervisor'&&b&&c) supervisorKPIs.push({cat:a,measure:b,weight:c});
   });
 
   const sColor={'Team KPI Achievement':'b-green','QA Monitoring':'b-green','Inbound Booking Accuracy':'b-amber',
     'Escalation Resolution':'b-green','Coaching Sessions':'b-teal','Improvement Plans':'b-green',
-    'Process Enhancement':'b-gray','Performance Gap Identification &\nDevelopment Plan':'b-green',
-    'Performance Gap Identification & Development Plan':'b-green'};
+    'Process Enhancement':'b-gray','Performance Gap Identification & Development Plan':'b-green'};
   const sText={'Team KPI Achievement':'✓ On track','QA Monitoring':'✓ On track','Inbound Booking Accuracy':'In progress',
     'Escalation Resolution':'✓ 96%','Coaching Sessions':'14/18','Improvement Plans':'✓ Done',
-    'Process Enhancement':'Pending','Performance Gap Identification &\nDevelopment Plan':'✓ Weekly',
-    'Performance Gap Identification & Development Plan':'✓ Weekly'};
+    'Process Enhancement':'Pending','Performance Gap Identification & Development Plan':'✓ Weekly'};
 
   let html=`<div class="section-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:14px">
     <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
-
   supervisorKPIs.forEach(k=>{
     html+=`<div class="kpi-row">
       <div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
@@ -277,10 +286,8 @@ function renderKPIs(rows){
         <span style="font-size:11px;color:var(--text-muted)">${k.weight}</span>
       </div></div>`;
   });
-
   html+=`</div><div class="section-label">Inbound performance KPIs</div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
-
   inboundPerf.forEach(k=>{
     html+=`<div class="kpi-row">
       <div class="kpi-left"><div class="kpi-name">${k.cat}</div>
@@ -343,14 +350,12 @@ function renderCal(map){
   <div class="card">
     <div class="cal-header">${DAYS_EN.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}</div>
     <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
-
   for(let d=1;d<=dim;d++){
     const key=`${calMonth+1}/${d}/${calYear}`;
     const st=map[key]||'';
     const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
     html+=`<div class="cal-cell ${statusClass(st)}" style="${isToday?'outline:2px solid var(--teal);outline-offset:1px;':''}" title="${st||'—'}">${d}</div>`;
   }
-
   html+=`</div><div class="att-legend">
     <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
@@ -358,7 +363,6 @@ function renderCal(map){
     <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick leave</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Day off</div>
   </div></div>`;
-
   document.getElementById('attendance-content').innerHTML=html;
   window.changeMonth=function(dir){
     calMonth+=dir;
