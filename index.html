@@ -309,20 +309,46 @@ function switchTab(name, el) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-function fetchSheet(sheetName) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'cb_' + Math.random().toString(36).slice(2);
-    const script = document.createElement('script');
-    const url = PROXY + '?sheet=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
-    window[cbName] = function(json) {
-      delete window[cbName];
-      if(script.parentNode) script.parentNode.removeChild(script);
-      resolve(Array.isArray(json) ? json : (json.data || json.rows || []));
-    };
-    script.src = url;
-    script.onerror = () => { reject(new Error('Load error')); };
-    document.body.appendChild(script);
+const SHEET_PUB_ID = '2PACX-1vR8r1dAFRGEwZTtczfQ11hrI-Wno3qR_DV5tCb3o-dFv3CAT8tJ5V5o8fehfMWmnPgX40jBaxvkXoN4';
+const GID_MAP = {
+  'Inbound Work': '0',
+  'Sali Attendance': '209241740',
+  'Sali KPIs': '72593736'
+};
+
+async function fetchSheet(sheetName) {
+  const gid = GID_MAP[sheetName] || '0';
+  const url = 'https://docs.google.com/spreadsheets/d/e/' + SHEET_PUB_ID + '/pub?gid=' + gid + '&single=true&output=csv';
+  const res = await fetch(url);
+  const text = await res.text();
+  const rows = parseCSV(text);
+  if(!rows.length) return [];
+  const headers = rows[0];
+  return rows.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+    return obj;
   });
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = '', inQ = false;
+  for(let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if(inQ) {
+      if(c === '"' && text[i+1] === '"') { field += '"'; i++; }
+      else if(c === '"') inQ = false;
+      else field += c;
+    } else {
+      if(c === '"') inQ = true;
+      else if(c === ',') { row.push(field); field = ''; }
+      else if(c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if(c !== '\r') field += c;
+    }
+  }
+  if(field || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(v => v));
 }
 
 async function loadAll() {
