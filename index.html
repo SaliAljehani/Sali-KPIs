@@ -292,8 +292,7 @@
 </div>
 
 <script>
-const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
-const PROXY = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
+const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 
 let attData = [], kpiData = [], inboundData = [];
 let calMonth = new Date().getMonth();
@@ -314,7 +313,7 @@ function fetchSheet(sheetName) {
   return new Promise((resolve, reject) => {
     const cbName = 'cb_' + Math.random().toString(36).slice(2);
     const script = document.createElement('script');
-    const url = PROXY + '?id=' + SHEET_ID + '&sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+    const url = PROXY + '?sheet=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
     window[cbName] = function(json) {
       delete window[cbName];
       if(script.parentNode) script.parentNode.removeChild(script);
