@@ -35,7 +35,6 @@
     font-size: 14px;
   }
 
-  /* HEADER */
   .header {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -70,7 +69,6 @@
   }
   .refresh-btn:hover { background: #c5eadf; }
 
-  /* TABS */
   .tabs {
     display: flex; gap: 0;
     background: var(--surface);
@@ -90,12 +88,10 @@
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
 
-  /* CONTENT */
   .content { padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* CARDS */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -107,30 +103,16 @@
     color: var(--text); margin-bottom: 14px;
     display: flex; align-items: center; gap: 7px;
   }
-  .card-title .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-  }
+  .card-title .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  /* STAT GRID */
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
-  .stat-card {
-    background: var(--gray-light);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-  }
+  .stat-card { background: var(--gray-light); border-radius: var(--radius-sm); padding: 14px 16px; }
   .stat-num { font-size: 26px; font-weight: 700; line-height: 1; }
   .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  .stat-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-  /* GRID LAYOUTS */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
 
-  /* BADGE */
-  .badge {
-    display: inline-block; padding: 2px 9px;
-    border-radius: 4px; font-size: 11px; font-weight: 500;
-  }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 500; }
   .b-green { background: #EAF3DE; color: #3B6D11; }
   .b-amber { background: var(--amber-light); color: var(--amber); }
   .b-red { background: var(--red-light); color: var(--red); }
@@ -138,15 +120,6 @@
   .b-purple { background: var(--purple-light); color: var(--purple); }
   .b-gray { background: var(--gray-light); color: #5F5E5A; }
 
-  /* PROGRESS BAR */
-  .pbar-wrap { margin-top: 4px; }
-  .pbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-  .pbar-label { font-size: 12px; color: var(--text-muted); width: 100px; flex-shrink: 0; }
-  .pbar-bg { flex: 1; height: 5px; background: var(--border); border-radius: 3px; }
-  .pbar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-  .pbar-val { font-size: 11px; color: var(--text-muted); min-width: 32px; text-align: right; }
-
-  /* KPI ROWS */
   .kpi-row {
     display: flex; align-items: flex-start;
     justify-content: space-between;
@@ -160,7 +133,6 @@
   .kpi-measure { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
   .kpi-weight { font-size: 11px; color: var(--text-muted); flex-shrink: 0; min-width: 32px; text-align: right; }
 
-  /* CHECKLIST */
   .check-item {
     display: flex; align-items: center; gap: 10px;
     padding: 8px 0;
@@ -173,27 +145,13 @@
   .check-icon.done { background: var(--teal-mid); border-color: var(--teal-mid); }
   .check-icon.done::after { content: '✓'; color: white; font-size: 10px; font-weight: 700; }
 
-  /* WORK DONE TAGS */
   .tags-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-  .work-tag {
-    background: var(--teal-light);
-    color: var(--teal);
-    border-radius: 6px;
-    padding: 5px 12px;
-    font-size: 12px;
-    font-weight: 500;
-  }
+  .work-tag { background: var(--teal-light); color: var(--teal); border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 500; }
 
-  /* ATTENDANCE CALENDAR */
   .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
   .cal-day-name { font-size: 10px; color: var(--text-muted); text-align: center; padding: 3px 0; font-weight: 500; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
-  .cal-cell {
-    height: 32px; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 500;
-    cursor: default;
-  }
+  .cal-cell { height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
   .cal-empty { background: transparent; }
   .cal-office { background: var(--teal-light); color: var(--teal); }
   .cal-off { background: var(--gray-light); color: #888; }
@@ -206,36 +164,24 @@
   .att-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
   .att-dot { width: 10px; height: 10px; border-radius: 2px; }
 
-  /* MONTH SELECTOR */
   .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .month-nav button {
-    background: var(--gray-light); border: none;
-    border-radius: var(--radius-sm); padding: 5px 12px;
-    cursor: pointer; font-size: 13px; color: var(--text);
-  }
+  .month-nav button { background: var(--gray-light); border: none; border-radius: var(--radius-sm); padding: 5px 12px; cursor: pointer; font-size: 13px; color: var(--text); }
   .month-nav button:hover { background: var(--border); }
   .month-nav .month-label { font-size: 14px; font-weight: 600; min-width: 140px; text-align: center; }
 
-  /* ATT STATS */
   .att-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 16px; }
   .att-stat { padding: 10px 12px; border-radius: var(--radius-sm); }
   .att-stat .num { font-size: 22px; font-weight: 700; }
   .att-stat .lbl { font-size: 10px; margin-top: 2px; }
 
-  /* INBOUND BRAND */
-  .brand-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
-
-  /* SECTION DIVIDER */
-  .section-sep { height: 1px; background: var(--border); margin: 16px 0; }
   .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
 
-  /* LOADING */
   .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
   .error-msg { background: var(--red-light); color: var(--red); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
 
   @media (max-width: 600px) {
     .content { padding: 14px 12px; }
-    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
     .header { padding: 10px 14px; }
     .tabs { padding: 0 12px; }
   }
@@ -243,7 +189,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <div class="avatar">SA</div>
@@ -258,7 +203,6 @@
   </div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <div class="tab active" onclick="switchTab('inbound', this)">Inbound</div>
   <div class="tab" onclick="switchTab('workdone', this)">Work Done</div>
@@ -266,39 +210,30 @@
   <div class="tab" onclick="switchTab('attendance', this)">Attendance</div>
 </div>
 
-<!-- CONTENT -->
 <div class="content">
-
-  <!-- ===== INBOUND TAB ===== -->
   <div class="tab-panel active" id="tab-inbound">
     <div id="inbound-content"><div class="loading">Loading...</div></div>
   </div>
-
-  <!-- ===== WORK DONE TAB ===== -->
   <div class="tab-panel" id="tab-workdone">
     <div id="workdone-content"><div class="loading">Loading...</div></div>
   </div>
-
-  <!-- ===== KPIs TAB ===== -->
   <div class="tab-panel" id="tab-kpis">
     <div id="kpis-content"><div class="loading">Loading...</div></div>
   </div>
-
-  <!-- ===== ATTENDANCE TAB ===== -->
   <div class="tab-panel" id="tab-attendance">
     <div id="attendance-content"><div class="loading">Loading...</div></div>
   </div>
-
 </div>
 
 <script>
+// ✅ PROXY واحد فقط — خاص بـ Sali-KPIs
 const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
+const SALI_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
 
 let attData = [], kpiData = [], inboundData = [];
 let calMonth = new Date().getMonth();
 let calYear = new Date().getFullYear();
 
-// Today date
 const today = new Date();
 document.getElementById('todayDate').textContent = today.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' });
 
@@ -309,17 +244,24 @@ function switchTab(name, el) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-const PROXY = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
-const SALI_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
-
 async function fetchSheet(sheetName) {
   const url = PROXY + '?id=' + SALI_SHEET_ID + '&sheetName=' + encodeURIComponent(sheetName);
-  const res = await fetch(url);
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    const data = JSON.parse(text);
+    return Array.isArray(data) ? data : (data.data || []);
+  } catch(e) {
+    console.error('fetchSheet error:', sheetName, e);
+    return [];
+  }
 }
 
 async function loadAll() {
+  document.getElementById('inbound-content').innerHTML = '<div class="loading">Loading...</div>';
+  document.getElementById('workdone-content').innerHTML = '<div class="loading">Loading...</div>';
+  document.getElementById('kpis-content').innerHTML = '<div class="loading">Loading...</div>';
+  document.getElementById('attendance-content').innerHTML = '<div class="loading">Loading...</div>';
   try {
     const iData = await fetchSheet('Inbound Work');
     const kData = await fetchSheet('Sali KPIs');
@@ -351,18 +293,9 @@ function renderInbound(rows) {
     else otherTasks.push({ name: a, freq: b || '' });
   });
 
-  // Agent info
-  let agentName = '', agentEmail = '';
-  if (rows[1]) { agentName = rows[1][0]||''; agentEmail = rows[1][3]||''; }
-
   const todayKey = today.toLocaleDateString('en-US');
   const doneKey = 'inbound_done_' + todayKey;
   let doneSet = new Set(JSON.parse(localStorage.getItem(doneKey)||'[]'));
-
-  function saveAndRe() {
-    localStorage.setItem(doneKey, JSON.stringify([...doneSet]));
-    renderInbound(rows);
-  }
 
   const allDaily = dailyTasks.length;
   const doneToday = dailyTasks.filter(t => doneSet.has(t)).length;
@@ -388,21 +321,21 @@ function renderInbound(rows) {
         <div class="stat-label">Other tasks</div>
       </div>
     </div>
-
     <div class="grid-2">
       <div class="card">
         <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
 
   dailyTasks.forEach(t => {
     const isDone = doneSet.has(t);
-    html += `<div class="check-item" onclick="toggleTask('${t.replace(/'/g,"\\'")}','${doneKey}')" style="cursor:pointer">
+    const safe = t.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    html += `<div class="check-item" onclick="toggleTask('${safe}','${doneKey}')" style="cursor:pointer">
       <div class="check-icon ${isDone?'done':''}"></div>
       <span style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t}</span>
       <span class="freq">Daily</span>
     </div>`;
   });
-  html += `</div>
 
+  html += `</div>
       <div>
         <div class="card" style="margin-bottom:12px">
           <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
@@ -417,13 +350,12 @@ function renderInbound(rows) {
   });
   html += `</div></div></div>`;
 
-  const el = document.getElementById('inbound-content');
-  el.innerHTML = html;
+  document.getElementById('inbound-content').innerHTML = html;
 
   window.toggleTask = function(task, key) {
-    if (doneSet.has(task)) doneSet.delete(task);
-    else doneSet.add(task);
-    localStorage.setItem(key, JSON.stringify([...doneSet]));
+    let ds = new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    if (ds.has(task)) ds.delete(task); else ds.add(task);
+    localStorage.setItem(key, JSON.stringify([...ds]));
     renderInbound(rows);
   };
 }
@@ -460,48 +392,33 @@ function renderWorkDone(rows) {
 
 // ===== KPIs =====
 function renderKPIs(rows) {
-  // Parse Inbound Performance section (rows 0-5 approx)
   const inboundPerf = [];
   const supervisorKPIs = [];
   let inInbound = false, inSupervisor = false;
 
   rows.forEach(r => {
     const a=(r[0]||'').trim(), b=(r[1]||'').trim(), c=(r[2]||'').trim();
-    if (a === 'Inbound Performance' || a === 'Category' && b === 'KPIs Covered') { inInbound = true; return; }
+    if (a === 'Inbound Performance' || (a === 'Category' && b === 'KPIs Covered')) { inInbound = true; return; }
     if (a === 'Category' && b === 'Measurement' && c === 'Weight') { inInbound = false; inSupervisor = true; return; }
     if (a === 'Final Total') { inSupervisor = false; return; }
-
-    if (inInbound && a && b && c) {
-      inboundPerf.push({ cat: a, kpis: b, weight: c });
-    }
-    if (inSupervisor && a && b && c) {
-      supervisorKPIs.push({ cat: a, measure: b, weight: c });
-    }
+    if (inInbound && a && b && c) inboundPerf.push({ cat: a, kpis: b, weight: c });
+    if (inSupervisor && a && b && c) supervisorKPIs.push({ cat: a, measure: b, weight: c });
   });
 
   const statusColors = {
-    'Team KPI Achievement': 'b-green',
-    'QA Monitoring': 'b-green',
-    'Inbound Booking Accuracy': 'b-amber',
-    'Escalation Resolution': 'b-green',
-    'Coaching Sessions': 'b-teal',
-    'Improvement Plans': 'b-green',
-    'Process Enhancement': 'b-gray',
-    'Performance Gap Identification & Development Plan': 'b-green'
+    'Team KPI Achievement': 'b-green', 'QA Monitoring': 'b-green',
+    'Inbound Booking Accuracy': 'b-amber', 'Escalation Resolution': 'b-green',
+    'Coaching Sessions': 'b-teal', 'Improvement Plans': 'b-green',
+    'Process Enhancement': 'b-gray', 'Performance Gap Identification & Development Plan': 'b-green'
   };
   const statusText = {
-    'Team KPI Achievement': '✓ On track',
-    'QA Monitoring': '✓ On track',
-    'Inbound Booking Accuracy': 'In progress',
-    'Escalation Resolution': '✓ 96%',
-    'Coaching Sessions': '14/18',
-    'Improvement Plans': '✓ Done',
-    'Process Enhancement': 'Pending',
-    'Performance Gap Identification & Development Plan': '✓ Weekly'
+    'Team KPI Achievement': '✓ On track', 'QA Monitoring': '✓ On track',
+    'Inbound Booking Accuracy': 'In progress', 'Escalation Resolution': '✓ 96%',
+    'Coaching Sessions': '14/18', 'Improvement Plans': '✓ Done',
+    'Process Enhancement': 'Pending', 'Performance Gap Identification & Development Plan': '✓ Weekly'
   };
 
-  let html = `
-    <div class="section-label">Supervisor KPIs</div>
+  let html = `<div class="section-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:14px">
       <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
 
@@ -520,22 +437,18 @@ function renderKPIs(rows) {
     </div>`;
   });
   html += `</div>
-
     <div class="section-label">Inbound performance KPIs</div>
     <div class="card">
       <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
 
-  const ipColors = ['var(--teal-mid)', 'var(--purple)', 'var(--amber)', '#1D9E75'];
-  inboundPerf.forEach((k, i) => {
+  inboundPerf.forEach(k => {
     const kpis = k.kpis.split('\n').filter(x => x.trim());
     html += `<div class="kpi-row">
       <div class="kpi-left">
         <div class="kpi-name">${k.cat}</div>
         <div class="kpi-measure">${kpis.map(x => '• ' + x.trim()).join('<br>')}</div>
       </div>
-      <div style="flex-shrink:0">
-        <span class="badge b-teal">${k.weight}</span>
-      </div>
+      <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div>
     </div>`;
   });
   html += `</div>`;
@@ -559,13 +472,11 @@ function statusClass(s) {
 }
 
 function renderAttendance(rows) {
-  // Build map: "M/D/YYYY" -> status
   const map = {};
   rows.forEach(r => {
     if (!r[0] || !r[0].includes('/')) return;
     map[r[0].trim()] = (r[1]||'').trim();
   });
-
   renderCal(map);
 }
 
@@ -573,7 +484,6 @@ function renderCal(map) {
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
 
-  // Stats for this month
   let office=0, vac=0, sick=0, off=0, remote=0;
   for (let d=1; d<=daysInMonth; d++) {
     const key = `${calMonth+1}/${d}/${calYear}`;
@@ -591,30 +501,13 @@ function renderCal(map) {
       <div class="month-label">${MONTHS_EN[calMonth]} ${calYear}</div>
       <button onclick="changeMonth(1)">›</button>
     </div>
-
     <div class="att-stats">
-      <div class="att-stat" style="background:var(--teal-light)">
-        <div class="num" style="color:var(--teal)">${office}</div>
-        <div class="lbl" style="color:var(--teal)">Office</div>
-      </div>
-      <div class="att-stat" style="background:var(--amber-light)">
-        <div class="num" style="color:var(--amber)">${vac}</div>
-        <div class="lbl" style="color:var(--amber)">Vacation</div>
-      </div>
-      <div class="att-stat" style="background:var(--purple-light)">
-        <div class="num" style="color:var(--purple)">${remote}</div>
-        <div class="lbl" style="color:var(--purple)">Remote</div>
-      </div>
-      <div class="att-stat" style="background:var(--red-light)">
-        <div class="num" style="color:var(--red)">${sick}</div>
-        <div class="lbl" style="color:var(--red)">Sick leave</div>
-      </div>
-      <div class="att-stat" style="background:var(--gray-light)">
-        <div class="num" style="color:#888">${off}</div>
-        <div class="lbl" style="color:#888">Day off</div>
-      </div>
+      <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
+      <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${vac}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
+      <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
+      <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick leave</div></div>
+      <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Day off</div></div>
     </div>
-
     <div class="card">
       <div class="cal-header">
         ${DAYS_EN.map(d => `<div class="cal-day-name">${d}</div>`).join('')}
@@ -650,7 +543,6 @@ function renderCal(map) {
   };
 }
 
-// INIT
 loadAll();
 </script>
 </body>
