@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sali KPIs Dashboard</title>
+<style>
+  :root{
+    --bg:#F4FAF7;--surface:#FFFFFF;--border:#D8EDE5;
+    --text:#1A1A1A;--muted:#6B6B6B;
+    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;--teal-border:#9FE1CB;
+    --amber:#BA7517;--amber-light:#FAEEDA;
+    --red:#A32D2D;--red-light:#FCEBEB;
+    --purple:#534AB7;--purple-light:#EEEDFE;
+    --gray:#F1EFE8;--gray-border:#D3D1C7;
+    --sidebar-w:200px;--radius:12px;--radius-sm:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;display:flex;flex-direction:column}
+
+  /* ── HEADER ── */
+  .header{background:#fff;border-bottom:1px solid var(--border);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
+  .av{width:50px;height:50px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--teal);flex-shrink:0}
+  .h-name{font-size:17px;font-weight:700;color:var(--text)}
+  .h-role{font-size:12px;color:var(--muted);margin-top:2px}
+  .h-pills{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
+  .pill a{color:#085041;text-decoration:none}
+  .date-chip{font-size:11px;color:var(--muted);background:var(--gray);padding:4px 13px;border-radius:20px;border:0.5px solid var(--gray-border)}
+  .ref-btn{font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
+  .ref-btn:hover{background:#c5eadf}
+
+  /* ── LAYOUT ── */
+  .body-wrap{display:flex;flex:1;min-height:0}
+
+  /* ── SIDEBAR ── */
+  .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
+  .sb-section:first-child{margin-top:0}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(15,110,86,.08);color:var(--teal)}
+  .nav-item.active{background:var(--teal-light);color:#085041;font-weight:700}
+  .nav-item .ico{font-size:15px;flex-shrink:0}
+  .nav-divider{height:1px;background:var(--border);margin:8px 4px}
+
+  /* ── CONTENT ── */
+  .content{flex:1;padding:20px 24px;overflow-y:auto;min-width:0}
+
+  /* ── CARDS ── */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
+  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+  .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
+  .stat-num{font-size:24px;font-weight:700;line-height:1}
+  .stat-lbl{font-size:10px;color:var(--muted);margin-top:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+  /* ── CHECK ITEMS ── */
+  .check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+  .check-item:last-child{border-bottom:none}
+  .check-icon{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .check-icon.done{background:var(--teal-mid);border-color:var(--teal-mid)}
+  .check-icon.done::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+  .freq{font-size:10px;color:var(--muted);margin-left:auto;background:var(--gray);padding:2px 7px;border-radius:10px}
+
+  /* ── WORK TAGS ── */
+  .tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
+  .work-tag{background:var(--teal-light);color:var(--teal);border-radius:8px;padding:5px 13px;font-size:11px;font-weight:500;border-left:3px solid var(--teal-mid)}
+
+  /* ── BADGE ── */
+  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600}
+  .b-green{background:#EAF3DE;color:#3B6D11}
+  .b-amber{background:var(--amber-light);color:var(--amber)}
+  .b-teal{background:var(--teal-light);color:var(--teal)}
+  .b-gray{background:var(--gray);color:#5F5E5A}
+  .b-red{background:var(--red-light);color:var(--red)}
+
+  /* ── KPI ROWS ── */
+  .kpi-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:10px}
+  .kpi-row:last-child{border-bottom:none}
+  .kpi-name{font-size:12px;font-weight:600}
+  .kpi-measure{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+  /* ── CALENDAR ── */
+  .cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+  .cal-day-name{font-size:9px;color:var(--muted);text-align:center;padding:3px 0;font-weight:600}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+  .cal-empty{background:transparent}
+  .cal-office{background:var(--teal-light);color:#085041}
+  .cal-off{background:var(--gray);color:#999}
+  .cal-vacation{background:var(--amber-light);color:var(--amber)}
+  .cal-workvac{background:#FFF9C4;color:#856400}
+  .cal-sick{background:var(--red-light);color:var(--red)}
+  .cal-remote{background:var(--purple-light);color:var(--purple)}
+  .cal-future{background:#f4faf7;color:#ccc;border:1px dashed #d0ede8}
+  .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
+  .month-nav button:hover{background:#e0ddd6}
+  .month-label{font-size:14px;font-weight:700;min-width:140px;text-align:center}
+  .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:7px;margin-bottom:14px}
+  .att-stat{padding:9px 11px;border-radius:var(--radius-sm);text-align:center}
+  .att-stat .num{font-size:20px;font-weight:700}
+  .att-stat .lbl{font-size:9px;margin-top:2px;font-weight:600}
+  .att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .att-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+  .att-dot{width:9px;height:9px;border-radius:2px}
+
+  /* ── TABLES ── */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th{background:#f4faf7;padding:9px 13px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:9px 13px;border-bottom:1px solid #eef5f1;vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tr:hover td{background:#f8fdf9}
+
+  /* ── KPI SUB TABS ── */
+  .ksub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .ksub-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+  .ksub-btn.active{background:var(--teal-light);color:#085041;border-color:var(--teal-border)}
+
+  .loading{text-align:center;padding:50px;color:var(--muted);font-size:13px}
+  .err{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:2px}
+  .sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px;margin-top:2px}
+
+  .brand-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
+  .brand-nissan{background:#fef2f2;color:#c0272d}
+  .brand-stellantis{background:#e3f2fd;color:#1565c0}
+  .brand-pe{background:#FAEEDA;color:#BA7517}
+  .brand-nos{background:#e8f5e9;color:#2e7d32}
+  .brand-foton{background:#eceff1;color:#546e7a}
+  .brand-electromin{background:#ede7f6;color:#4527a0}
+
+  @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;align-items:center;gap:11px">
+    <div class="av">SA</div>
+    <div>
+      <div class="h-name">Sali Aljehani</div>
+      <div class="h-role">Team Lead · Inbound Contact Center · Petromin Group</div>
+      <div class="h-pills">
+        <span class="pill">🪪 22952</span>
+        <span class="pill">📱 552705577</span>
+        <span class="pill"><a href="mailto:sali.aljehani@petromin.com">📧 sali.aljehani@petromin.com</a></span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <span class="date-chip" id="todayDate">—</span>
+    <button class="ref-btn" onclick="loadAll()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-section">Main</div>
+    <div class="nav-item active" id="nav-inbound" onclick="showTab('inbound')"><span class="ico">📋</span> Inbound Work</div>
+    <div class="nav-item" id="nav-workdone" onclick="showTab('workdone')"><span class="ico">✅</span> Work Done</div>
+    <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
+    <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Check List</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">KPIs</div>
+    <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
+    <div class="nav-item" id="nav-coaching" onclick="showTab('coaching')"><span class="ico">💬</span> Coaching</div>
+    <div class="nav-item" id="nav-improvement" onclick="showTab('improvement')"><span class="ico">📈</span> Improvement</div>
+    <div class="nav-item" id="nav-perfgap" onclick="showTab('perfgap')"><span class="ico">🔍</span> Perf. Gap</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">Reports</div>
+    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
+    <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div id="tab-inbound"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-workdone" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-kpis" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-attendance" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-checklist" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-coaching" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-improvement" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-perfgap" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
+  </main>
+</div>
+
+<script>
+const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const GID = {
+  inbound:'0', attendance:'209241740', kpis:'72593736',
+  checklist:'1272140156', coaching:'144857263',
+  improvement:'115510114', perfgap:'1669804764',
+  monthly:'413119919',
+  reports:'2136858309'
+};
+const AGENTS=[
+  'Ahdab Shalabi',
+  'Asmaa M. Bawayan',
+  'Bayan Jazzar',
+  'Ghadeer Motadares',
+  'Ghofran Hussain Rafie',
+  'Hanin Yajizi',
+  'Hibah Almuwallad',
+  'Manar Alshehri',
+  'Mashael Alshehri',
+  'Mawadah Essam',
+  'Nedaa Shorbaji',
+  'Nesreen Mansoor',
+  'Reham Hakami',
+  'Sara Sami',
+  'Shatha Bawayan',
+  'Walaa Meezi',
+  'Wejdan Mustafa',
+  'Yosra Alsalami'
+];
+
+let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
+const today=new Date();
+let _attMap={}, _currentTab='inbound';
+
+document.getElementById('todayDate').textContent=
+  today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+
+// ── NAV ──
+function showTab(name){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  document.querySelectorAll('.content > div').forEach(el=>el.style.display='none');
+  document.getElementById('tab-'+name).style.display='block';
+  _currentTab=name;
+}
+
+// ── FETCH ──
+async function fetchCSV(gid){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('Cannot load sheet (make sure it is public) — '+res.status);
+  return parseCSV(await res.text());
+}
+function parseCSV(text){
+  const rows=[];let row=[],field='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i],n=text[i+1];
+    if(inQ){if(c==='"'&&n==='"'){field+='"';i++;}else if(c==='"')inQ=false;else field+=c;}
+    else{if(c==='"')inQ=true;else if(c===','){row.push(field.trim());field='';}
+      else if(c==='\r'){}else if(c==='\n'){row.push(field.trim());if(row.some(v=>v))rows.push(row);row=[];field='';}
+      else field+=c;}
+  }
+  if(field!==''||row.length){row.push(field.trim());if(row.some(v=>v))rows.push(row);}
+  return rows;
+}
+
+
+// ══ MONTHLY PERFORMANCE — Static reference data ══
+function renderMonthly(rows){
+  // Try dynamic first, fallback to static
+  const perfMetrics=[], eomSlide=[], callsQA=[];
+  let section='';
+  (rows||[]).forEach(r=>{
+    const a=String(r[0]||'').trim(), b=String(r[1]||'').trim();
+    if(a==='Monthly Agents Performance'){section='perf';return;}
+    if(a==='EOM SLIDE Inbound'){section='eom';return;}
+    if(a.includes('Calls Quality Assurance')){section='qa';return;}
+    if(!a)return;
+    if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
+    if(section==='eom'&&b) eomSlide.push({field:a,source:b});
+    if(section==='qa'){const p=a.split('|');callsQA.push({item:p[0].trim(),score:p[1]||'',ar:b});}
+  });
+
+  // Static fallback data
+  const PERF = perfMetrics.length ? perfMetrics : [
+    {metric:'Customers Answered',desc:'Manual Dials + Connected Inbound'},
+    {metric:'Customers Transferred',desc:'Grand Total من ريبورت فيد باك'},
+    {metric:'CT%',desc:'Customers Transferred / Customers Answered'},
+    {metric:'Customers Evaluated',desc:'1+2 توتل التقييم كامل من العملاء'},
+    {metric:'CE%',desc:'Customers Evaluated / Customers Transferred'},
+    {metric:'Satisfied',desc:'Score 1'},
+    {metric:'Satisfied%',desc:'Satisfied / Customers Evaluated'},
+    {metric:'Dissatisfied',desc:'Score 2'},
+    {metric:'Dissatisfied%',desc:'Dissatisfied / Customers Evaluated'},
+    {metric:'Transferred to CSAT',desc:'CE%'},
+    {metric:'CSAT',desc:'Satisfied% — نفس الناتج'},
+    {metric:'WhatsApp Feedback Average',desc:'Feedback Section'}
+  ];
+  const EOM = eomSlide.length ? eomSlide : [
+    {field:'Final Login Time Score',source:'Login Time'},
+    {field:'Final Quality Score',source:'Quality'},
+    {field:'Final CSAT Score',source:'Transferred to CSAT'},
+    {field:'Average Handling Time',source:'Handling Time'},
+    {field:'Number of Interactions',source:'Total'},
+    {field:'Total Tickets',source:'Total Tickets'},
+    {field:'Tickets%',source:'Tickets%'}
+  ];
+  const QA = callsQA.length ? callsQA : [
+    {item:'Welcome',score:'10',ar:'المقدمة'},
+    {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
+    {item:'Understanding the customer's problem',score:'10',ar:'فهم العميل'},
+    {item:'Answering the customer's question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
+    {item:'How long it took to answer',score:'5',ar:'كم استغرق الرد'},
+    {item:'Attitude & Language',score:'5',ar:'السلوك واللغة'},
+    {item:'Personal Enthusiasm',score:'5',ar:'الحماس الشخصي'},
+    {item:'Hold time / Mute',score:'—',ar:'زمن الانتظار / كتم الصوت'},
+    {item:'Closure of call',score:'10',ar:'إغلاق المكالمة'},
+    {item:'Ticket Quality / System input',score:'30',ar:'جودة التذاكر / إدخال النظام'}
+  ];
+  const total=QA.reduce((s,r)=>{const n=parseInt(r.score)||0;return s+n;},0);
+
+  const html=`
+  <div class="sec-label">📊 Monthly Agents Performance — Metrics</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px">
+    ${PERF.map(m=>`<div class="card" style="padding:13px 15px;margin-bottom:0">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${m.metric}</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5">${m.desc}</div>
+    </div>`).join('')}
+  </div>
+  <div class="sec-label">🏆 EOM Slide — Data Sources</div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Employee of the Month — Required Fields</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Field</th><th>Source</th></tr></thead>
+      <tbody>${EOM.map(r=>`<tr><td style="font-weight:600">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
+    </table></div>
+  </div>
+  <div class="sec-label">✅ Calls Quality Assurance — Total: ${total} pts</div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th style="direction:rtl;text-align:right">Arabic</th></tr></thead>
+      <tbody>${QA.map(r=>`<tr>
+        <td style="font-weight:500">${r.item}</td>
+        <td style="text-align:center"><span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r.score}</span></td>
+        <td style="color:var(--muted);direction:rtl;text-align:right">${r.ar}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+  document.getElementById('tab-monthly').innerHTML=html;
+}
+
+// ══ REPORTS GUIDE ══
+function renderReports(rows){
+  const allRows = (rows||[]).filter(r=>r.some(v=>v&&String(v).trim()));
+  const sections=[];
+  let cur=null;
+
+  allRows.forEach(r=>{
+    const a=String(r[0]||'').trim();
+    const b=String(r[1]||'').trim();
+    const c=String(r[2]||'').trim();
+    if(!a) return;
+    // Detect section headers
+    if(a.toLowerCase().includes('ameyo') || a==="CRM-MASTERDECK- Ghada" || a==='WhatsApp'){
+      cur={title:a,items:[]}; sections.push(cur); return;
+    }
+    if(cur) cur.items.push({name:a, desc:b, note:c});
+  });
+
+  if(!sections.length || sections.every(s=>!s.items.length)){
+    // Static fallback
+    sections.push({title:"Ameyo Report's",items:[
+      {name:'ACD Call Details',desc:'المفقود + اختيار الموظفة للاتصال (Disposition)',note:''},
+      {name:'AGENT Productivity Interval Summary',desc:'تقرير الموظفة كامل لفترة الدوام',note:'Staffed Duration · First Login Time · Avg Handling Time'},
+      {name:'Agent Session Details',desc:'وقت تسجيل الدخول والخروج',note:''},
+      {name:'Call Details',desc:'تقرير المفقود خارج ساعات الدوام',note:''},
+      {name:'Feedback IVR Report',desc:'تقييم العملاء للمكالمات',note:'اختار من رقم الوظيفي للبنات — Grand Total'},
+      {name:'Updated Petromin Interaction',desc:'للتيكيتات — نحط Campaign كامل',note:'يتمسح Incoming Email Queue'},
+      {name:'WhatsApp Ni/ST',desc:'Chats · Speed of answer (First response)',note:'من الـ Dashboard'}
+    ]});
+    sections.push({title:'CRM-MASTERDECK- Ghada',items:[
+      {name:'Calls Volume',desc:'عدد المكالمات الأسبوعي كامل',note:''},
+      {name:'SL%',desc:'من ACD Call Details Report',note:'Total calls + calls ≤30s Wait Time at ACD'},
+      {name:'AHT',desc:'AGENT Productivity Interval Summary',note:'User Talk Time + ACW Duration'},
+      {name:'Avg. ACW',desc:'AGENT Productivity Interval Summary',note:'Report'},
+      {name:'Avg. Staffed',desc:'AGENT Productivity Interval Summary',note:'اشيل عدد الساعات القليل — البنات من تيم ثاني'},
+      {name:'Speed of Answer',desc:'من ACD Call Details Report',note:'Only Answered = Total Wait Time at ACD'},
+      {name:'WhatsApp Volume',desc:'Total Chats',note:'Download WhatsApp'},
+      {name:'Avg. First RT',desc:'First Response',note:'Download WhatsApp'},
+      {name:'Avg. RT',desc:'Avg. Response Time',note:'Download WhatsApp'}
+    ]});
+    sections.push({title:'WhatsApp',items:[
+      {name:'Dashboard',desc:'عدد المكالمات - وقت الدخول',note:''},
+      {name:'Feedback Section',desc:'تقييم العملاء',note:'محادثة التقييم من الأرشيف برقم العميل'},
+      {name:'Chat Statistics',desc:'حالة المحادثة (الإغلاق)',note:''},
+      {name:'Archive',desc:'سجل المحادثات',note:''},
+      {name:'User List',desc:'معلومات الموظفات',note:''},
+      {name:'Canned Response',desc:'هاشتاق',note:''},
+      {name:'Download Center',desc:'ملف التقارير',note:''},
+      {name:'User Logging',desc:'وقت دخول الموظفات',note:''},
+      {name:'Missed Chats',desc:'مفقود',note:''},
+      {name:'Agent Performance',desc:'أداء الموظفات',note:''}
+    ]});
+  }
+
+  const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
+  const SECTION_BG=['#E1F5EE','#EEEDFE','#E6F1FB'];
+
+  let html='<div class="sec-label">📄 Reports Reference Guide</div>';
+  sections.forEach((sec,si)=>{
+    if(!sec.items.length) return;
+    const col=SECTION_COLORS[si%SECTION_COLORS.length];
+    const bg=SECTION_BG[si%SECTION_BG.length];
+    html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
+      <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+      ${sec.items.map((item,i)=>`
+        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:flex;gap:12px;align-items:flex-start">
+          <div style="min-width:220px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);line-height:1.6">${item.desc}</div>
+            ${item.note?`<div style="font-size:10px;color:${col};margin-top:4px;background:${bg};padding:2px 9px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>`;
+  });
+  document.getElementById('tab-reports').innerHTML=html;
+}
+
+async function loadAll(){
+  ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap','monthly','reports'].forEach(id=>{
+    document.getElementById('tab-'+id).innerHTML='<div class="loading">⏳ Loading...</div>';
+  });
+  try{
+    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows]=await Promise.all([
+      fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
+      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap)
+    ]);
+    renderInbound(inbRows);
+    renderWorkDone(inbRows);
+    renderKPIs(kpiRows);
+    renderAttendance(attRows);
+    renderChecklist(clRows);
+    renderCoaching(coachRows);
+    renderImprovement(impRows);
+    renderPerfGap(gapRows);
+  }catch(e){
+    ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
+      document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+    });
+  }
+}
+
+// ── AVATAR COLORS ──
+const AV_COLORS=[
+  {bg:'#F0DEDE',text:'#9B4A4A'},{bg:'#E3E1DC',text:'#6B6862'},
+  {bg:'#DCE6E0',text:'#516B5C'},{bg:'#E8E2D8',text:'#8A7456'},
+  {bg:'#E1E2E8',text:'#5C6178'},{bg:'#E6DEE3',text:'#7C5C6B'}
+];
+function avColor(i){return AV_COLORS[i%AV_COLORS.length];}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+// ══ INBOUND ══
+function renderInbound(rows){
+  const daily=[],weekly=[],other=[];
+  let inTasks=false;
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim();
+    if(a.includes('Daily Inbound Work')){inTasks=true;return;}
+    if(a==='Work Done'){inTasks=false;return;}
+    if(!inTasks||!a)return;
+    if(b==='Daily')daily.push(a);
+    else if(b==='Weekly')weekly.push(a);
+    else other.push({name:a,freq:b||'—'});
+  });
+  const dk='inbound_done_'+today.toLocaleDateString('en-US');
+  let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
+  const pct=daily.length?Math.round(done.size/daily.length*100):0;
+  const pctColor=pct===100?'var(--teal-mid)':pct>=50?'var(--amber)':'var(--red)';
+
+  let html=`<div class="stat-grid">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done.size}<span style="font-size:13px;color:var(--muted)">/${daily.length}</span></div>
+      <div class="stat-lbl">Done today</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pctColor}"></div></div></div>
+    <div class="stat"><div class="stat-num" style="color:${pctColor}">${pct}%</div><div class="stat-lbl">Progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-lbl">Weekly tasks</div></div>
+    <div class="stat"><div class="stat-num">${other.length}</div><div class="stat-lbl">Other tasks</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})} <span class="badge b-teal" style="margin-left:auto">${done.size}/${daily.length}</span></div>`;
+
+  daily.forEach(t=>{
+    const isDone=done.has(t);
+    const safe=encodeURIComponent(t);
+    html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')">
+      <div class="check-icon ${isDone?'done':''}"></div>
+      <span style="${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t}</span>
+      <span class="freq">Daily</span></div>`;
+  });
+  html+=`</div><div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly</div>`;
+  weekly.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
+  html+=`</div><div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other</div>`;
+  other.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
+  html+=`</div></div></div>`;
+  document.getElementById('tab-inbound').innerHTML=html;
+  window.toggleTask=function(safe,key){
+    const task=decodeURIComponent(safe);
+    const ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    if(ds.has(task))ds.delete(task);else ds.add(task);
+    localStorage.setItem(key,JSON.stringify([...ds]));
+    renderInbound(rows);
+  };
+}
+
+// ══ WORK DONE ══
+function renderWorkDone(rows){
+  const items=[];let inS=false;
+  rows.forEach(r=>{const a=(r[0]||'').trim();if(a==='Work Done'){inS=true;return;}if(!inS||!a)return;items.push(a);});
+  function getCat(item){
+    const t=item.toLowerCase();
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
+    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
+    return{label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+  }
+  document.getElementById('tab-workdone').innerHTML=`
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Months (Jan–Jun)</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-lbl">Start</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-lbl">Current</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px">
+      ${items.map((item,i)=>{
+        const cat=getCat(item);
+        return`<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;border-left:4px solid ${cat.dot}">
+          <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px">${item}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+            <span style="font-size:10px;color:#ccc;font-weight:600">#${i+1}</span>
+          </div></div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ══ KPIs ══
+function renderKPIs(rows){
+  const inboundPerf=[],supervisorKPIs=[];
+  let phase='';
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim(),c=(r[2]||'').trim();
+    if(a==='Inbound Performance'){phase='';return;}
+    if(a==='Category'&&b==='KPIs Covered'){phase='inbound';return;}
+    if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
+    if(a==='Final Total'||!a)return;
+    if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
+    if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
+  });
+  const STATUS={
+    'Team KPI Achievement':{cls:'b-green',txt:'✓ On track'},
+    'QA Monitoring':{cls:'b-green',txt:'✓ On track'},
+    'Inbound Booking Accuracy':{cls:'b-green',txt:'✓ On track'},
+    'Escalation Resolution':{cls:'b-amber',txt:'In progress'},
+    'Coaching Sessions':{cls:'b-amber',txt:'In progress'},
+    'Improvement Plans':{cls:'b-amber',txt:'In progress'},
+    'Process Enhancement':{cls:'b-green',txt:'✓ Done (Inbound Dashboard)'},
+    'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
+  };
+  let html=`<div class="sec-label">Supervisor KPIs</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>`;
+  supervisorKPIs.forEach(k=>{
+    const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${k.measure}</div>
+        ${k.note?`<div style="font-size:10px;color:var(--teal);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span class="badge ${s.cls}">${s.txt}</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal)">${k.weight}</span>
+      </div></div>`;
+  });
+  html+=`</div><div class="sec-label">Inbound Performance KPIs</div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>`;
+  inboundPerf.forEach(k=>{
+    const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${bullets.map(b=>'• '+b).join('<br>')}</div>
+      </div>
+      <span class="badge b-teal" style="flex-shrink:0">${k.weight}</span>
+    </div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('tab-kpis').innerHTML=html;
+}
+
+// ══ ATTENDANCE ══
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function normSt(s){
+  if(!s)return'';const v=s.toLowerCase().trim();
+  if(v==='office')return'office';if(v==='off')return'off';
+  if(v.includes('work vac')||v.includes('work v'))return'workvac';
+  if(v.includes('vacation'))return'vacation';
+  if(v.includes('sick'))return'sick';
+  if(v.includes('work r')||v==='remote')return'remote';
+  return'off';
+}
+function stLabel(s){return{office:'Office',off:'Off',vacation:'Vacation',workvac:'Work Vacation',sick:'Sick Leave',remote:'Remote'}[s]||'—';}
+function renderAttendance(rows){
+  _attMap={};
+  rows.slice(1).forEach(r=>{
+    const d=(r[0]||'').trim(),s=(r[1]||'').trim();
+    if(!d)return;
+    const p=d.split('/');
+    if(p.length===3){
+      const key=p[0].padStart(2,'0')+'/'+p[1].padStart(2,'0')+'/'+p[2];
+      _attMap[key]=normSt(s);
+    }
+  });
+  renderCal();
+}
+function renderCal(){
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const counts={office:0,off:0,vacation:0,workvac:0,sick:0,remote:0};
+  for(let d=1;d<=dim;d++){
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key];if(s&&counts[s]!==undefined)counts[s]++;
+  }
+  let html=`<div class="month-nav">
+    <button onclick="changeMonth(-1)">‹</button>
+    <div class="month-label">${MONTHS[calMonth]} ${calYear}</div>
+    <button onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="att-stats">
+    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${counts.office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
+    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${counts.remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
+    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${counts.vacation}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
+    <div class="att-stat" style="background:#FFF9C4"><div class="num" style="color:#856400">${counts.workvac}</div><div class="lbl" style="color:#856400">Work Vac</div></div>
+    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${counts.sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
+    <div class="att-stat" style="background:var(--gray)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
+  </div>
+  <div class="card">
+    <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
+    <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
+  for(let d=1;d<=dim;d++){
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key]||'';
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const isFuture=new Date(calYear,calMonth,d)>today&&!s;
+    html+=`<div class="cal-cell ${isFuture?'cal-future':s?'cal-'+s:'cal-future'}" style="${isToday?'outline:2px solid var(--teal);outline-offset:2px;font-weight:700':''}" title="${stLabel(s)||'—'}">${d}</div>`;
+  }
+  html+=`</div>
+  <div class="att-legend">
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray)"></div>Off</div>
+  </div></div>`;
+  document.getElementById('tab-attendance').innerHTML=html;
+  window.changeMonth=function(dir){
+    calMonth+=dir;
+    if(calMonth<0){calMonth=11;calYear--;}
+    if(calMonth>11){calMonth=0;calYear++;}
+    renderCal();
+  };
+}
+
+// ══ CHECK LIST ══
+function renderChecklist(rows){
+  if(!rows.length)return;
+  const headers=rows[0],brands=headers.slice(2);
+  const brandCls=['brand-nissan','brand-stellantis','brand-pe','brand-nos','brand-foton','brand-electromin'];
+  const agents=rows.slice(1).filter(r=>r[0]);
+  document.getElementById('tab-checklist').innerHTML=`
+    <div class="stat-grid" style="margin-bottom:14px">
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${agents.length}</div><div class="stat-lbl">Total agents</div></div>
+      <div class="stat"><div class="stat-num">${brands.length}</div><div class="stat-lbl">Brands</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Agent Brand Assignment</div>
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>#</th><th>Agent</th><th>Badge</th>
+          ${brands.map((b,i)=>`<th><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
+        </tr></thead><tbody>
+        ${agents.map((r,i)=>`<tr>
+          <td style="color:#ccc;font-size:10px">${i+1}</td>
+          <td style="font-weight:600">${r[0]||''}</td>
+          <td style="color:var(--muted)">${r[1]||''}</td>
+          ${brands.map((_,bi)=>{
+            const val=(r[bi+2]||'').toUpperCase();
+            const yes=val==='TRUE'||val==='✓'||val==='YES';
+            return`<td style="text-align:center">${yes?'<span style="color:var(--teal);font-size:15px;font-weight:700">✓</span>':'<span style="color:#ddd">—</span>'}</td>`;
+          }).join('')}
+        </tr>`).join('')}
+        </tbody></table></div></div>`;
+}
+
+// ══ COACHING ══
+function renderCoaching(rows){
+  const sessionMap={};
+  rows.slice(1).forEach(r=>{
+    const name=(r[0]||'').trim();if(!name)return;
+    if(!sessionMap[name])sessionMap[name]=[];
+    sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
+  });
+  const done=Object.keys(sessionMap).length;
+  const total=rows.slice(1).filter(r=>r[0]).length;
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${total}</div><div class="stat-lbl">Total sessions</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Agents coached</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${AGENTS.length-done}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat"><div class="stat-num">${AGENTS.length}</div><div class="stat-lbl">Total agents</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Coaching Sessions Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">1 session / agent / month</span></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+      <th>#</th><th>Agent</th><th style="text-align:center">Sessions</th>
+      <th style="text-align:center">Last Date</th><th>Notes</th>
+      <th style="text-align:center">Next</th><th style="text-align:center">Status</th>
+    </tr></thead><tbody>`;
+  AGENTS.forEach((agent,i)=>{
+    const sessions=sessionMap[agent]||[];
+    const last=sessions[sessions.length-1]||null;
+    const c=avColor(i);
+    html+=`<tr>
+      <td style="color:#ccc;font-size:10px">${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${initials(agent)}</div>
+        <span style="font-weight:600;font-size:12px">${agent}</span></div></td>
+      <td style="text-align:center"><span style="background:${sessions.length?'var(--teal-light)':'var(--gray)'};color:${sessions.length?'var(--teal)':'#999'};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${sessions.length}</span></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last?last.date:'—'}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${last?last.notes:'—'}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last&&last.next?last.next:'—'}</td>
+      <td style="text-align:center">${sessions.length
+        ?'<span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">✓ Done</span>'
+        :'<span style="background:var(--amber-light);color:var(--amber);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">Pending</span>'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  document.getElementById('tab-coaching').innerHTML=html;
+}
+
+// ══ IMPROVEMENT ══
+function renderImprovement(rows){
+  const plans=rows.slice(1).filter(r=>r[0]);
+  const active=plans.filter(r=>(r[3]||'').toLowerCase().includes('progress')).length;
+  const done=plans.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('complet')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    if(v.includes('done')||v.includes('complet'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Done'};
+    return{bg:'var(--gray)',color:'var(--muted)',label:s||'Pending'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-lbl">Total plans</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-lbl">In progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Completed</div></div>
+  </div>`;
+  if(!plans.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:13px;font-weight:600">No improvement plans yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Improvement Plans</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--amber)"></span>Improvement Plans</div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th>Agent</th><th>Reason</th><th style="text-align:center">Start Date</th><th style="text-align:center">Status</th><th>Notes</th>
+      </tr></thead><tbody>
+      ${plans.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="font-weight:600">${r[0]||'—'}</td>
+        <td>${r[1]||'—'}</td>
+        <td style="text-align:center;color:var(--muted);font-size:11px">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+        <td style="color:var(--muted)">${r[4]||'—'}</td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-improvement').innerHTML=html;
+}
+
+// ══ PERF GAP ══
+function renderPerfGap(rows){
+  const gaps=rows.slice(1).filter(r=>r[0]);
+  const open=gaps.filter(r=>!(r[3]||'').toLowerCase().includes('done')&&!(r[3]||'').toLowerCase().includes('resolved')).length;
+  const resolved=gaps.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('resolved')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('done')||v.includes('resolved'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Resolved'};
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    return{bg:'var(--red-light)',color:'var(--red)',label:'Open'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${gaps.length}</div><div class="stat-lbl">Total gaps</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-lbl">Open</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-lbl">Resolved</div></div>
+  </div>`;
+  if(!gaps.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:13px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Performance Gap</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Performance Gap Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">Min. 1 gap / week</span></div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th style="text-align:center">Week</th><th>Gap Identified</th><th>Action Plan</th><th style="text-align:center">Status</th>
+      </tr></thead><tbody>
+      ${gaps.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="text-align:center"><span style="background:var(--purple-light);color:var(--purple);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r[0]||'—'}</span></td>
+        <td style="font-weight:500">${r[1]||'—'}</td>
+        <td style="color:var(--muted)">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-perfgap').innerHTML=html;
+}
+
+loadAll();
+</script>
+</body>
+</html>
