@@ -5,504 +5,422 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sali KPIs Dashboard</title>
 <style>
-  :root {
-    --bg:#F7F6F2;--surface:#FFFFFF;--border:#E4E2DA;
-    --text:#1A1A1A;--text-muted:#6B6B6B;
-    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;
+  :root{
+    --bg:#F4FAF7;--surface:#FFFFFF;--border:#D8EDE5;
+    --text:#1A1A1A;--muted:#6B6B6B;
+    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;--teal-border:#9FE1CB;
     --amber:#BA7517;--amber-light:#FAEEDA;
     --red:#A32D2D;--red-light:#FCEBEB;
     --purple:#534AB7;--purple-light:#EEEDFE;
-    --gray-light:#F1EFE8;--radius:12px;--radius-sm:8px;
+    --gray:#F1EFE8;--gray-border:#D3D1C7;
+    --sidebar-w:200px;--radius:12px;--radius-sm:8px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
-  .header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-  .avatar{width:42px;height:42px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--teal);flex-shrink:0}
-  .header-name{font-size:15px;font-weight:700}
-  .header-role{font-size:11px;color:var(--text-muted);margin-top:1px}
-  .date-pill{background:var(--gray-light);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text-muted)}
-  .refresh-btn{background:var(--teal-light);color:var(--teal);border:none;border-radius:20px;padding:6px 16px;font-size:12px;cursor:pointer;font-weight:600}
-  .refresh-btn:hover{background:#c5eadf}
-  .tabs{display:flex;background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;overflow-x:auto;gap:0}
-  .tab{padding:13px 22px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s}
-  .tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:700}
-  .tab:hover:not(.active){color:var(--text);background:var(--gray-light)}
-  .content{padding:20px 24px;max-width:1100px;margin:0 auto}
-  .tab-panel{display:none}.tab-panel.active{display:block}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px}
-  .card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;display:flex;flex-direction:column}
+
+  /* ── HEADER ── */
+  .header{background:#fff;border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
+  .av{width:40px;height:40px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--teal);flex-shrink:0}
+  .h-name{font-size:14px;font-weight:700;color:var(--text)}
+  .h-role{font-size:10px;color:var(--muted);margin-top:1px}
+  .h-pills{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+  .pill{font-size:10px;font-weight:600;padding:2px 10px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
+  .pill a{color:#085041;text-decoration:none}
+  .date-chip{font-size:10px;color:var(--muted);background:var(--gray);padding:3px 10px;border-radius:20px;border:0.5px solid var(--gray-border)}
+  .ref-btn{font-size:10px;padding:4px 13px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
+  .ref-btn:hover{background:#c5eadf}
+
+  /* ── LAYOUT ── */
+  .body-wrap{display:flex;flex:1;min-height:0}
+
+  /* ── SIDEBAR ── */
+  .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
+  .sb-section:first-child{margin-top:0}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(15,110,86,.08);color:var(--teal)}
+  .nav-item.active{background:var(--teal-light);color:#085041;font-weight:700}
+  .nav-item .ico{font-size:15px;flex-shrink:0}
+  .nav-divider{height:1px;background:var(--border);margin:8px 4px}
+
+  /* ── CONTENT ── */
+  .content{flex:1;padding:20px 24px;overflow-y:auto;min-width:0}
+
+  /* ── CARDS ── */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
+  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px}
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
-  .stat-card{background:var(--gray-light);border-radius:var(--radius-sm);padding:14px 16px}
-  .stat-num{font-size:26px;font-weight:700;line-height:1}
-  .stat-label{font-size:11px;color:var(--text-muted);margin-top:4px}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-  .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600}
-  .b-green{background:#EAF3DE;color:#3B6D11}.b-amber{background:var(--amber-light);color:var(--amber)}
-  .b-teal{background:var(--teal-light);color:var(--teal)}.b-gray{background:var(--gray-light);color:#5F5E5A}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+  .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
+  .stat-num{font-size:24px;font-weight:700;line-height:1}
+  .stat-lbl{font-size:10px;color:var(--muted);margin-top:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+  /* ── CHECK ITEMS ── */
+  .check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+  .check-item:last-child{border-bottom:none}
+  .check-icon{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .check-icon.done{background:var(--teal-mid);border-color:var(--teal-mid)}
+  .check-icon.done::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+  .freq{font-size:10px;color:var(--muted);margin-left:auto;background:var(--gray);padding:2px 7px;border-radius:10px}
+
+  /* ── WORK TAGS ── */
+  .tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
+  .work-tag{background:var(--teal-light);color:var(--teal);border-radius:8px;padding:5px 13px;font-size:11px;font-weight:500;border-left:3px solid var(--teal-mid)}
+
+  /* ── BADGE ── */
+  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600}
+  .b-green{background:#EAF3DE;color:#3B6D11}
+  .b-amber{background:var(--amber-light);color:var(--amber)}
+  .b-teal{background:var(--teal-light);color:var(--teal)}
+  .b-gray{background:var(--gray);color:#5F5E5A}
   .b-red{background:var(--red-light);color:var(--red)}
+
+  /* ── KPI ROWS ── */
   .kpi-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:10px}
   .kpi-row:last-child{border-bottom:none}
-  .kpi-name{font-size:13px;font-weight:600}
-  .kpi-measure{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.5}
-  .check-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;transition:.1s}
-  .check-item:last-child{border-bottom:none}
-  .check-item:hover{background:#fafafa;margin:0 -4px;padding:9px 4px;border-radius:6px}
-  .freq{font-size:10px;color:var(--text-muted);margin-left:auto;white-space:nowrap;background:var(--gray-light);padding:2px 8px;border-radius:10px}
-  .check-icon{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.15s}
-  .check-icon.done{background:var(--teal-mid);border-color:var(--teal-mid)}
-  .check-icon.done::after{content:'✓';color:white;font-size:11px;font-weight:700}
-  .tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
-  .work-tag{background:var(--teal-light);color:var(--teal);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500}
-  /* Calendar */
-  .cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:5px}
-  .cal-day-name{font-size:10px;color:var(--text-muted);text-align:center;padding:4px 0;font-weight:600}
+  .kpi-name{font-size:12px;font-weight:600}
+  .kpi-measure{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+  /* ── CALENDAR ── */
+  .cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+  .cal-day-name{font-size:9px;color:var(--muted);text-align:center;padding:3px 0;font-weight:600}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-  .cal-cell{height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+  .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
   .cal-empty{background:transparent}
-  .cal-office{background:var(--teal-light);color:var(--teal)}
-  .cal-off{background:var(--gray-light);color:#999}
+  .cal-office{background:var(--teal-light);color:#085041}
+  .cal-off{background:var(--gray);color:#999}
   .cal-vacation{background:var(--amber-light);color:var(--amber)}
   .cal-workvac{background:#FFF9C4;color:#856400}
   .cal-sick{background:var(--red-light);color:var(--red)}
   .cal-remote{background:var(--purple-light);color:var(--purple)}
-  .cal-future{background:#F7F6F2;color:#CCC;border:1px dashed #E0DEDB}
-  .att-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
-  .att-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted)}
-  .att-dot{width:10px;height:10px;border-radius:3px}
+  .cal-future{background:#f4faf7;color:#ccc;border:1px dashed #d0ede8}
   .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-  .month-nav button{background:var(--gray-light);border:none;border-radius:var(--radius-sm);padding:6px 14px;cursor:pointer;font-size:14px;font-weight:600}
+  .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
   .month-nav button:hover{background:#e0ddd6}
-  .month-label{font-size:15px;font-weight:700;min-width:150px;text-align:center}
-  .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:16px}
-  .att-stat{padding:10px 12px;border-radius:var(--radius-sm);text-align:center}
-  .att-stat .num{font-size:24px;font-weight:700}
-  .att-stat .lbl{font-size:10px;margin-top:2px;font-weight:600}
-  .section-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;margin-top:4px}
-  .loading{text-align:center;padding:50px;color:var(--text-muted);font-size:13px}
-  .error-msg{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
-  .progress-bar{height:5px;background:var(--border);border-radius:3px;margin-top:8px;overflow:hidden}
-  .progress-fill{height:100%;background:var(--teal-mid);border-radius:3px;transition:.4s}
-  /* Checklist brand badges */
-  .brand-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
+  .month-label{font-size:14px;font-weight:700;min-width:140px;text-align:center}
+  .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:7px;margin-bottom:14px}
+  .att-stat{padding:9px 11px;border-radius:var(--radius-sm);text-align:center}
+  .att-stat .num{font-size:20px;font-weight:700}
+  .att-stat .lbl{font-size:9px;margin-top:2px;font-weight:600}
+  .att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .att-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+  .att-dot{width:9px;height:9px;border-radius:2px}
+
+  /* ── TABLES ── */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th{background:#f4faf7;padding:9px 13px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:9px 13px;border-bottom:1px solid #eef5f1;vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tr:hover td{background:#f8fdf9}
+
+  /* ── KPI SUB TABS ── */
+  .ksub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .ksub-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+  .ksub-btn.active{background:var(--teal-light);color:#085041;border-color:var(--teal-border)}
+
+  .loading{text-align:center;padding:50px;color:var(--muted);font-size:13px}
+  .err{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:2px}
+  .sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px;margin-top:2px}
+
+  .brand-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
   .brand-nissan{background:#fef2f2;color:#c0272d}
   .brand-stellantis{background:#e3f2fd;color:#1565c0}
   .brand-pe{background:#FAEEDA;color:#BA7517}
   .brand-nos{background:#e8f5e9;color:#2e7d32}
   .brand-foton{background:#eceff1;color:#546e7a}
   .brand-electromin{background:#ede7f6;color:#4527a0}
-  @media(max-width:600px){.content{padding:14px 12px}.grid-2{grid-template-columns:1fr}}
+
+  @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
-  <div style="display:flex;align-items:center;gap:12px">
-    <div class="avatar">SA</div>
+  <div style="display:flex;align-items:center;gap:11px">
+    <div class="av">SA</div>
     <div>
-      <div class="header-name">Sali Aljehani</div>
-      <div class="header-role">Team Lead · Inbound Contact Center · Petromin Group</div>
+      <div class="h-name">Sali Aljehani</div>
+      <div class="h-role">Team Lead · Inbound Contact Center · Petromin Group</div>
+      <div class="h-pills">
+        <span class="pill">🪪 22952</span>
+        <span class="pill">📱 552705577</span>
+        <span class="pill"><a href="mailto:sali.aljehani@petromin.com">📧 sali.aljehani@petromin.com</a></span>
+      </div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px">
-    <div class="date-pill" id="todayDate">—</div>
-    <button class="refresh-btn" onclick="loadAll()">↻ Refresh</button>
-  </div>
-</div>
-
-<div style="background:linear-gradient(135deg,#f0faf6,#e8f5f0);border-bottom:1px solid #d0ede3;padding:12px 24px">
-  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-    <div style="display:flex;align-items:center;gap:14px;flex:1">
-      <div style="width:48px;height:48px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0">SA</div>
-      <div>
-        <div style="font-size:15px;font-weight:700;color:#0F6E56">Sali Aljehani</div>
-        <div style="font-size:11px;color:#1D9E75;margin-top:1px">Team Lead · Inbound Contact Center · Petromin Group</div>
-      </div>
-    </div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
-      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
-        <span style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc">🪪 22952</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
-        <span style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc">📱 552705577</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#0F6E56">
-        <a href="mailto:sali.aljehani@petromin.com" style="background:#fff;padding:3px 10px;border-radius:20px;font-weight:700;border:1px solid #c5e8dc;text-decoration:none;color:#0F6E56">📧 sali.aljehani@petromin.com</a>
-      </div>
-    </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <span class="date-chip" id="todayDate">—</span>
+    <button class="ref-btn" onclick="loadAll()">↻ Refresh</button>
   </div>
 </div>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('inbound',this)">📋 Inbound Work</div>
-  <div class="tab" onclick="switchTab('workdone',this)">✅ Work Done</div>
-  <div class="tab" onclick="switchTab('kpis',this)">🎯 Sali KPIs</div>
-  <div class="tab" onclick="switchTab('attendance',this)">📅 Attendance</div>
-  <div class="tab" onclick="switchTab('checklist',this)">👥 Check List</div>
-</div>
+<!-- BODY -->
+<div class="body-wrap">
 
-<div class="content">
-  <div class="tab-panel active" id="tab-inbound"><div id="inbound-content"><div class="loading">⏳ Loading...</div></div></div>
-  <div class="tab-panel" id="tab-workdone"><div id="workdone-content"><div class="loading">⏳ Loading...</div></div></div>
-  <div class="tab-panel" id="tab-kpis">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid #e8eae3;padding-bottom:12px">
-      <button id="kbtn-overview" onclick="switchKpiTab('overview')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #1D9E75;background:#E1F5EE;color:#0F6E56;font-size:12px;font-weight:700;cursor:pointer">📊 KPI Overview</button>
-      <button id="kbtn-coaching" onclick="switchKpiTab('coaching')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">🎯 Coaching Sessions</button>
-      <button id="kbtn-improvement" onclick="switchKpiTab('improvement')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">📈 Improvement Plans</button>
-      <button id="kbtn-perfgap" onclick="switchKpiTab('perfgap')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:700;cursor:pointer">🔍 Performance Gap</button>
-    </div>
-    <div id="kpis-overview"><div id="kpis-content"><div class="loading">⏳ Loading...</div></div></div>
-    <div id="kpis-coaching" style="display:none"><div id="coaching-content"><div class="loading">⏳ Loading...</div></div></div>
-    <div id="kpis-improvement" style="display:none"><div id="improvement-content"><div class="loading">⏳ Loading...</div></div></div>
-    <div id="kpis-perfgap" style="display:none"><div id="perfgap-content"><div class="loading">⏳ Loading...</div></div></div>
-  </div>
-  <div class="tab-panel" id="tab-attendance"><div id="attendance-content"><div class="loading">⏳ Loading...</div></div></div>
-  <div class="tab-panel" id="tab-checklist"><div id="checklist-content"><div class="loading">⏳ Loading...</div></div></div>
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-section">Main</div>
+    <div class="nav-item active" id="nav-inbound" onclick="showTab('inbound')"><span class="ico">📋</span> Inbound Work</div>
+    <div class="nav-item" id="nav-workdone" onclick="showTab('workdone')"><span class="ico">✅</span> Work Done</div>
+    <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
+    <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Check List</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">Reports</div>
+    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
+    <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">KPIs</div>
+    <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
+    <div class="nav-item" id="nav-coaching" onclick="showTab('coaching')"><span class="ico">💬</span> Coaching</div>
+    <div class="nav-item" id="nav-improvement" onclick="showTab('improvement')"><span class="ico">📈</span> Improvement</div>
+    <div class="nav-item" id="nav-perfgap" onclick="showTab('perfgap')"><span class="ico">🔍</span> Perf. Gap</div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div id="tab-inbound"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-workdone" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-kpis" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-attendance" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-checklist" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-coaching" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-improvement" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-perfgap" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
+  </main>
 </div>
 
 <script>
-// ── DATA (hardcoded from Google Sheets — update manually or via refresh) ──
 const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const GID = {
+  inbound:'0', attendance:'209241740', kpis:'72593736',
+  checklist:'1272140156', coaching:'144857263',
+  improvement:'115510114', perfgap:'1669804764',
+  monthly:'413119919',
+  reports:'2136858309'
+};
+const AGENTS=['Bayan Jazzar','Hanin Yajzi','Nada Abdulrahman','Sara Saleh','Ghadeer Motadares','Manar Alshehri','Mawaddah Essam','Nesreen Mansour','Yosra Salami','Asmaa Bawayan','Ahdab Shalbi','Mashael Alshehri','Wejdan Mustafa','Walaa Meezi','Shatha Bawayan','Gofran Rafie','Hiba Almuwallad','Reham Hakami'];
 
-let calMonth = new Date().getMonth();
-let calYear  = new Date().getFullYear();
-const today  = new Date();
+let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
+const today=new Date();
+let _attMap={}, _currentTab='inbound';
 
-document.getElementById('todayDate').textContent =
+document.getElementById('todayDate').textContent=
   today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
 
-function switchTab(name,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
+// ── NAV ──
+function showTab(name){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  document.querySelectorAll('.content > div').forEach(el=>el.style.display='none');
+  document.getElementById('tab-'+name).style.display='block';
+  _currentTab=name;
 }
 
-// ── FETCH via CSV export (public sheets) ──
+// ── FETCH ──
 async function fetchCSV(gid){
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-  const res  = await fetch(url);
-  if(!res.ok) throw new Error('Cannot load sheet (make sure it is public): '+res.status);
-  const text = await res.text();
-  return parseCSV(text);
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  const res=await fetch(url);
+  if(!res.ok) throw new Error('Cannot load sheet (make sure it is public) — '+res.status);
+  return parseCSV(await res.text());
 }
-
 function parseCSV(text){
-  const rows=[];
-  let row=[],field='',inQ=false;
+  const rows=[];let row=[],field='',inQ=false;
   for(let i=0;i<text.length;i++){
     const c=text[i],n=text[i+1];
-    if(inQ){
-      if(c==='"'&&n==='"'){field+='"';i++;}
-      else if(c==='"')inQ=false;
-      else field+=c;
-    }else{
-      if(c==='"')inQ=true;
-      else if(c===','){row.push(field.trim());field='';}
-      else if(c==='\r'){}
-      else if(c==='\n'){row.push(field.trim());if(row.some(v=>v))rows.push(row);row=[];field='';}
-      else field+=c;
-    }
+    if(inQ){if(c==='"'&&n==='"'){field+='"';i++;}else if(c==='"')inQ=false;else field+=c;}
+    else{if(c==='"')inQ=true;else if(c===','){row.push(field.trim());field='';}
+      else if(c==='\r'){}else if(c==='\n'){row.push(field.trim());if(row.some(v=>v))rows.push(row);row=[];field='';}
+      else field+=c;}
   }
   if(field!==''||row.length){row.push(field.trim());if(row.some(v=>v))rows.push(row);}
   return rows;
 }
 
-// Sheet GIDs
-const GID = {
-  inbound:      '0',
-  attendance:   '209241740',
-  kpis:         '72593736',
-  checklist:    '1272140156',
-  coaching:     '144857263',
-  improvement:  '115510114',
-  perfgap:      '1669804764'
-};
 
-// 18 agents from Check List
-const AGENTS = [
-  'Bayan Jazzar','Hanin Yajzi','Nada Abdulrahman','Sara Saleh',
-  'Ghadeer Motadares','Manar Alshehri','Mawaddah Essam','Nesreen Mansour',
-  'Yosra Salami','Asmaa Bawayan','Ahdab Shalbi','Mashael Alshehri',
-  'Wejdan Mustafa','Walaa Meezi','Shatha Bawayan','Gofran Rafie',
-  'Hiba Almuwallad','Reham Hakami'
-];
-
-function switchKpiTab(name){
-  ['overview','coaching','improvement','perfgap'].forEach(t=>{
-    document.getElementById('kpis-'+t).style.display = t===name ? 'block' : 'none';
-    const btn = document.getElementById('kbtn-'+t);
-    if(btn){
-      btn.style.background = t===name ? '#E1F5EE' : '#fff';
-      btn.style.color = t===name ? '#0F6E56' : '#666';
-      btn.style.borderColor = t===name ? '#1D9E75' : '#ddd';
+// ══ MONTHLY PERFORMANCE ══
+function renderMonthly(rows){
+  // Parse sections
+  const perfMetrics=[], eomSlide=[], callsQA=[];
+  let section='';
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(), b=(r[1]||'').trim(), c=(r[2]||'').trim();
+    if(a==='Monthly Agents Performance'){section='perf';return;}
+    if(a==='EOM SLIDE Inbound'){section='eom';return;}
+    if(a.includes('Calls Quality Assurance')){section='qa';return;}
+    if(!a)return;
+    if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
+    if(section==='eom'&&b) eomSlide.push({field:a,source:b});
+    if(section==='qa'){
+      const parts=a.split('|');
+      callsQA.push({item:parts[0].trim(),score:parts[1]||'',ar:b});
     }
   });
-}
 
-// ══ COACHING SESSIONS ══
-function renderCoaching(rows, clRows){
-  // Build last session map from coaching rows
-  const sessionMap={};
-  rows.slice(1).forEach(r=>{
-    const name=(r[0]||'').trim();
-    if(!name) return;
-    if(!sessionMap[name]) sessionMap[name]=[];
-    sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
-  });
+  const totalQA=callsQA.reduce((s,r)=>{
+    const n=parseInt(r.score)||0; return s+n;
+  },0);
 
-  const done = Object.keys(sessionMap).length;
-  const pending = AGENTS.length - done;
-  const totalSessions = rows.slice(1).filter(r=>r[0]).length;
-
-  let html=`<div class="stat-grid" style="margin-bottom:16px">
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${totalSessions}</div><div class="stat-label">Total sessions</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-label">Agents coached</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${pending}</div><div class="stat-label">Pending</div></div>
-    <div class="stat-card"><div class="stat-num">${AGENTS.length}</div><div class="stat-label">Total agents</div></div>
+  let html=`
+  <div class="sec-label">📊 Monthly Agents Performance — Metrics</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px">
+    ${perfMetrics.map(m=>`
+      <div class="card" style="padding:13px 15px;margin-bottom:0">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${m.metric}</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.5">${m.desc}</div>
+      </div>`).join('')}
   </div>
-  <div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
-    <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
-      <span>🎯 Coaching Sessions Tracker</span>
-      <span style="font-size:11px;color:#aaa;font-weight:500">1 session per agent per month</span>
-    </div>
-    <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
-      <thead><tr style="background:#f8f8f8">
-        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee;width:36px">#</th>
-        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Agent Name</th>
-        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Sessions</th>
-        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Last Date</th>
-        <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Notes</th>
-        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Next Session</th>
-        <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
-      </tr></thead><tbody>`;
 
-  AGENTS.forEach((agent,i)=>{
-    const sessions = sessionMap[agent]||[];
-    const last = sessions[sessions.length-1]||null;
-    const hasSessions = sessions.length > 0;
-    const init = agent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const colors = [
-      {bg:'#F0DEDE',text:'#9B4A4A'},{bg:'#E3E1DC',text:'#6B6862'},
-      {bg:'#DCE6E0',text:'#516B5C'},{bg:'#E8E2D8',text:'#8A7456'},
-      {bg:'#E1E2E8',text:'#5C6178'},{bg:'#E6DEE3',text:'#7C5C6B'}
-    ];
-    const c = colors[i%colors.length];
-    html += `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
-      <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700;text-align:center">${i+1}</td>
-      <td style="padding:9px 14px">
-        <div style="display:flex;align-items:center;gap:9px">
-          <div style="width:30px;height:30px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">${init}</div>
-          <span style="font-weight:600;color:#1a1a2e;font-size:13px">${agent}</span>
-        </div>
-      </td>
-      <td style="padding:9px 14px;text-align:center">
-        <span style="background:${hasSessions?'#E1F5EE':'#f5f5f5'};color:${hasSessions?'#0F6E56':'#aaa'};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${sessions.length}</span>
-      </td>
-      <td style="padding:9px 14px;text-align:center;font-size:12px;color:#555">${last?last.date:'—'}</td>
-      <td style="padding:9px 14px;font-size:12px;color:#666;max-width:200px">${last?last.notes:'—'}</td>
-      <td style="padding:9px 14px;text-align:center;font-size:12px;color:#555">${last&&last.next?last.next:'—'}</td>
-      <td style="padding:9px 14px;text-align:center">
-        ${hasSessions
-          ? '<span style="background:#E1F5EE;color:#0F6E56;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">✓ Done</span>'
-          : '<span style="background:#FAEEDA;color:#BA7517;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">Pending</span>'}
-      </td>
-    </tr>`;
+  <div class="sec-label">🏆 EOM Slide — Data Sources</div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Employee of the Month — Required Fields</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Field</th><th>Source / Notes</th></tr></thead>
+      <tbody>${eomSlide.map((r,i)=>`<tr>
+        <td style="font-weight:600">${r.field}</td>
+        <td style="color:var(--muted)">${r.source}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>
+
+  <div class="sec-label">✅ Calls Quality Assurance — Scoring Sheet (Total: ${totalQA} pts)</div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th>Arabic</th></tr></thead>
+      <tbody>${callsQA.map(r=>`<tr>
+        <td style="font-weight:500">${r.item}</td>
+        <td style="text-align:center"><span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r.score||'—'}</span></td>
+        <td style="color:var(--muted);direction:rtl;text-align:right">${r.ar}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+  document.getElementById('tab-monthly').innerHTML=html;
+}
+
+// ══ REPORTS GUIDE ══
+function renderReports(rows){
+  const sections=[];
+  let cur=null;
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(), b=(r[1]||'').trim(), c=(r[2]||'').trim();
+    if(!a)return;
+    // Section headers: no b value or b is description-like
+    if(a.includes("Ameyo")||a==='CRM-MASTERDECK- Ghada'||a==='WhatsApp'){
+      cur={title:a,items:[]};sections.push(cur);return;
+    }
+    if(cur) cur.items.push({name:a,desc:b,note:c});
   });
 
-  html += `</tbody></table></div></div>`;
-  document.getElementById('coaching-content').innerHTML = html;
-}
+  const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
+  const SECTION_BG=['#E1F5EE','#EEEDFE','#E6F1FB'];
 
-// ══ IMPROVEMENT PLANS ══
-function renderImprovement(rows){
-  const plans = rows.slice(1).filter(r=>r[0]);
-  const active = plans.filter(r=>(r[3]||'').toLowerCase().includes('progress')).length;
-  const done2 = plans.filter(r=>(r[3]||'').toLowerCase().includes('done')||r[3]==='Completed').length;
-
-  const statusStyle = s => {
-    const v=(s||'').toLowerCase();
-    if(v.includes('progress')) return {bg:'#FAEEDA',color:'#BA7517',label:'In Progress'};
-    if(v.includes('done')||v.includes('complet')) return {bg:'#E1F5EE',color:'#0F6E56',label:'Done'};
-    if(v.includes('pending')) return {bg:'#f5f5f5',color:'#888',label:'Pending'};
-    return {bg:'#f5f5f5',color:'#888',label:s||'—'};
-  };
-
-  let html=`<div class="stat-grid" style="margin-bottom:16px">
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-label">Total plans</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-label">In progress</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done2}</div><div class="stat-label">Completed</div></div>
-  </div>`;
-
-  if(!plans.length){
-    html += '<div style="text-align:center;padding:48px;color:#aaa"><div style="font-size:40px;margin-bottom:12px">📋</div><div style="font-size:14px;font-weight:600">No improvement plans yet</div><div style="font-size:12px;margin-top:6px">Add data in Google Sheets → Improvement Plans</div></div>';
-  } else {
-    html += `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
-      <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0">📈 Improvement Plans</div>
-      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead><tr style="background:#f8f8f8">
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">#</th>
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Agent</th>
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Reason</th>
-          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Start Date</th>
-          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Notes</th>
-        </tr></thead><tbody>
-        ${plans.map((r,i)=>{
-          const s=statusStyle(r[3]);
-          return `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
-            <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700">${i+1}</td>
-            <td style="padding:9px 14px;font-weight:600;color:#1a1a2e">${r[0]||'—'}</td>
-            <td style="padding:9px 14px;color:#555">${r[1]||'—'}</td>
-            <td style="padding:9px 14px;text-align:center;color:#555">${r[2]||'—'}</td>
-            <td style="padding:9px 14px;text-align:center"><span style="background:${s.bg};color:${s.color};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${s.label}</span></td>
-            <td style="padding:9px 14px;color:#666">${r[4]||'—'}</td>
-          </tr>`;
-        }).join('')}
-        </tbody></table></div></div>`;
-  }
-  document.getElementById('improvement-content').innerHTML = html;
-}
-
-// ══ PERFORMANCE GAP ══
-function renderPerfGap(rows){
-  const gaps = rows.slice(1).filter(r=>r[0]);
-  const open = gaps.filter(r=>!(r[3]||'').toLowerCase().includes('done')).length;
-  const resolved = gaps.filter(r=>(r[3]||'').toLowerCase().includes('done')).length;
-
-  const statusStyle = s => {
-    const v=(s||'').toLowerCase();
-    if(v.includes('done')||v.includes('resolved')) return {bg:'#E1F5EE',color:'#0F6E56',label:'Resolved'};
-    if(v.includes('progress')) return {bg:'#FAEEDA',color:'#BA7517',label:'In Progress'};
-    if(v.includes('pending')) return {bg:'#f5f5f5',color:'#888',label:'Pending'};
-    return {bg:'#FCEBEB',color:'#A32D2D',label:s||'Open'};
-  };
-
-  let html=`<div class="stat-grid" style="margin-bottom:16px">
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${gaps.length}</div><div class="stat-label">Total gaps identified</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-label">Open</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-label">Resolved</div></div>
-  </div>`;
-
-  if(!gaps.length){
-    html += '<div style="text-align:center;padding:48px;color:#aaa"><div style="font-size:40px;margin-bottom:12px">🔍</div><div style="font-size:14px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:12px;margin-top:6px">Add data in Google Sheets → Performance Gap</div></div>';
-  } else {
-    html += `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;overflow:hidden">
-      <div style="padding:14px 18px;font-size:13px;font-weight:700;border-bottom:2px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
-        <span>🔍 Performance Gap Tracker</span>
-        <span style="font-size:11px;color:#aaa;font-weight:500">Min. 1 gap per week</span>
+  let html=`<div class="sec-label">📄 Reports Reference Guide</div>`;
+  sections.forEach((sec,si)=>{
+    const col=SECTION_COLORS[si%SECTION_COLORS.length];
+    const bg=SECTION_BG[si%SECTION_BG.length];
+    html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
+      <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+      <div style="display:flex;flex-direction:column;gap:0">
+      ${sec.items.map((item,i)=>`
+        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:flex;gap:12px;align-items:flex-start">
+          <div style="min-width:200px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--muted);line-height:1.5">${item.desc}</div>
+            ${item.note?`<div style="font-size:10px;color:${col};margin-top:3px;background:${bg};padding:2px 8px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
+          </div>
+        </div>`).join('')}
       </div>
-      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
-        <thead><tr style="background:#f8f8f8">
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">#</th>
-          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Week</th>
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Gap Identified</th>
-          <th style="padding:10px 14px;text-align:left;font-weight:700;color:#555;border-bottom:2px solid #eee">Action Plan</th>
-          <th style="padding:10px 14px;text-align:center;font-weight:700;color:#555;border-bottom:2px solid #eee">Status</th>
-        </tr></thead><tbody>
-        ${gaps.map((r,i)=>{
-          const s=statusStyle(r[3]);
-          return `<tr style="border-bottom:1px solid #f5f5f5;${i%2===0?'':'background:#fafafa'}">
-            <td style="padding:9px 14px;color:#ccc;font-size:11px;font-weight:700">${i+1}</td>
-            <td style="padding:9px 14px;text-align:center"><span style="background:#f0f4ff;color:#534AB7;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${r[0]||'—'}</span></td>
-            <td style="padding:9px 14px;color:#1a1a2e;font-weight:500">${r[1]||'—'}</td>
-            <td style="padding:9px 14px;color:#555">${r[2]||'—'}</td>
-            <td style="padding:9px 14px;text-align:center"><span style="background:${s.bg};color:${s.color};padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700">${s.label}</span></td>
-          </tr>`;
-        }).join('')}
-        </tbody></table></div></div>`;
-  }
-  document.getElementById('perfgap-content').innerHTML = html;
+    </div>`;
+  });
+  document.getElementById('tab-reports').innerHTML=html;
 }
 
 async function loadAll(){
-  ['inbound','workdone','kpis','attendance','checklist'].forEach(id=>
-    document.getElementById(id+'-content').innerHTML='<div class="loading">⏳ Loading...</div>');
+  ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap','monthly','reports'].forEach(id=>{
+    document.getElementById('tab-'+id).innerHTML='<div class="loading">⏳ Loading...</div>';
+  });
   try{
-    const [inbRows, attRows, kpiRows, clRows, coachRows, impRows, gapRows] = await Promise.all([
-      fetchCSV(GID.inbound),
-      fetchCSV(GID.attendance),
-      fetchCSV(GID.kpis),
-      fetchCSV(GID.checklist),
-      fetchCSV(GID.coaching),
-      fetchCSV(GID.improvement),
-      fetchCSV(GID.perfgap)
+    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows]=await Promise.all([
+      fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
+      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap)
     ]);
     renderInbound(inbRows);
     renderWorkDone(inbRows);
     renderKPIs(kpiRows);
     renderAttendance(attRows);
     renderChecklist(clRows);
-    renderCoaching(coachRows, clRows);
+    renderCoaching(coachRows);
     renderImprovement(impRows);
     renderPerfGap(gapRows);
   }catch(e){
     ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
-      const el=document.getElementById(id+'-content');
-      if(el) el.innerHTML='<div class="error-msg">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+      document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
     });
   }
 }
 
-// ══════════════════════════════════════════════════
-// INBOUND WORK
-// ══════════════════════════════════════════════════
+// ── AVATAR COLORS ──
+const AV_COLORS=[
+  {bg:'#F0DEDE',text:'#9B4A4A'},{bg:'#E3E1DC',text:'#6B6862'},
+  {bg:'#DCE6E0',text:'#516B5C'},{bg:'#E8E2D8',text:'#8A7456'},
+  {bg:'#E1E2E8',text:'#5C6178'},{bg:'#E6DEE3',text:'#7C5C6B'}
+];
+function avColor(i){return AV_COLORS[i%AV_COLORS.length];}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+// ══ INBOUND ══
 function renderInbound(rows){
   const daily=[],weekly=[],other=[];
   let inTasks=false;
   rows.forEach(r=>{
-    const a=(r[0]||'').trim(), b=(r[1]||'').trim();
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim();
     if(a.includes('Daily Inbound Work')){inTasks=true;return;}
     if(a==='Work Done'){inTasks=false;return;}
     if(!inTasks||!a)return;
     if(b==='Daily')daily.push(a);
     else if(b==='Weekly')weekly.push(a);
-    else if(b)other.push({name:a,freq:b});
-    else other.push({name:a,freq:'—'});
+    else other.push({name:a,freq:b||'—'});
   });
-
   const dk='inbound_done_'+today.toLocaleDateString('en-US');
   let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
   const pct=daily.length?Math.round(done.size/daily.length*100):0;
   const pctColor=pct===100?'var(--teal-mid)':pct>=50?'var(--amber)':'var(--red)';
 
   let html=`<div class="stat-grid">
-    <div class="stat-card">
-      <div class="stat-num" style="color:var(--teal)">${done.size}<span style="font-size:14px;color:var(--text-muted)">/${daily.length}</span></div>
-      <div class="stat-label">Tasks done today</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pctColor}"></div></div>
-    </div>
-    <div class="stat-card"><div class="stat-num" style="color:${pctColor}">${pct}%</div><div class="stat-label">Daily progress</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-label">Weekly tasks</div></div>
-    <div class="stat-card"><div class="stat-num">${other.length}</div><div class="stat-label">Other tasks</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done.size}<span style="font-size:13px;color:var(--muted)">/${daily.length}</span></div>
+      <div class="stat-lbl">Done today</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pctColor}"></div></div></div>
+    <div class="stat"><div class="stat-num" style="color:${pctColor}">${pct}%</div><div class="stat-lbl">Progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-lbl">Weekly tasks</div></div>
+    <div class="stat"><div class="stat-num">${other.length}</div><div class="stat-lbl">Other tasks</div></div>
   </div>
-  <div class="grid-2">
+  <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>
-        Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}
-        <span class="badge b-teal" style="margin-left:auto">${done.size}/${daily.length}</span>
-      </div>`;
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})} <span class="badge b-teal" style="margin-left:auto">${done.size}/${daily.length}</span></div>`;
 
   daily.forEach(t=>{
     const isDone=done.has(t);
     const safe=encodeURIComponent(t);
     html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')">
       <div class="check-icon ${isDone?'done':''}"></div>
-      <span style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t}</span>
+      <span style="${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t}</span>
       <span class="freq">Daily</span></div>`;
   });
   html+=`</div><div>
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
-  weekly.forEach(t=>{ html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`; });
-  html+=`</div><div class="card" style="margin-top:12px">
-      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
-  other.forEach(t=>{ html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`; });
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly</div>`;
+  weekly.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
+  html+=`</div><div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other</div>`;
+  other.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
   html+=`</div></div></div>`;
-
-  document.getElementById('inbound-content').innerHTML=html;
-
+  document.getElementById('tab-inbound').innerHTML=html;
   window.toggleTask=function(safe,key){
     const task=decodeURIComponent(safe);
     const ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
@@ -512,56 +430,40 @@ function renderInbound(rows){
   };
 }
 
-// ══════════════════════════════════════════════════
-// WORK DONE
-// ══════════════════════════════════════════════════
+// ══ WORK DONE ══
 function renderWorkDone(rows){
-  const items=[];
-  let inSection=false;
-  rows.forEach(r=>{
-    const a=(r[0]||'').trim();
-    if(a==='Work Done'){inSection=true;return;}
-    if(!inSection||!a)return;
-    items.push(a);
-  });
-
-  // Categorize each item
-  function getCategory(item){
+  const items=[];let inS=false;
+  rows.forEach(r=>{const a=(r[0]||'').trim();if(a==='Work Done'){inS=true;return;}if(!inS||!a)return;items.push(a);});
+  function getCat(item){
     const t=item.toLowerCase();
-    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference')) return {label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
-    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation')) return {label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
-    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support')) return {label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
-    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist')) return {label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
-    if(t.includes('survey')||t.includes('quality')||t.includes('email')) return {label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
-    if(t.includes('vacation')||t.includes('schedule')) return {label:'Admin',color:'#5F5E5A',bg:'#F1EFE8',dot:'#888'};
-    return {label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
+    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
+    return{label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
   }
-
-  const html=`
+  document.getElementById('tab-workdone').innerHTML=`
     <div class="stat-grid" style="margin-bottom:16px">
-      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Total achievements</div></div>
-      <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months (Jan–Jun)</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Months (Jan–Jun)</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-lbl">Start</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-lbl">Current</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px">
       ${items.map((item,i)=>{
-        const cat=getCategory(item);
-        return `<div style="background:#fff;border:1px solid #e8eae3;border-radius:12px;padding:14px 16px;border-left:4px solid ${cat.dot};display:flex;flex-direction:column;gap:8px">
-          <div style="font-size:13px;font-weight:600;color:#1A1A1A;line-height:1.4">${item}</div>
+        const cat=getCat(item);
+        return`<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;border-left:4px solid ${cat.dot}">
+          <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px">${item}</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
-            <span style="font-size:11px;color:#aaa;font-weight:600">#${i+1}</span>
-          </div>
-        </div>`;
+            <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+            <span style="font-size:10px;color:#ccc;font-weight:600">#${i+1}</span>
+          </div></div>`;
       }).join('')}
     </div>`;
-  document.getElementById('workdone-content').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════
-// KPIs
-// ══════════════════════════════════════════════════
+// ══ KPIs ══
 function renderKPIs(rows){
   const inboundPerf=[],supervisorKPIs=[];
   let phase='';
@@ -574,22 +476,19 @@ function renderKPIs(rows){
     if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
     if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
   });
-
   const STATUS={
-    'Team KPI Achievement':       {cls:'b-green',txt:'✓ On track'},
-    'QA Monitoring':              {cls:'b-green',txt:'✓ On track'},
-    'Inbound Booking Accuracy':   {cls:'b-amber',txt:'In progress'},
-    'Escalation Resolution':      {cls:'b-green',txt:'✓ 96%'},
-    'Coaching Sessions':          {cls:'b-teal', txt:'In progress'},
-    'Improvement Plans':          {cls:'b-green',txt:'✓ Done'},
-    'Process Enhancement':        {cls:'b-gray', txt:'Pending'},
+    'Team KPI Achievement':{cls:'b-green',txt:'✓ On track'},
+    'QA Monitoring':{cls:'b-green',txt:'✓ On track'},
+    'Inbound Booking Accuracy':{cls:'b-amber',txt:'In progress'},
+    'Escalation Resolution':{cls:'b-green',txt:'✓ 96%'},
+    'Coaching Sessions':{cls:'b-teal',txt:'In progress'},
+    'Improvement Plans':{cls:'b-green',txt:'✓ Done'},
+    'Process Enhancement':{cls:'b-gray',txt:'Pending'},
     'Performance Gap Identification & Development Plan':{cls:'b-green',txt:'✓ Weekly'}
   };
-
-  let html=`<div class="section-label">👑 Supervisor KPIs</div>
+  let html=`<div class="sec-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:16px">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — Supervisor Performance Indicators</div>`;
-
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>`;
   supervisorKPIs.forEach(k=>{
     const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
     html+=`<div class="kpi-row">
@@ -598,16 +497,14 @@ function renderKPIs(rows){
         <div class="kpi-measure">${k.measure}</div>
         ${k.note?`<div style="font-size:10px;color:var(--teal);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
         <span class="badge ${s.cls}">${s.txt}</span>
-        <span style="font-size:12px;font-weight:700;color:var(--teal)">${k.weight}</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal)">${k.weight}</span>
       </div></div>`;
   });
-
-  html+=`</div><div class="section-label">📊 Inbound Performance KPIs</div>
+  html+=`</div><div class="sec-label">Inbound Performance KPIs</div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent Team — Performance Standards</div>`;
-
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>`;
   inboundPerf.forEach(k=>{
     const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
     html+=`<div class="kpi-row">
@@ -615,64 +512,47 @@ function renderKPIs(rows){
         <div class="kpi-name">${k.cat}</div>
         <div class="kpi-measure">${bullets.map(b=>'• '+b).join('<br>')}</div>
       </div>
-      <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div>
+      <span class="badge b-teal" style="flex-shrink:0">${k.weight}</span>
     </div>`;
   });
   html+=`</div>`;
-  document.getElementById('kpis-content').innerHTML=html;
+  document.getElementById('tab-kpis').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════
-// ATTENDANCE
-// ══════════════════════════════════════════════════
+// ══ ATTENDANCE ══
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-function normStatus(s){
-  if(!s)return '';
-  const v=s.toLowerCase().trim();
-  if(v==='office')return 'office';
-  if(v==='off')return 'off';
-  if(v.includes('work vac')||v.includes('work v'))return 'workvac';
-  if(v.includes('vacation')||v.includes('vac'))return 'vacation';
-  if(v.includes('sick'))return 'sick';
-  if(v.includes('work r')||v==='remote')return 'remote';
-  return 'off';
+function normSt(s){
+  if(!s)return'';const v=s.toLowerCase().trim();
+  if(v==='office')return'office';if(v==='off')return'off';
+  if(v.includes('work vac')||v.includes('work v'))return'workvac';
+  if(v.includes('vacation'))return'vacation';
+  if(v.includes('sick'))return'sick';
+  if(v.includes('work r')||v==='remote')return'remote';
+  return'off';
 }
-
-function statusCls(s){ return s?'cal-'+s:'cal-future'; }
-function statusLabel(s){
-  return {office:'Office',off:'Off',vacation:'Vacation',workvac:'Work Vacation',sick:'Sick Leave',remote:'Remote'}[s]||'—';
-}
-
-let _attMap={};
-
+function stLabel(s){return{office:'Office',off:'Off',vacation:'Vacation',workvac:'Work Vacation',sick:'Sick Leave',remote:'Remote'}[s]||'—';}
 function renderAttendance(rows){
   _attMap={};
   rows.slice(1).forEach(r=>{
-    const d=(r[0]||'').trim(), s=(r[1]||'').trim();
+    const d=(r[0]||'').trim(),s=(r[1]||'').trim();
     if(!d)return;
-    // date format M/D/YYYY
-    const parts=d.split('/');
-    if(parts.length===3){
-      const key=parts[0].padStart(2,'0')+'/'+parts[1].padStart(2,'0')+'/'+parts[2];
-      _attMap[key]=normStatus(s);
+    const p=d.split('/');
+    if(p.length===3){
+      const key=p[0].padStart(2,'0')+'/'+p[1].padStart(2,'0')+'/'+p[2];
+      _attMap[key]=normSt(s);
     }
   });
   renderCal();
 }
-
 function renderCal(){
   const firstDay=new Date(calYear,calMonth,1).getDay();
   const dim=new Date(calYear,calMonth+1,0).getDate();
   const counts={office:0,off:0,vacation:0,workvac:0,sick:0,remote:0};
-
   for(let d=1;d<=dim;d++){
     const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
-    const s=_attMap[key];
-    if(s&&counts[s]!==undefined)counts[s]++;
+    const s=_attMap[key];if(s&&counts[s]!==undefined)counts[s]++;
   }
-
   let html=`<div class="month-nav">
     <button onclick="changeMonth(-1)">‹</button>
     <div class="month-label">${MONTHS[calMonth]} ${calYear}</div>
@@ -684,33 +564,28 @@ function renderCal(){
     <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${counts.vacation}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
     <div class="att-stat" style="background:#FFF9C4"><div class="num" style="color:#856400">${counts.workvac}</div><div class="lbl" style="color:#856400">Work Vac</div></div>
     <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${counts.sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
-    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
+    <div class="att-stat" style="background:var(--gray)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
   </div>
   <div class="card">
-    <div class="cal-header">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
+    <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
     <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
-
   for(let d=1;d<=dim;d++){
     const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
     const s=_attMap[key]||'';
     const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
     const isFuture=new Date(calYear,calMonth,d)>today&&!s;
-    html+=`<div class="cal-cell ${isFuture?'cal-future':statusCls(s)}" 
-      style="${isToday?'outline:2px solid var(--teal);outline-offset:2px;font-weight:700':''}" 
-      title="${statusLabel(s)||'—'}">${d}</div>`;
+    html+=`<div class="cal-cell ${isFuture?'cal-future':s?'cal-'+s:'cal-future'}" style="${isToday?'outline:2px solid var(--teal);outline-offset:2px;font-weight:700':''}" title="${stLabel(s)||'—'}">${d}</div>`;
   }
-
   html+=`</div>
   <div class="att-legend">
     <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vacation</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick Leave</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Off</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray)"></div>Off</div>
   </div></div>`;
-
-  document.getElementById('attendance-content').innerHTML=html;
+  document.getElementById('tab-attendance').innerHTML=html;
   window.changeMonth=function(dir){
     calMonth+=dir;
     if(calMonth<0){calMonth=11;calYear--;}
@@ -719,45 +594,152 @@ function renderCal(){
   };
 }
 
-// ══════════════════════════════════════════════════
-// CHECK LIST
-// ══════════════════════════════════════════════════
+// ══ CHECK LIST ══
 function renderChecklist(rows){
-  if(!rows.length){document.getElementById('checklist-content').innerHTML='<div class="error-msg">No data</div>';return;}
-  const headers=rows[0]; // Agent,Badge,Nissan,Stellantis,PE,NOS,Foton,Electromin
-  const brands=headers.slice(2);
+  if(!rows.length)return;
+  const headers=rows[0],brands=headers.slice(2);
   const brandCls=['brand-nissan','brand-stellantis','brand-pe','brand-nos','brand-foton','brand-electromin'];
   const agents=rows.slice(1).filter(r=>r[0]);
+  document.getElementById('tab-checklist').innerHTML=`
+    <div class="stat-grid" style="margin-bottom:14px">
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${agents.length}</div><div class="stat-lbl">Total agents</div></div>
+      <div class="stat"><div class="stat-num">${brands.length}</div><div class="stat-lbl">Brands</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Agent Brand Assignment</div>
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>#</th><th>Agent</th><th>Badge</th>
+          ${brands.map((b,i)=>`<th><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
+        </tr></thead><tbody>
+        ${agents.map((r,i)=>`<tr>
+          <td style="color:#ccc;font-size:10px">${i+1}</td>
+          <td style="font-weight:600">${r[0]||''}</td>
+          <td style="color:var(--muted)">${r[1]||''}</td>
+          ${brands.map((_,bi)=>{
+            const val=(r[bi+2]||'').toUpperCase();
+            const yes=val==='TRUE'||val==='✓'||val==='YES';
+            return`<td style="text-align:center">${yes?'<span style="color:var(--teal);font-size:15px;font-weight:700">✓</span>':'<span style="color:#ddd">—</span>'}</td>`;
+          }).join('')}
+        </tr>`).join('')}
+        </tbody></table></div></div>`;
+}
 
-  let html=`<div class="stat-grid" style="margin-bottom:16px">
-    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${agents.length}</div><div class="stat-label">Total agents</div></div>
-    <div class="stat-card"><div class="stat-num">${brands.length}</div><div class="stat-label">Brands/programs</div></div>
+// ══ COACHING ══
+function renderCoaching(rows){
+  const sessionMap={};
+  rows.slice(1).forEach(r=>{
+    const name=(r[0]||'').trim();if(!name)return;
+    if(!sessionMap[name])sessionMap[name]=[];
+    sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
+  });
+  const done=Object.keys(sessionMap).length;
+  const total=rows.slice(1).filter(r=>r[0]).length;
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${total}</div><div class="stat-lbl">Total sessions</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Agents coached</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${AGENTS.length-done}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat"><div class="stat-num">${AGENTS.length}</div><div class="stat-lbl">Total agents</div></div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Agent Brand Assignment</div>
-    <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;font-size:12px">
-      <thead><tr style="background:var(--gray-light)">
-        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">#</th>
-        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">Agent</th>
-        <th style="padding:8px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)">Badge</th>
-        ${brands.map((b,i)=>`<th style="padding:8px 12px;text-align:center;font-weight:700;border-bottom:2px solid var(--border)"><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
-      </tr></thead>
-      <tbody>
-      ${agents.map((r,i)=>`<tr style="border-bottom:1px solid var(--border);${i%2===0?'':'background:#fafafa'}">
-        <td style="padding:7px 12px;color:var(--text-muted);font-size:11px">${i+1}</td>
-        <td style="padding:7px 12px;font-weight:600">${r[0]||''}</td>
-        <td style="padding:7px 12px;color:var(--text-muted)">${r[1]||''}</td>
-        ${brands.map((_,bi)=>{
-          const val=(r[bi+2]||'').toUpperCase();
-          const yes=val==='TRUE'||val==='✓'||val==='YES'||val==='1';
-          return `<td style="padding:7px 12px;text-align:center">${yes?'<span style="color:var(--teal);font-size:16px;font-weight:700">✓</span>':'<span style="color:#ddd">—</span>'}</td>`;
-        }).join('')}
-      </tr>`).join('')}
-      </tbody>
-    </table></div>
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Coaching Sessions Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">1 session / agent / month</span></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+      <th>#</th><th>Agent</th><th style="text-align:center">Sessions</th>
+      <th style="text-align:center">Last Date</th><th>Notes</th>
+      <th style="text-align:center">Next</th><th style="text-align:center">Status</th>
+    </tr></thead><tbody>`;
+  AGENTS.forEach((agent,i)=>{
+    const sessions=sessionMap[agent]||[];
+    const last=sessions[sessions.length-1]||null;
+    const c=avColor(i);
+    html+=`<tr>
+      <td style="color:#ccc;font-size:10px">${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${initials(agent)}</div>
+        <span style="font-weight:600;font-size:12px">${agent}</span></div></td>
+      <td style="text-align:center"><span style="background:${sessions.length?'var(--teal-light)':'var(--gray)'};color:${sessions.length?'var(--teal)':'#999'};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${sessions.length}</span></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last?last.date:'—'}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${last?last.notes:'—'}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last&&last.next?last.next:'—'}</td>
+      <td style="text-align:center">${sessions.length
+        ?'<span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">✓ Done</span>'
+        :'<span style="background:var(--amber-light);color:var(--amber);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">Pending</span>'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  document.getElementById('tab-coaching').innerHTML=html;
+}
+
+// ══ IMPROVEMENT ══
+function renderImprovement(rows){
+  const plans=rows.slice(1).filter(r=>r[0]);
+  const active=plans.filter(r=>(r[3]||'').toLowerCase().includes('progress')).length;
+  const done=plans.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('complet')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    if(v.includes('done')||v.includes('complet'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Done'};
+    return{bg:'var(--gray)',color:'var(--muted)',label:s||'Pending'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-lbl">Total plans</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-lbl">In progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Completed</div></div>
   </div>`;
-  document.getElementById('checklist-content').innerHTML=html;
+  if(!plans.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:13px;font-weight:600">No improvement plans yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Improvement Plans</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--amber)"></span>Improvement Plans</div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th>Agent</th><th>Reason</th><th style="text-align:center">Start Date</th><th style="text-align:center">Status</th><th>Notes</th>
+      </tr></thead><tbody>
+      ${plans.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="font-weight:600">${r[0]||'—'}</td>
+        <td>${r[1]||'—'}</td>
+        <td style="text-align:center;color:var(--muted);font-size:11px">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+        <td style="color:var(--muted)">${r[4]||'—'}</td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-improvement').innerHTML=html;
+}
+
+// ══ PERF GAP ══
+function renderPerfGap(rows){
+  const gaps=rows.slice(1).filter(r=>r[0]);
+  const open=gaps.filter(r=>!(r[3]||'').toLowerCase().includes('done')&&!(r[3]||'').toLowerCase().includes('resolved')).length;
+  const resolved=gaps.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('resolved')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('done')||v.includes('resolved'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Resolved'};
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    return{bg:'var(--red-light)',color:'var(--red)',label:'Open'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${gaps.length}</div><div class="stat-lbl">Total gaps</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-lbl">Open</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-lbl">Resolved</div></div>
+  </div>`;
+  if(!gaps.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:13px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Performance Gap</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Performance Gap Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">Min. 1 gap / week</span></div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th style="text-align:center">Week</th><th>Gap Identified</th><th>Action Plan</th><th style="text-align:center">Status</th>
+      </tr></thead><tbody>
+      ${gaps.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="text-align:center"><span style="background:var(--purple-light);color:var(--purple);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r[0]||'—'}</span></td>
+        <td style="font-weight:500">${r[1]||'—'}</td>
+        <td style="color:var(--muted)">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-perfgap').innerHTML=html;
 }
 
 loadAll();
