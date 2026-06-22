@@ -448,6 +448,9 @@ async function loadAll(){
     ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
       document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
     });
+    // Monthly and Reports use static fallback even on error
+    renderMonthly([]);
+    renderReports([]);
   }
 }
 
