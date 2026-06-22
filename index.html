@@ -311,8 +311,13 @@ function switchTab(name, el) {
 
 async function fetchSheet(sheetName) {
   const url = PROXY + '?sheet=' + encodeURIComponent(sheetName);
-  const res = await fetch(url);
-  const json = await res.json();
+  const res = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const text = await res.text();
+  const json = JSON.parse(text);
   return json.data || [];
 }
 
