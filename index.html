@@ -117,8 +117,7 @@
 </div>
 
 <script>
-// ✅ Apps Script خاص بـ Sali-KPIs فقط
-const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
+const PROXY    = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
 
 let calMonth = new Date().getMonth();
@@ -135,23 +134,23 @@ function switchTab(name, el) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-// ✅ fetchSheet — يرجع array of objects
 async function fetchSheet(sheetName) {
-  const url = PROXY + '?id=' + SHEET_ID + '&sheetName=' + encodeURIComponent(sheetName);
+  const url  = PROXY + '?id=' + SHEET_ID + '&sheetName=' + encodeURIComponent(sheetName);
   const res  = await fetch(url, { redirect: 'follow' });
   const text = await res.text();
   const data = JSON.parse(text);
   return Array.isArray(data) ? data : (data.data || []);
 }
 
-// ✅ helper: يحول object إلى array حسب أول مفتاح، ثاني مفتاح، إلخ
-function objToArr(obj) {
-  return Object.values(obj);
+// ✅ يحول أي object أو array إلى [col0, col1, col2, ...]
+function toRow(r) {
+  if (Array.isArray(r)) return r;
+  return Object.values(r);
 }
 
 async function loadAll() {
   ['inbound','workdone','kpis','attendance'].forEach(id =>
-    document.getElementById(id + '-content').innerHTML = '<div class="loading">Loading...</div>'
+    document.getElementById(id+'-content').innerHTML = '<div class="loading">Loading...</div>'
   );
   try {
     const [iRows, kRows, aRows] = await Promise.all([
@@ -171,16 +170,20 @@ async function loadAll() {
 }
 
 // ===== INBOUND =====
+// الشيت: row1=headers(Agent Name, Badge#, Phone, Email), row2=Sali info
+// row4: "Daily Inbound Work ( Petromin, Stellantis & Nissan )" في عمود A
+// rows 5-20: Task في A، Frequency في B
+// row22: "Work Done" في A
+// rows 23+: achievements في A
 function renderInbound(rows) {
   const dailyTasks = [], weeklyTasks = [], otherTasks = [];
   let inSection = false;
 
   rows.forEach(r => {
-    // r is object — get first two values
-    const vals = objToArr(r);
-    const a = (vals[0]||'').toString().trim();
-    const b = (vals[1]||'').toString().trim();
-    if (a.includes('Daily Inbound Work')) { inSection = true; return; }
+    const cols = toRow(r);
+    const a = (cols[0]||'').toString().trim();
+    const b = (cols[1]||'').toString().trim();
+    if (a.toLowerCase().includes('daily inbound work')) { inSection = true; return; }
     if (a === 'Work Done') { inSection = false; return; }
     if (!inSection || !a) return;
     if (b === 'Daily') dailyTasks.push(a);
@@ -247,7 +250,7 @@ function renderWorkDone(rows) {
   const items = [];
   let inSection = false;
   rows.forEach(r => {
-    const a = (objToArr(r)[0]||'').toString().trim();
+    const a = (toRow(r)[0]||'').toString().trim();
     if (a === 'Work Done') { inSection = true; return; }
     if (!inSection || !a) return;
     items.push(a);
@@ -270,52 +273,78 @@ function renderWorkDone(rows) {
 }
 
 // ===== KPIs =====
+// شيت Sali KPIs:
+// Row1: "Inbound Performance" header (A1 merged)
+// Row2: Category | KPIs Covered | Measurement
+// Rows 3-6: inbound perf data
+// Row7: Final Total
+// Row9: Category | Measurement | Weight  ← supervisor KPIs header
+// Rows 10-17: supervisor KPI data
 function renderKPIs(rows) {
   const inboundPerf = [], supervisorKPIs = [];
-  let inInbound = false, inSupervisor = false;
+  let phase = ''; // 'inbound' or 'supervisor'
 
   rows.forEach(r => {
-    const vals = objToArr(r);
-    const a=(vals[0]||'').toString().trim();
-    const b=(vals[1]||'').toString().trim();
-    const c=(vals[2]||'').toString().trim();
-    if (a==='Inbound Performance'||(a==='Category'&&b==='KPIs Covered')) { inInbound=true; return; }
-    if (a==='Category'&&b==='Measurement'&&c==='Weight') { inInbound=false; inSupervisor=true; return; }
-    if (a==='Final Total') { inSupervisor=false; return; }
-    if (inInbound&&a&&b&&c) inboundPerf.push({cat:a,kpis:b,weight:c});
-    if (inSupervisor&&a&&b&&c) supervisorKPIs.push({cat:a,measure:b,weight:c});
+    const cols = toRow(r);
+    const a = (cols[0]||'').toString().trim();
+    const b = (cols[1]||'').toString().trim();
+    const c = (cols[2]||'').toString().trim();
+
+    if (a === 'Inbound Performance') { phase = 'inbound'; return; }
+    if (a === 'Category' && b === 'KPIs Covered') { phase = 'inbound'; return; }
+    if (a === 'Category' && b === 'Measurement' && c === 'Weight') { phase = 'supervisor'; return; }
+    if (a === 'Final Total') return;
+
+    if (phase === 'inbound' && a && b) {
+      inboundPerf.push({ cat: a, kpis: b, weight: c });
+    }
+    if (phase === 'supervisor' && a && b && c) {
+      supervisorKPIs.push({ cat: a, measure: b, weight: c });
+    }
   });
 
   const statusColors = {
     'Team KPI Achievement':'b-green','QA Monitoring':'b-green',
     'Inbound Booking Accuracy':'b-amber','Escalation Resolution':'b-green',
     'Coaching Sessions':'b-teal','Improvement Plans':'b-green',
-    'Process Enhancement':'b-gray','Performance Gap Identification & Development Plan':'b-green'
+    'Process Enhancement':'b-gray','Performance Gap Identification &\nDevelopment Plan':'b-green',
+    'Performance Gap Identification & Development Plan':'b-green'
   };
   const statusText = {
     'Team KPI Achievement':'✓ On track','QA Monitoring':'✓ On track',
     'Inbound Booking Accuracy':'In progress','Escalation Resolution':'✓ 96%',
     'Coaching Sessions':'14/18','Improvement Plans':'✓ Done',
-    'Process Enhancement':'Pending','Performance Gap Identification & Development Plan':'✓ Weekly'
+    'Process Enhancement':'Pending','Performance Gap Identification &\nDevelopment Plan':'✓ Weekly',
+    'Performance Gap Identification & Development Plan':'✓ Weekly'
   };
 
   let html = `<div class="section-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:14px">
       <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
+
   supervisorKPIs.forEach(k => {
+    const key = k.cat.replace(/\n/g,' ').trim();
     html += `<div class="kpi-row">
-      <div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
+      <div class="kpi-left">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${k.measure}</div>
+      </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-        <span class="badge ${statusColors[k.cat]||'b-gray'}">${statusText[k.cat]||'—'}</span>
+        <span class="badge ${statusColors[key]||'b-gray'}">${statusText[key]||'—'}</span>
         <span style="font-size:11px;color:var(--text-muted)">${k.weight}</span>
       </div></div>`;
   });
+
   html += `</div><div class="section-label">Inbound performance KPIs</div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
+
   inboundPerf.forEach(k => {
+    const lines = k.kpis.split('\n').filter(x=>x.trim());
     html += `<div class="kpi-row">
-      <div class="kpi-left"><div class="kpi-name">${k.cat}</div>
-      <div class="kpi-measure">${k.kpis.split('\n').filter(x=>x.trim()).map(x=>'• '+x.trim()).join('<br>')}</div></div>
+      <div class="kpi-left">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${lines.map(x=>'• '+x.trim()).join('<br>')}</div>
+      </div>
       <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div></div>`;
   });
   html += `</div>`;
@@ -338,11 +367,11 @@ function statusClass(s) {
 }
 
 function renderAttendance(rows) {
-  // ✅ البيانات تجي كـ objects: { Date: "6/22/2026", Status: "Office" }
+  // البيانات: { Date: "1/4/2026", Status: "Vacation" }
   const map = {};
   rows.forEach(r => {
-    const dateVal   = (r.Date || r.date || objToArr(r)[0] || '').toString().trim();
-    const statusVal = (r.Status || r.status || objToArr(r)[1] || '').toString().trim();
+    const dateVal   = (r.Date   || r.date   || toRow(r)[0] || '').toString().trim();
+    const statusVal = (r.Status || r.status || toRow(r)[1] || '').toString().trim();
     if (dateVal && dateVal.includes('/')) map[dateVal] = statusVal;
   });
   renderCal(map);
@@ -399,7 +428,6 @@ function renderCal(map) {
       </div></div>`;
 
   document.getElementById('attendance-content').innerHTML = html;
-
   window.changeMonth = function(dir) {
     calMonth += dir;
     if (calMonth < 0)  { calMonth = 11; calYear--; }
