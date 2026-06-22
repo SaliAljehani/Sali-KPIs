@@ -26,8 +26,7 @@
   .refresh-btn { background: var(--teal-light); color: var(--teal); border: none; border-radius: 20px; padding: 5px 14px; font-size: 12px; cursor: pointer; font-weight: 500; }
   .refresh-btn:hover { background: #c5eadf; }
   .tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
-  .tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
-  .tab:hover { color: var(--text); }
+  .tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
   .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
   .content { padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
   .tab-panel { display: none; } .tab-panel.active { display: block; }
@@ -41,13 +40,12 @@
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
   .badge { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 500; }
   .b-green { background: #EAF3DE; color: #3B6D11; } .b-amber { background: var(--amber-light); color: var(--amber); }
-  .b-teal { background: var(--teal-light); color: var(--teal); } .b-purple { background: var(--purple-light); color: var(--purple); }
-  .b-gray { background: var(--gray-light); color: #5F5E5A; }
+  .b-teal { background: var(--teal-light); color: var(--teal); } .b-gray { background: var(--gray-light); color: #5F5E5A; }
   .kpi-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 8px; }
   .kpi-row:last-child { border-bottom: none; }
   .kpi-left { flex: 1; } .kpi-name { font-size: 13px; font-weight: 500; }
   .kpi-measure { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
-  .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; cursor: pointer; }
   .check-item:last-child { border-bottom: none; }
   .check-item .freq { font-size: 10px; color: var(--text-muted); margin-left: auto; }
   .check-icon { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
@@ -75,7 +73,7 @@
   .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
   .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
   .error-msg { background: var(--red-light); color: var(--red); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
-  @media (max-width: 600px) { .content { padding: 14px 12px; } .grid-2 { grid-template-columns: 1fr; } .header { padding: 10px 14px; } }
+  @media (max-width: 600px) { .content { padding: 14px 12px; } .grid-2 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -109,7 +107,9 @@
 </div>
 
 <script>
-const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
+// ✅ قراءة مباشرة من Google Sheets بدون Apps Script
+const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const GID = { inbound: '0', kpis: '72593736', attendance: '209241740' };
 
 let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
 const today = new Date();
@@ -124,31 +124,28 @@ function switchTab(name,el){
   document.getElementById('tab-'+name).classList.add('active');
 }
 
-// ✅ JSONP — يتجاوز مشكلة CORS
-function fetchJSONP(sheetName) {
+function fetchGVIZ(gid) {
   return new Promise(function(resolve, reject) {
-    const cbName = 'cb_' + sheetName.replace(/\s/g,'_') + '_' + Date.now();
+    const cb = 'gviz_' + gid + '_' + Date.now();
+    const url = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+      '/gviz/tq?tqx=out:json&tq=select+*&gid=' + gid + '&tqx=responseHandler:' + cb;
     const script = document.createElement('script');
-    const timer = setTimeout(function() {
-      delete window[cbName];
-      document.body.removeChild(script);
-      reject(new Error('Timeout: ' + sheetName));
+    const timer = setTimeout(function(){
+      delete window[cb]; document.body.removeChild(script);
+      reject(new Error('Timeout'));
     }, 10000);
-
-    window[cbName] = function(data) {
-      clearTimeout(timer);
-      delete window[cbName];
-      document.body.removeChild(script);
-      resolve(Array.isArray(data) ? data : []);
+    window[cb] = function(data) {
+      clearTimeout(timer); delete window[cb]; document.body.removeChild(script);
+      try {
+        const cols = data.table.cols.map(function(c){ return c.label; });
+        const rows = data.table.rows.map(function(r){
+          return r.c.map(function(cell){ return cell ? (cell.f || cell.v || '') : ''; });
+        });
+        resolve({cols: cols, rows: rows});
+      } catch(e) { reject(e); }
     };
-
-    script.src = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
-    script.onerror = function() {
-      clearTimeout(timer);
-      delete window[cbName];
-      document.body.removeChild(script);
-      reject(new Error('Script error: ' + sheetName));
-    };
+    script.src = url;
+    script.onerror = function(){ clearTimeout(timer); delete window[cb]; document.body.removeChild(script); reject(new Error('Load error')); };
     document.body.appendChild(script);
   });
 }
@@ -156,29 +153,29 @@ function fetchJSONP(sheetName) {
 async function loadAll(){
   ['inbound','workdone','kpis','attendance'].forEach(id=>
     document.getElementById(id+'-content').innerHTML='<div class="loading">Loading...</div>');
-  try{
-    const [iRows,kRows,aRows] = await Promise.all([
-      fetchJSONP('Inbound Work'),
-      fetchJSONP('Sali KPIs'),
-      fetchJSONP('Sali Attendance')
+  try {
+    const [iData, kData, aData] = await Promise.all([
+      fetchGVIZ(GID.inbound),
+      fetchGVIZ(GID.kpis),
+      fetchGVIZ(GID.attendance)
     ]);
-    renderInbound(iRows);
-    renderWorkDone(iRows);
-    renderKPIs(kRows);
-    renderAttendance(aRows);
+    renderInbound(iData.rows);
+    renderWorkDone(iData.rows);
+    renderKPIs(kData.rows);
+    renderAttendance(aData.rows);
   } catch(e) {
-    document.getElementById('inbound-content').innerHTML=
-      '<div class="error-msg">خطأ: '+e.message+'</div>';
+    document.getElementById('inbound-content').innerHTML='<div class="error-msg">خطأ: '+e.message+'</div>';
   }
 }
 
 // ===== INBOUND =====
+// عمود 0 = Task, عمود 1 = Frequency
 function renderInbound(rows){
   const daily=[], weekly=[], other=[];
   let inTasks=false;
-  rows.forEach(r=>{
-    const a=(r['Agent Name']||'').trim();
-    const b=(r['Badge #']||'').trim();
+  rows.forEach(function(r){
+    const a=(r[0]||'').toString().trim();
+    const b=(r[1]||'').toString().trim();
     if(a.includes('Daily Inbound Work')){inTasks=true;return;}
     if(a==='Work Done'){inTasks=false;return;}
     if(!inTasks||!a)return;
@@ -188,7 +185,7 @@ function renderInbound(rows){
   });
 
   const dk='inbound_done_'+today.toLocaleDateString('en-US');
-  let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
+  var done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
   const pct=daily.length?Math.round(done.size/daily.length*100):0;
 
   let html=`<div class="stat-grid">
@@ -198,14 +195,13 @@ function renderInbound(rows){
     <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-label">Weekly tasks</div></div>
     <div class="stat-card"><div class="stat-num">${other.length}</div><div class="stat-label">Other tasks</div></div>
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
+  <div class="grid-2"><div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
 
-  daily.forEach(t=>{
+  daily.forEach(function(t){
     const isDone=done.has(t);
     const safe=t.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')" style="cursor:pointer">
+    html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')">
       <div class="check-icon ${isDone?'done':''}"></div>
       <span style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t}</span>
       <span class="freq">Daily</span></div>`;
@@ -213,15 +209,15 @@ function renderInbound(rows){
 
   html+=`</div><div>
     <div class="card" style="margin-bottom:12px">
-      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
-  weekly.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
+  weekly.forEach(function(t){html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
   html+=`</div><div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
-  other.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
+  other.forEach(function(t){html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
   html+=`</div></div></div>`;
 
   document.getElementById('inbound-content').innerHTML=html;
   window.toggleTask=function(task,key){
-    let ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    var ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
     if(ds.has(task))ds.delete(task);else ds.add(task);
     localStorage.setItem(key,JSON.stringify([...ds]));
     renderInbound(rows);
@@ -232,8 +228,8 @@ function renderInbound(rows){
 function renderWorkDone(rows){
   const items=[];
   let inSection=false;
-  rows.forEach(r=>{
-    const a=(r['Agent Name']||'').trim();
+  rows.forEach(function(r){
+    const a=(r[0]||'').toString().trim();
     if(a==='Work Done'){inSection=true;return;}
     if(!inSection||!a)return;
     items.push(a);
@@ -241,14 +237,14 @@ function renderWorkDone(rows){
   document.getElementById('workdone-content').innerHTML=`
     <div class="card" style="margin-bottom:14px">
       <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Achievements — 6 months (Jan – Jun 2026)</div>
-      <div class="tags-wrap">${items.map(i=>`<span class="work-tag">${i}</span>`).join('')}</div>
+      <div class="tags-wrap">${items.map(function(i){return '<span class="work-tag">'+i+'</span>';}).join('')}</div>
     </div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Summary</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Completed items</div></div>
         <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start date</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current month</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current</div></div>
       </div></div>`;
 }
 
@@ -256,12 +252,11 @@ function renderWorkDone(rows){
 function renderKPIs(rows){
   const inboundPerf=[], supervisorKPIs=[];
   let phase='';
-  rows.forEach(r=>{
-    const vals=Object.values(r);
-    const a=(vals[0]||'').toString().trim();
-    const b=(vals[1]||'').toString().trim();
-    const c=(vals[2]||'').toString().trim();
-    if(a==='Inbound Performance'||( a==='Category'&&b==='KPIs Covered')){phase='inbound';return;}
+  rows.forEach(function(r){
+    const a=(r[0]||'').toString().trim();
+    const b=(r[1]||'').toString().trim();
+    const c=(r[2]||'').toString().trim();
+    if(a==='Inbound Performance'||(a==='Category'&&b==='KPIs Covered')){phase='inbound';return;}
     if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
     if(a==='Final Total'||!a)return;
     if(phase==='inbound'&&b) inboundPerf.push({cat:a,kpis:b,weight:c});
@@ -278,9 +273,8 @@ function renderKPIs(rows){
   let html=`<div class="section-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:14px">
     <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
-  supervisorKPIs.forEach(k=>{
-    html+=`<div class="kpi-row">
-      <div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
+  supervisorKPIs.forEach(function(k){
+    html+=`<div class="kpi-row"><div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
         <span class="badge ${sColor[k.cat]||'b-gray'}">${sText[k.cat]||'—'}</span>
         <span style="font-size:11px;color:var(--text-muted)">${k.weight}</span>
@@ -288,10 +282,9 @@ function renderKPIs(rows){
   });
   html+=`</div><div class="section-label">Inbound performance KPIs</div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
-  inboundPerf.forEach(k=>{
-    html+=`<div class="kpi-row">
-      <div class="kpi-left"><div class="kpi-name">${k.cat}</div>
-      <div class="kpi-measure">${k.kpis.split('\n').filter(x=>x.trim()).map(x=>'• '+x.trim()).join('<br>')}</div></div>
+  inboundPerf.forEach(function(k){
+    html+=`<div class="kpi-row"><div class="kpi-left"><div class="kpi-name">${k.cat}</div>
+      <div class="kpi-measure">${k.kpis.split('\n').filter(function(x){return x.trim();}).map(function(x){return '• '+x.trim();}).join('<br>')}</div></div>
       <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div></div>`;
   });
   html+=`</div>`;
@@ -315,9 +308,9 @@ function statusClass(s){
 
 function renderAttendance(rows){
   const map={};
-  rows.forEach(r=>{
-    const d=(r.Date||r.date||'').toString().trim();
-    const s=(r.Status||r.status||'').toString().trim();
+  rows.forEach(function(r){
+    const d=(r[0]||'').toString().trim();
+    const s=(r[1]||'').toString().trim();
     if(d&&d.includes('/'))map[d]=s;
   });
   renderCal(map);
@@ -328,7 +321,7 @@ function renderCal(map){
   const dim=new Date(calYear,calMonth+1,0).getDate();
   let office=0,vac=0,sick=0,off=0,remote=0;
   for(let d=1;d<=dim;d++){
-    const s=(map[`${calMonth+1}/${d}/${calYear}`]||'').toLowerCase();
+    const s=(map[(calMonth+1)+'/'+d+'/'+calYear]||'').toLowerCase();
     if(s==='office')office++;
     else if(s.includes('vacation')||s.includes('vaction'))vac++;
     else if(s.includes('sick'))sick++;
@@ -344,14 +337,14 @@ function renderCal(map){
     <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
     <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${vac}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
     <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
-    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick leave</div></div>
-    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Day off</div></div>
+    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
+    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Off</div></div>
   </div>
   <div class="card">
-    <div class="cal-header">${DAYS_EN.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}</div>
+    <div class="cal-header">${DAYS_EN.map(function(d){return '<div class="cal-day-name">'+d+'</div>';}).join('')}</div>
     <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
   for(let d=1;d<=dim;d++){
-    const key=`${calMonth+1}/${d}/${calYear}`;
+    const key=(calMonth+1)+'/'+d+'/'+calYear;
     const st=map[key]||'';
     const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
     html+=`<div class="cal-cell ${statusClass(st)}" style="${isToday?'outline:2px solid var(--teal);outline-offset:1px;':''}" title="${st||'—'}">${d}</div>`;
@@ -360,8 +353,8 @@ function renderCal(map){
     <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
     <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick leave</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Day off</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Off</div>
   </div></div>`;
   document.getElementById('attendance-content').innerHTML=html;
   window.changeMonth=function(dir){
