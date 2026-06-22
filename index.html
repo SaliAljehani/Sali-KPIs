@@ -30,8 +30,7 @@
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--teal); border-bottom-color: var(--teal); }
   .content { padding: 20px 24px; max-width: 1100px; margin: 0 auto; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  .tab-panel { display: none; } .tab-panel.active { display: block; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
   .card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
   .card-title .dot { width: 8px; height: 8px; border-radius: 50%; }
@@ -41,15 +40,12 @@
   .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
   .badge { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .b-green { background: #EAF3DE; color: #3B6D11; }
-  .b-amber { background: var(--amber-light); color: var(--amber); }
-  .b-teal { background: var(--teal-light); color: var(--teal); }
-  .b-purple { background: var(--purple-light); color: var(--purple); }
+  .b-green { background: #EAF3DE; color: #3B6D11; } .b-amber { background: var(--amber-light); color: var(--amber); }
+  .b-teal { background: var(--teal-light); color: var(--teal); } .b-purple { background: var(--purple-light); color: var(--purple); }
   .b-gray { background: var(--gray-light); color: #5F5E5A; }
   .kpi-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 8px; }
   .kpi-row:last-child { border-bottom: none; }
-  .kpi-left { flex: 1; }
-  .kpi-name { font-size: 13px; font-weight: 500; }
+  .kpi-left { flex: 1; } .kpi-name { font-size: 13px; font-weight: 500; }
   .kpi-measure { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
   .check-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .check-item:last-child { border-bottom: none; }
@@ -63,27 +59,23 @@
   .cal-day-name { font-size: 10px; color: var(--text-muted); text-align: center; padding: 3px 0; font-weight: 500; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
   .cal-cell { height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
-  .cal-empty { background: transparent; }
-  .cal-office { background: var(--teal-light); color: var(--teal); }
-  .cal-off { background: var(--gray-light); color: #888; }
-  .cal-vacation { background: var(--amber-light); color: var(--amber); }
-  .cal-sick { background: var(--red-light); color: var(--red); }
-  .cal-remote { background: var(--purple-light); color: var(--purple); }
+  .cal-empty { background: transparent; } .cal-office { background: var(--teal-light); color: var(--teal); }
+  .cal-off { background: var(--gray-light); color: #888; } .cal-vacation { background: var(--amber-light); color: var(--amber); }
+  .cal-sick { background: var(--red-light); color: var(--red); } .cal-remote { background: var(--purple-light); color: var(--purple); }
   .cal-future { background: #F7F6F2; color: #CCC; border: 1px dashed #E0DEDB; }
   .att-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
   .att-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
   .att-dot { width: 10px; height: 10px; border-radius: 2px; }
   .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .month-nav button { background: var(--gray-light); border: none; border-radius: var(--radius-sm); padding: 5px 12px; cursor: pointer; font-size: 13px; color: var(--text); }
+  .month-nav button { background: var(--gray-light); border: none; border-radius: var(--radius-sm); padding: 5px 12px; cursor: pointer; font-size: 13px; }
   .month-nav .month-label { font-size: 14px; font-weight: 600; min-width: 140px; text-align: center; }
   .att-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 16px; }
   .att-stat { padding: 10px 12px; border-radius: var(--radius-sm); }
-  .att-stat .num { font-size: 22px; font-weight: 700; }
-  .att-stat .lbl { font-size: 10px; margin-top: 2px; }
+  .att-stat .num { font-size: 22px; font-weight: 700; } .att-stat .lbl { font-size: 10px; margin-top: 2px; }
   .section-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
   .loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
   .error-msg { background: var(--red-light); color: var(--red); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin-bottom: 12px; }
-  @media (max-width: 600px) { .content { padding: 14px 12px; } .grid-2 { grid-template-columns: 1fr; } .header { padding: 10px 14px; } .tabs { padding: 0 12px; } }
+  @media (max-width: 600px) { .content { padding: 14px 12px; } .grid-2 { grid-template-columns: 1fr; } .header { padding: 10px 14px; } }
 </style>
 </head>
 <body>
@@ -103,10 +95,10 @@
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('inbound', this)">Inbound</div>
-  <div class="tab" onclick="switchTab('workdone', this)">Work Done</div>
-  <div class="tab" onclick="switchTab('kpis', this)">Sali KPIs</div>
-  <div class="tab" onclick="switchTab('attendance', this)">Attendance</div>
+  <div class="tab active" onclick="switchTab('inbound',this)">Inbound</div>
+  <div class="tab" onclick="switchTab('workdone',this)">Work Done</div>
+  <div class="tab" onclick="switchTab('kpis',this)">Sali KPIs</div>
+  <div class="tab" onclick="switchTab('attendance',this)">Attendance</div>
 </div>
 
 <div class="content">
@@ -120,40 +112,31 @@
 const PROXY    = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
 
-let calMonth = new Date().getMonth();
-let calYear  = new Date().getFullYear();
-const today  = new Date();
+let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
+const today = new Date();
 
 document.getElementById('todayDate').textContent =
-  today.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' });
+  today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
 
-function switchTab(name, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+function switchTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
-async function fetchSheet(sheetName) {
-  const url  = PROXY + '?id=' + SHEET_ID + '&sheetName=' + encodeURIComponent(sheetName);
-  const res  = await fetch(url, { redirect: 'follow' });
-  const text = await res.text();
-  const data = JSON.parse(text);
-  return Array.isArray(data) ? data : (data.data || []);
+async function fetchSheet(sheetName){
+  const url = PROXY+'?sheetName='+encodeURIComponent(sheetName);
+  const res = await fetch(url,{redirect:'follow'});
+  const data = JSON.parse(await res.text());
+  return Array.isArray(data)?data:[];
 }
 
-// ✅ يحول أي object أو array إلى [col0, col1, col2, ...]
-function toRow(r) {
-  if (Array.isArray(r)) return r;
-  return Object.values(r);
-}
-
-async function loadAll() {
-  ['inbound','workdone','kpis','attendance'].forEach(id =>
-    document.getElementById(id+'-content').innerHTML = '<div class="loading">Loading...</div>'
-  );
-  try {
-    const [iRows, kRows, aRows] = await Promise.all([
+async function loadAll(){
+  ['inbound','workdone','kpis','attendance'].forEach(id=>
+    document.getElementById(id+'-content').innerHTML='<div class="loading">Loading...</div>');
+  try{
+    const [iRows,kRows,aRows] = await Promise.all([
       fetchSheet('Inbound Work'),
       fetchSheet('Sali KPIs'),
       fetchSheet('Sali Attendance')
@@ -162,276 +145,225 @@ async function loadAll() {
     renderWorkDone(iRows);
     renderKPIs(kRows);
     renderAttendance(aRows);
-  } catch(e) {
-    console.error(e);
-    document.getElementById('inbound-content').innerHTML =
-      '<div class="error-msg">خطأ في تحميل البيانات: ' + e.message + '</div>';
+  }catch(e){
+    document.getElementById('inbound-content').innerHTML=
+      '<div class="error-msg">خطأ: '+e.message+'</div>';
   }
 }
 
 // ===== INBOUND =====
-// الشيت: row1=headers(Agent Name, Badge#, Phone, Email), row2=Sali info
-// row4: "Daily Inbound Work ( Petromin, Stellantis & Nissan )" في عمود A
-// rows 5-20: Task في A، Frequency في B
-// row22: "Work Done" في A
-// rows 23+: achievements في A
-function renderInbound(rows) {
-  const dailyTasks = [], weeklyTasks = [], otherTasks = [];
-  let inSection = false;
+// أعمدة الشيت: "Agent Name" = Task/section, "Badge #" = Frequency
+function renderInbound(rows){
+  const daily=[], weekly=[], other=[];
+  let inTasks=false, inWorkDone=false;
 
-  rows.forEach(r => {
-    const cols = toRow(r);
-    const a = (cols[0]||'').toString().trim();
-    const b = (cols[1]||'').toString().trim();
-    if (a.toLowerCase().includes('daily inbound work')) { inSection = true; return; }
-    if (a === 'Work Done') { inSection = false; return; }
-    if (!inSection || !a) return;
-    if (b === 'Daily') dailyTasks.push(a);
-    else if (b === 'Weekly') weeklyTasks.push(a);
-    else otherTasks.push({ name: a, freq: b });
+  rows.forEach(r=>{
+    const a=(r['Agent Name']||'').trim();
+    const b=(r['Badge #']||'').trim();
+    if(a.includes('Daily Inbound Work')){inTasks=true;return;}
+    if(a==='Work Done'){inTasks=false;return;}
+    if(!inTasks||!a)return;
+    if(b==='Daily') daily.push(a);
+    else if(b==='Weekly') weekly.push(a);
+    else other.push({name:a,freq:b});
   });
 
-  const todayKey = today.toLocaleDateString('en-US');
-  const doneKey  = 'inbound_done_' + todayKey;
-  let doneSet = new Set(JSON.parse(localStorage.getItem(doneKey)||'[]'));
+  const dk='inbound_done_'+today.toLocaleDateString('en-US');
+  let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
+  const pct=daily.length?Math.round(done.size/daily.length*100):0;
 
-  const allDaily  = dailyTasks.length;
-  const doneToday = dailyTasks.filter(t => doneSet.has(t)).length;
-  const pct       = allDaily ? Math.round(doneToday/allDaily*100) : 0;
+  let html=`<div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${done.size}/${daily.length}</div><div class="stat-label">Tasks done today</div></div>
+    <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Daily progress</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin-top:6px"><div style="height:100%;width:${pct}%;background:var(--teal-mid);border-radius:2px"></div></div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-label">Weekly tasks</div></div>
+    <div class="stat-card"><div class="stat-num">${other.length}</div><div class="stat-label">Other tasks</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
 
-  let html = `
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${doneToday}/${allDaily}</div><div class="stat-label">Tasks done today</div></div>
-      <div class="stat-card"><div class="stat-num">${pct}%</div><div class="stat-label">Daily progress</div>
-        <div style="height:4px;background:var(--border);border-radius:2px;margin-top:6px">
-          <div style="height:100%;width:${pct}%;background:var(--teal-mid);border-radius:2px"></div></div>
-      </div>
-      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">${weeklyTasks.length}</div><div class="stat-label">Weekly tasks</div></div>
-      <div class="stat-card"><div class="stat-num">${otherTasks.length}</div><div class="stat-label">Other tasks</div></div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily tasks — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</div>`;
-
-  dailyTasks.forEach(t => {
-    const isDone = doneSet.has(t);
-    const safe = t.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    html += `<div class="check-item" onclick="toggleTask('${safe}','${doneKey}')" style="cursor:pointer">
+  daily.forEach(t=>{
+    const isDone=done.has(t);
+    const safe=t.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')" style="cursor:pointer">
       <div class="check-icon ${isDone?'done':''}"></div>
       <span style="${isDone?'text-decoration:line-through;color:var(--text-muted)':''}">${t}</span>
       <span class="freq">Daily</span></div>`;
   });
 
-  html += `</div><div>
+  html+=`</div><div>
     <div class="card" style="margin-bottom:12px">
       <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly tasks</div>`;
-  weeklyTasks.forEach(t => {
-    html += `<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;
-  });
-  html += `</div><div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
-  otherTasks.forEach(t => {
-    html += `<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;
-  });
-  html += `</div></div></div>`;
+  weekly.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
+  html+=`</div><div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other tasks</div>`;
+  other.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
+  html+=`</div></div></div>`;
 
-  document.getElementById('inbound-content').innerHTML = html;
-
-  window.toggleTask = function(task, key) {
-    let ds = new Set(JSON.parse(localStorage.getItem(key)||'[]'));
-    if (ds.has(task)) ds.delete(task); else ds.add(task);
-    localStorage.setItem(key, JSON.stringify([...ds]));
+  document.getElementById('inbound-content').innerHTML=html;
+  window.toggleTask=function(task,key){
+    let ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    if(ds.has(task))ds.delete(task);else ds.add(task);
+    localStorage.setItem(key,JSON.stringify([...ds]));
     renderInbound(rows);
   };
 }
 
 // ===== WORK DONE =====
-function renderWorkDone(rows) {
-  const items = [];
-  let inSection = false;
-  rows.forEach(r => {
-    const a = (toRow(r)[0]||'').toString().trim();
-    if (a === 'Work Done') { inSection = true; return; }
-    if (!inSection || !a) return;
+function renderWorkDone(rows){
+  const items=[];
+  let inSection=false;
+  rows.forEach(r=>{
+    const a=(r['Agent Name']||'').trim();
+    if(a==='Work Done'){inSection=true;return;}
+    if(!inSection||!a)return;
     items.push(a);
   });
-
-  document.getElementById('workdone-content').innerHTML = `
+  document.getElementById('workdone-content').innerHTML=`
     <div class="card" style="margin-bottom:14px">
       <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Achievements — 6 months (Jan – Jun 2026)</div>
       <div class="tags-wrap">${items.map(i=>`<span class="work-tag">${i}</span>`).join('')}</div>
     </div>
-    <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Summary</div>
+    <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Summary</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-label">Completed items</div></div>
         <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Months</div></div>
         <div class="stat-card"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-label">Start date</div></div>
         <div class="stat-card"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-label">Current month</div></div>
-      </div>
-    </div>`;
+      </div></div>`;
 }
 
 // ===== KPIs =====
-// شيت Sali KPIs:
-// Row1: "Inbound Performance" header (A1 merged)
-// Row2: Category | KPIs Covered | Measurement
-// Rows 3-6: inbound perf data
-// Row7: Final Total
-// Row9: Category | Measurement | Weight  ← supervisor KPIs header
-// Rows 10-17: supervisor KPI data
-function renderKPIs(rows) {
-  const inboundPerf = [], supervisorKPIs = [];
-  let phase = ''; // 'inbound' or 'supervisor'
+// أعمدة شيت Sali KPIs: "Category","KPIs Covered","Measurement" ثم "Category","Measurement","Weight"
+function renderKPIs(rows){
+  const inboundPerf=[], supervisorKPIs=[];
+  let phase='';
 
-  rows.forEach(r => {
-    const cols = toRow(r);
-    const a = (cols[0]||'').toString().trim();
-    const b = (cols[1]||'').toString().trim();
-    const c = (cols[2]||'').toString().trim();
+  rows.forEach(r=>{
+    // نحاول نقرأ القيم من أول 3 أعمدة بغض النظر عن أسماءها
+    const vals=Object.values(r);
+    const a=(vals[0]||'').toString().trim();
+    const b=(vals[1]||'').toString().trim();
+    const c=(vals[2]||'').toString().trim();
 
-    if (a === 'Inbound Performance') { phase = 'inbound'; return; }
-    if (a === 'Category' && b === 'KPIs Covered') { phase = 'inbound'; return; }
-    if (a === 'Category' && b === 'Measurement' && c === 'Weight') { phase = 'supervisor'; return; }
-    if (a === 'Final Total') return;
+    if(a==='Inbound Performance'){phase='inbound';return;}
+    if(a==='Category'&&b==='KPIs Covered'){phase='inbound';return;}
+    if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
+    if(a==='Final Total')return;
+    if(!a)return;
 
-    if (phase === 'inbound' && a && b) {
-      inboundPerf.push({ cat: a, kpis: b, weight: c });
-    }
-    if (phase === 'supervisor' && a && b && c) {
-      supervisorKPIs.push({ cat: a, measure: b, weight: c });
-    }
+    if(phase==='inbound'&&a&&b) inboundPerf.push({cat:a,kpis:b,weight:c});
+    if(phase==='supervisor'&&a&&b&&c) supervisorKPIs.push({cat:a,measure:b,weight:c});
   });
 
-  const statusColors = {
-    'Team KPI Achievement':'b-green','QA Monitoring':'b-green',
-    'Inbound Booking Accuracy':'b-amber','Escalation Resolution':'b-green',
-    'Coaching Sessions':'b-teal','Improvement Plans':'b-green',
+  const sColor={'Team KPI Achievement':'b-green','QA Monitoring':'b-green','Inbound Booking Accuracy':'b-amber',
+    'Escalation Resolution':'b-green','Coaching Sessions':'b-teal','Improvement Plans':'b-green',
     'Process Enhancement':'b-gray','Performance Gap Identification &\nDevelopment Plan':'b-green',
-    'Performance Gap Identification & Development Plan':'b-green'
-  };
-  const statusText = {
-    'Team KPI Achievement':'✓ On track','QA Monitoring':'✓ On track',
-    'Inbound Booking Accuracy':'In progress','Escalation Resolution':'✓ 96%',
-    'Coaching Sessions':'14/18','Improvement Plans':'✓ Done',
+    'Performance Gap Identification & Development Plan':'b-green'};
+  const sText={'Team KPI Achievement':'✓ On track','QA Monitoring':'✓ On track','Inbound Booking Accuracy':'In progress',
+    'Escalation Resolution':'✓ 96%','Coaching Sessions':'14/18','Improvement Plans':'✓ Done',
     'Process Enhancement':'Pending','Performance Gap Identification &\nDevelopment Plan':'✓ Weekly',
-    'Performance Gap Identification & Development Plan':'✓ Weekly'
-  };
+    'Performance Gap Identification & Development Plan':'✓ Weekly'};
 
-  let html = `<div class="section-label">Supervisor KPIs</div>
+  let html=`<div class="section-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:14px">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Sali — supervisor performance indicators</div>`;
 
-  supervisorKPIs.forEach(k => {
-    const key = k.cat.replace(/\n/g,' ').trim();
-    html += `<div class="kpi-row">
-      <div class="kpi-left">
-        <div class="kpi-name">${k.cat}</div>
-        <div class="kpi-measure">${k.measure}</div>
-      </div>
+  supervisorKPIs.forEach(k=>{
+    html+=`<div class="kpi-row">
+      <div class="kpi-left"><div class="kpi-name">${k.cat}</div><div class="kpi-measure">${k.measure}</div></div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-        <span class="badge ${statusColors[key]||'b-gray'}">${statusText[key]||'—'}</span>
+        <span class="badge ${sColor[k.cat]||'b-gray'}">${sText[k.cat]||'—'}</span>
         <span style="font-size:11px;color:var(--text-muted)">${k.weight}</span>
       </div></div>`;
   });
 
-  html += `</div><div class="section-label">Inbound performance KPIs</div>
+  html+=`</div><div class="section-label">Inbound performance KPIs</div>
     <div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent team — performance standards</div>`;
 
-  inboundPerf.forEach(k => {
-    const lines = k.kpis.split('\n').filter(x=>x.trim());
-    html += `<div class="kpi-row">
-      <div class="kpi-left">
-        <div class="kpi-name">${k.cat}</div>
-        <div class="kpi-measure">${lines.map(x=>'• '+x.trim()).join('<br>')}</div>
-      </div>
+  inboundPerf.forEach(k=>{
+    html+=`<div class="kpi-row">
+      <div class="kpi-left"><div class="kpi-name">${k.cat}</div>
+      <div class="kpi-measure">${k.kpis.split('\n').filter(x=>x.trim()).map(x=>'• '+x.trim()).join('<br>')}</div></div>
       <div style="flex-shrink:0"><span class="badge b-teal">${k.weight}</span></div></div>`;
   });
-  html += `</div>`;
-  document.getElementById('kpis-content').innerHTML = html;
+  html+=`</div>`;
+  document.getElementById('kpis-content').innerHTML=html;
 }
 
 // ===== ATTENDANCE =====
-const MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_EN   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS_EN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function statusClass(s) {
-  if (!s) return 'cal-future';
-  s = s.toLowerCase();
-  if (s==='office') return 'cal-office';
-  if (s==='off') return 'cal-off';
-  if (s.includes('vacation')||s.includes('vaction')) return 'cal-vacation';
-  if (s.includes('sick')) return 'cal-sick';
-  if (s.includes('work r')) return 'cal-remote';
+function statusClass(s){
+  if(!s)return 'cal-future';
+  s=s.toLowerCase();
+  if(s==='office')return 'cal-office';
+  if(s==='off')return 'cal-off';
+  if(s.includes('vacation')||s.includes('vaction'))return 'cal-vacation';
+  if(s.includes('sick'))return 'cal-sick';
+  if(s.includes('work r'))return 'cal-remote';
   return 'cal-off';
 }
 
-function renderAttendance(rows) {
-  // البيانات: { Date: "1/4/2026", Status: "Vacation" }
-  const map = {};
-  rows.forEach(r => {
-    const dateVal   = (r.Date   || r.date   || toRow(r)[0] || '').toString().trim();
-    const statusVal = (r.Status || r.status || toRow(r)[1] || '').toString().trim();
-    if (dateVal && dateVal.includes('/')) map[dateVal] = statusVal;
+function renderAttendance(rows){
+  const map={};
+  rows.forEach(r=>{
+    const d=(r.Date||r.date||'').toString().trim();
+    const s=(r.Status||r.status||'').toString().trim();
+    if(d&&d.includes('/'))map[d]=s;
   });
   renderCal(map);
 }
 
-function renderCal(map) {
-  const firstDay    = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  let office=0, vac=0, sick=0, off=0, remote=0;
+function renderCal(map){
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  let office=0,vac=0,sick=0,off=0,remote=0;
+  for(let d=1;d<=dim;d++){
+    const s=(map[`${calMonth+1}/${d}/${calYear}`]||'').toLowerCase();
+    if(s==='office')office++;
+    else if(s.includes('vacation')||s.includes('vaction'))vac++;
+    else if(s.includes('sick'))sick++;
+    else if(s.includes('work r'))remote++;
+    else if(s==='off')off++;
+  }
+  let html=`<div class="month-nav">
+    <button onclick="changeMonth(-1)">‹</button>
+    <div class="month-label">${MONTHS_EN[calMonth]} ${calYear}</div>
+    <button onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="att-stats">
+    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
+    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${vac}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
+    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
+    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick leave</div></div>
+    <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Day off</div></div>
+  </div>
+  <div class="card">
+    <div class="cal-header">${DAYS_EN.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}</div>
+    <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
 
-  for (let d=1; d<=daysInMonth; d++) {
-    const key = `${calMonth+1}/${d}/${calYear}`;
-    const s   = (map[key]||'').toLowerCase();
-    if (s==='office') office++;
-    else if (s.includes('vacation')||s.includes('vaction')) vac++;
-    else if (s.includes('sick')) sick++;
-    else if (s.includes('work r')) remote++;
-    else if (s==='off') off++;
+  for(let d=1;d<=dim;d++){
+    const key=`${calMonth+1}/${d}/${calYear}`;
+    const st=map[key]||'';
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    html+=`<div class="cal-cell ${statusClass(st)}" style="${isToday?'outline:2px solid var(--teal);outline-offset:1px;':''}" title="${st||'—'}">${d}</div>`;
   }
 
-  let html = `
-    <div class="month-nav">
-      <button onclick="changeMonth(-1)">‹</button>
-      <div class="month-label">${MONTHS_EN[calMonth]} ${calYear}</div>
-      <button onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="att-stats">
-      <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
-      <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${vac}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
-      <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
-      <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${sick}</div><div class="lbl" style="color:var(--red)">Sick leave</div></div>
-      <div class="att-stat" style="background:var(--gray-light)"><div class="num" style="color:#888">${off}</div><div class="lbl" style="color:#888">Day off</div></div>
-    </div>
-    <div class="card">
-      <div class="cal-header">${DAYS_EN.map(d=>`<div class="cal-day-name">${d}</div>`).join('')}</div>
-      <div class="cal-grid">
-        ${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
+  html+=`</div><div class="att-legend">
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick leave</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Day off</div>
+  </div></div>`;
 
-  for (let d=1; d<=daysInMonth; d++) {
-    const key    = `${calMonth+1}/${d}/${calYear}`;
-    const status = map[key] || '';
-    const cls    = statusClass(status);
-    const isToday = d===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear();
-    html += `<div class="cal-cell ${cls}" style="${isToday?'outline:2px solid var(--teal);outline-offset:1px;':''}" title="${status||'—'}">${d}</div>`;
-  }
-
-  html += `</div>
-      <div class="att-legend">
-        <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
-        <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
-        <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
-        <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick leave</div>
-        <div class="att-legend-item"><div class="att-dot" style="background:var(--gray-light)"></div>Day off</div>
-      </div></div>`;
-
-  document.getElementById('attendance-content').innerHTML = html;
-  window.changeMonth = function(dir) {
-    calMonth += dir;
-    if (calMonth < 0)  { calMonth = 11; calYear--; }
-    if (calMonth > 11) { calMonth = 0;  calYear++; }
+  document.getElementById('attendance-content').innerHTML=html;
+  window.changeMonth=function(dir){
+    calMonth+=dir;
+    if(calMonth<0){calMonth=11;calYear--;}
+    if(calMonth>11){calMonth=0;calYear++;}
     renderCal(map);
   };
 }
