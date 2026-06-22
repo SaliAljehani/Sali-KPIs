@@ -19,15 +19,15 @@
   body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;display:flex;flex-direction:column}
 
   /* ── HEADER ── */
-  .header{background:#fff;border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
-  .av{width:40px;height:40px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--teal);flex-shrink:0}
-  .h-name{font-size:14px;font-weight:700;color:var(--text)}
-  .h-role{font-size:10px;color:var(--muted);margin-top:1px}
-  .h-pills{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
-  .pill{font-size:10px;font-weight:600;padding:2px 10px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
+  .header{background:#fff;border-bottom:1px solid var(--border);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
+  .av{width:50px;height:50px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--teal);flex-shrink:0}
+  .h-name{font-size:17px;font-weight:700;color:var(--text)}
+  .h-role{font-size:12px;color:var(--muted);margin-top:2px}
+  .h-pills{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
   .pill a{color:#085041;text-decoration:none}
-  .date-chip{font-size:10px;color:var(--muted);background:var(--gray);padding:3px 10px;border-radius:20px;border:0.5px solid var(--gray-border)}
-  .ref-btn{font-size:10px;padding:4px 13px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
+  .date-chip{font-size:11px;color:var(--muted);background:var(--gray);padding:4px 13px;border-radius:20px;border:0.5px solid var(--gray-border)}
+  .ref-btn{font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
   .ref-btn:hover{background:#c5eadf}
 
   /* ── LAYOUT ── */
@@ -169,15 +169,15 @@
     <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
     <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Check List</div>
     <div class="nav-divider"></div>
-    <div class="sb-section">Reports</div>
-    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
-    <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
-    <div class="nav-divider"></div>
     <div class="sb-section">KPIs</div>
     <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
     <div class="nav-item" id="nav-coaching" onclick="showTab('coaching')"><span class="ico">💬</span> Coaching</div>
     <div class="nav-item" id="nav-improvement" onclick="showTab('improvement')"><span class="ico">📈</span> Improvement</div>
     <div class="nav-item" id="nav-perfgap" onclick="showTab('perfgap')"><span class="ico">🔍</span> Perf. Gap</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">Reports</div>
+    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
+    <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
   </nav>
 
   <!-- CONTENT -->
@@ -204,7 +204,7 @@ const GID = {
   monthly:'413119919',
   reports:'2136858309'
 };
-const AGENTS=['Bayan Jazzar','Hanin Yajzi','Nada Abdulrahman','Sara Saleh','Ghadeer Motadares','Manar Alshehri','Mawaddah Essam','Nesreen Mansour','Yosra Salami','Asmaa Bawayan','Ahdab Shalbi','Mashael Alshehri','Wejdan Mustafa','Walaa Meezi','Shatha Bawayan','Gofran Rafie','Hiba Almuwallad','Reham Hakami'];
+const AGENTS=['Ahdab Shalabi','Asmaa M. Bawayan','Bayan Jazzar','Ghadeer Motadares','Ghofran Hussain Rafie','Hanin Yajizi','Hibah Almuwallad','Manar Alshehri','Mashael Alshehri','Mawadah Essam','Nedaa Shorbaji','Nesreen Mansoor','Reham Hakami','Sara Sami','Shatha Bawayan','Walaa Meezi','Wejdan Mustafa','Yosra Alsalami'];
 
 let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
 const today=new Date();
@@ -305,37 +305,46 @@ function renderMonthly(rows){
 
 // ══ REPORTS GUIDE ══
 function renderReports(rows){
+  // Filter out empty rows and build sections
+  const allRows = rows.filter(r=>r.some(v=>v&&String(v).trim()));
   const sections=[];
   let cur=null;
-  rows.forEach(r=>{
-    const a=(r[0]||'').trim(), b=(r[1]||'').trim(), c=(r[2]||'').trim();
-    if(!a)return;
-    // Section headers: no b value or b is description-like
-    if(a.includes("Ameyo")||a==='CRM-MASTERDECK- Ghada'||a==='WhatsApp'){
-      cur={title:a,items:[]};sections.push(cur);return;
+
+  allRows.forEach(r=>{
+    const a=String(r[0]||'').trim();
+    const b=String(r[1]||'').trim();
+    const c=String(r[2]||'').trim();
+    if(!a) return;
+    // Detect section headers
+    if(a.toLowerCase().includes('ameyo') || a==="CRM-MASTERDECK- Ghada" || a==='WhatsApp'){
+      cur={title:a,items:[]}; sections.push(cur); return;
     }
-    if(cur) cur.items.push({name:a,desc:b,note:c});
+    if(cur) cur.items.push({name:a, desc:b, note:c});
   });
+
+  if(!sections.length || sections.every(s=>!s.items.length)){
+    document.getElementById('tab-reports').innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📄</div><div style="font-size:13px;font-weight:600">No reports data found</div><div style="font-size:11px;margin-top:5px">Check Google Sheets → Reports tab</div></div>';
+    return;
+  }
 
   const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
   const SECTION_BG=['#E1F5EE','#EEEDFE','#E6F1FB'];
 
-  let html=`<div class="sec-label">📄 Reports Reference Guide</div>`;
+  let html='<div class="sec-label">📄 Reports Reference Guide</div>';
   sections.forEach((sec,si)=>{
+    if(!sec.items.length) return;
     const col=SECTION_COLORS[si%SECTION_COLORS.length];
     const bg=SECTION_BG[si%SECTION_BG.length];
     html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
       <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
-      <div style="display:flex;flex-direction:column;gap:0">
       ${sec.items.map((item,i)=>`
         <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:flex;gap:12px;align-items:flex-start">
-          <div style="min-width:200px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="min-width:220px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
           <div style="flex:1">
-            <div style="font-size:11px;color:var(--muted);line-height:1.5">${item.desc}</div>
-            ${item.note?`<div style="font-size:10px;color:${col};margin-top:3px;background:${bg};padding:2px 8px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
+            <div style="font-size:11px;color:var(--muted);line-height:1.6">${item.desc}</div>
+            ${item.note?`<div style="font-size:10px;color:${col};margin-top:4px;background:${bg};padding:2px 9px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
           </div>
         </div>`).join('')}
-      </div>
     </div>`;
   });
   document.getElementById('tab-reports').innerHTML=html;
