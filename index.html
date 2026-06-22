@@ -204,7 +204,26 @@ const GID = {
   monthly:'413119919',
   reports:'2136858309'
 };
-const AGENTS=['Ahdab Shalabi','Asmaa M. Bawayan','Bayan Jazzar','Ghadeer Motadares','Ghofran Hussain Rafie','Hanin Yajizi','Hibah Almuwallad','Manar Alshehri','Mashael Alshehri','Mawadah Essam','Nedaa Shorbaji','Nesreen Mansoor','Reham Hakami','Sara Sami','Shatha Bawayan','Walaa Meezi','Wejdan Mustafa','Yosra Alsalami'];
+const AGENTS=[
+  'Ahdab Shalabi',
+  'Asmaa M. Bawayan',
+  'Bayan Jazzar',
+  'Ghadeer Motadares',
+  'Ghofran Hussain Rafie',
+  'Hanin Yajizi',
+  'Hibah Almuwallad',
+  'Manar Alshehri',
+  'Mashael Alshehri',
+  'Mawadah Essam',
+  'Nedaa Shorbaji',
+  'Nesreen Mansoor',
+  'Reham Hakami',
+  'Sara Sami',
+  'Shatha Bawayan',
+  'Walaa Meezi',
+  'Wejdan Mustafa',
+  'Yosra Alsalami'
+];
 
 let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
 const today=new Date();
@@ -243,59 +262,84 @@ function parseCSV(text){
 }
 
 
-// ══ MONTHLY PERFORMANCE ══
+// ══ MONTHLY PERFORMANCE — Static reference data ══
 function renderMonthly(rows){
-  // Parse sections
+  // Try dynamic first, fallback to static
   const perfMetrics=[], eomSlide=[], callsQA=[];
   let section='';
-  rows.forEach(r=>{
-    const a=(r[0]||'').trim(), b=(r[1]||'').trim(), c=(r[2]||'').trim();
+  (rows||[]).forEach(r=>{
+    const a=String(r[0]||'').trim(), b=String(r[1]||'').trim();
     if(a==='Monthly Agents Performance'){section='perf';return;}
     if(a==='EOM SLIDE Inbound'){section='eom';return;}
     if(a.includes('Calls Quality Assurance')){section='qa';return;}
     if(!a)return;
     if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
     if(section==='eom'&&b) eomSlide.push({field:a,source:b});
-    if(section==='qa'){
-      const parts=a.split('|');
-      callsQA.push({item:parts[0].trim(),score:parts[1]||'',ar:b});
-    }
+    if(section==='qa'){const p=a.split('|');callsQA.push({item:p[0].trim(),score:p[1]||'',ar:b});}
   });
 
-  const totalQA=callsQA.reduce((s,r)=>{
-    const n=parseInt(r.score)||0; return s+n;
-  },0);
+  // Static fallback data
+  const PERF = perfMetrics.length ? perfMetrics : [
+    {metric:'Customers Answered',desc:'Manual Dials + Connected Inbound'},
+    {metric:'Customers Transferred',desc:'Grand Total من ريبورت فيد باك'},
+    {metric:'CT%',desc:'Customers Transferred / Customers Answered'},
+    {metric:'Customers Evaluated',desc:'1+2 توتل التقييم كامل من العملاء'},
+    {metric:'CE%',desc:'Customers Evaluated / Customers Transferred'},
+    {metric:'Satisfied',desc:'Score 1'},
+    {metric:'Satisfied%',desc:'Satisfied / Customers Evaluated'},
+    {metric:'Dissatisfied',desc:'Score 2'},
+    {metric:'Dissatisfied%',desc:'Dissatisfied / Customers Evaluated'},
+    {metric:'Transferred to CSAT',desc:'CE%'},
+    {metric:'CSAT',desc:'Satisfied% — نفس الناتج'},
+    {metric:'WhatsApp Feedback Average',desc:'Feedback Section'}
+  ];
+  const EOM = eomSlide.length ? eomSlide : [
+    {field:'Final Login Time Score',source:'Login Time'},
+    {field:'Final Quality Score',source:'Quality'},
+    {field:'Final CSAT Score',source:'Transferred to CSAT'},
+    {field:'Average Handling Time',source:'Handling Time'},
+    {field:'Number of Interactions',source:'Total'},
+    {field:'Total Tickets',source:'Total Tickets'},
+    {field:'Tickets%',source:'Tickets%'}
+  ];
+  const QA = callsQA.length ? callsQA : [
+    {item:'Welcome',score:'10',ar:'المقدمة'},
+    {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
+    {item:'Understanding the customer's problem',score:'10',ar:'فهم العميل'},
+    {item:'Answering the customer's question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
+    {item:'How long it took to answer',score:'5',ar:'كم استغرق الرد'},
+    {item:'Attitude & Language',score:'5',ar:'السلوك واللغة'},
+    {item:'Personal Enthusiasm',score:'5',ar:'الحماس الشخصي'},
+    {item:'Hold time / Mute',score:'—',ar:'زمن الانتظار / كتم الصوت'},
+    {item:'Closure of call',score:'10',ar:'إغلاق المكالمة'},
+    {item:'Ticket Quality / System input',score:'30',ar:'جودة التذاكر / إدخال النظام'}
+  ];
+  const total=QA.reduce((s,r)=>{const n=parseInt(r.score)||0;return s+n;},0);
 
-  let html=`
+  const html=`
   <div class="sec-label">📊 Monthly Agents Performance — Metrics</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:20px">
-    ${perfMetrics.map(m=>`
-      <div class="card" style="padding:13px 15px;margin-bottom:0">
-        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${m.metric}</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.5">${m.desc}</div>
-      </div>`).join('')}
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px">
+    ${PERF.map(m=>`<div class="card" style="padding:13px 15px;margin-bottom:0">
+      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${m.metric}</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5">${m.desc}</div>
+    </div>`).join('')}
   </div>
-
   <div class="sec-label">🏆 EOM Slide — Data Sources</div>
-  <div class="card" style="margin-bottom:20px">
+  <div class="card" style="margin-bottom:16px">
     <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Employee of the Month — Required Fields</div>
     <div style="overflow-x:auto"><table class="tbl">
-      <thead><tr><th>Field</th><th>Source / Notes</th></tr></thead>
-      <tbody>${eomSlide.map((r,i)=>`<tr>
-        <td style="font-weight:600">${r.field}</td>
-        <td style="color:var(--muted)">${r.source}</td>
-      </tr>`).join('')}</tbody>
+      <thead><tr><th>Field</th><th>Source</th></tr></thead>
+      <tbody>${EOM.map(r=>`<tr><td style="font-weight:600">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
     </table></div>
   </div>
-
-  <div class="sec-label">✅ Calls Quality Assurance — Scoring Sheet (Total: ${totalQA} pts)</div>
+  <div class="sec-label">✅ Calls Quality Assurance — Total: ${total} pts</div>
   <div class="card">
     <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria</div>
     <div style="overflow-x:auto"><table class="tbl">
-      <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th>Arabic</th></tr></thead>
-      <tbody>${callsQA.map(r=>`<tr>
+      <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th style="direction:rtl;text-align:right">Arabic</th></tr></thead>
+      <tbody>${QA.map(r=>`<tr>
         <td style="font-weight:500">${r.item}</td>
-        <td style="text-align:center"><span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r.score||'—'}</span></td>
+        <td style="text-align:center"><span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r.score}</span></td>
         <td style="color:var(--muted);direction:rtl;text-align:right">${r.ar}</td>
       </tr>`).join('')}</tbody>
     </table></div>
@@ -305,8 +349,7 @@ function renderMonthly(rows){
 
 // ══ REPORTS GUIDE ══
 function renderReports(rows){
-  // Filter out empty rows and build sections
-  const allRows = rows.filter(r=>r.some(v=>v&&String(v).trim()));
+  const allRows = (rows||[]).filter(r=>r.some(v=>v&&String(v).trim()));
   const sections=[];
   let cur=null;
 
@@ -323,8 +366,39 @@ function renderReports(rows){
   });
 
   if(!sections.length || sections.every(s=>!s.items.length)){
-    document.getElementById('tab-reports').innerHTML='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📄</div><div style="font-size:13px;font-weight:600">No reports data found</div><div style="font-size:11px;margin-top:5px">Check Google Sheets → Reports tab</div></div>';
-    return;
+    // Static fallback
+    sections.push({title:"Ameyo Report's",items:[
+      {name:'ACD Call Details',desc:'المفقود + اختيار الموظفة للاتصال (Disposition)',note:''},
+      {name:'AGENT Productivity Interval Summary',desc:'تقرير الموظفة كامل لفترة الدوام',note:'Staffed Duration · First Login Time · Avg Handling Time'},
+      {name:'Agent Session Details',desc:'وقت تسجيل الدخول والخروج',note:''},
+      {name:'Call Details',desc:'تقرير المفقود خارج ساعات الدوام',note:''},
+      {name:'Feedback IVR Report',desc:'تقييم العملاء للمكالمات',note:'اختار من رقم الوظيفي للبنات — Grand Total'},
+      {name:'Updated Petromin Interaction',desc:'للتيكيتات — نحط Campaign كامل',note:'يتمسح Incoming Email Queue'},
+      {name:'WhatsApp Ni/ST',desc:'Chats · Speed of answer (First response)',note:'من الـ Dashboard'}
+    ]});
+    sections.push({title:'CRM-MASTERDECK- Ghada',items:[
+      {name:'Calls Volume',desc:'عدد المكالمات الأسبوعي كامل',note:''},
+      {name:'SL%',desc:'من ACD Call Details Report',note:'Total calls + calls ≤30s Wait Time at ACD'},
+      {name:'AHT',desc:'AGENT Productivity Interval Summary',note:'User Talk Time + ACW Duration'},
+      {name:'Avg. ACW',desc:'AGENT Productivity Interval Summary',note:'Report'},
+      {name:'Avg. Staffed',desc:'AGENT Productivity Interval Summary',note:'اشيل عدد الساعات القليل — البنات من تيم ثاني'},
+      {name:'Speed of Answer',desc:'من ACD Call Details Report',note:'Only Answered = Total Wait Time at ACD'},
+      {name:'WhatsApp Volume',desc:'Total Chats',note:'Download WhatsApp'},
+      {name:'Avg. First RT',desc:'First Response',note:'Download WhatsApp'},
+      {name:'Avg. RT',desc:'Avg. Response Time',note:'Download WhatsApp'}
+    ]});
+    sections.push({title:'WhatsApp',items:[
+      {name:'Dashboard',desc:'عدد المكالمات - وقت الدخول',note:''},
+      {name:'Feedback Section',desc:'تقييم العملاء',note:'محادثة التقييم من الأرشيف برقم العميل'},
+      {name:'Chat Statistics',desc:'حالة المحادثة (الإغلاق)',note:''},
+      {name:'Archive',desc:'سجل المحادثات',note:''},
+      {name:'User List',desc:'معلومات الموظفات',note:''},
+      {name:'Canned Response',desc:'هاشتاق',note:''},
+      {name:'Download Center',desc:'ملف التقارير',note:''},
+      {name:'User Logging',desc:'وقت دخول الموظفات',note:''},
+      {name:'Missed Chats',desc:'مفقود',note:''},
+      {name:'Agent Performance',desc:'أداء الموظفات',note:''}
+    ]});
   }
 
   const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
@@ -488,12 +562,12 @@ function renderKPIs(rows){
   const STATUS={
     'Team KPI Achievement':{cls:'b-green',txt:'✓ On track'},
     'QA Monitoring':{cls:'b-green',txt:'✓ On track'},
-    'Inbound Booking Accuracy':{cls:'b-amber',txt:'In progress'},
-    'Escalation Resolution':{cls:'b-green',txt:'✓ 96%'},
-    'Coaching Sessions':{cls:'b-teal',txt:'In progress'},
-    'Improvement Plans':{cls:'b-green',txt:'✓ Done'},
-    'Process Enhancement':{cls:'b-gray',txt:'Pending'},
-    'Performance Gap Identification & Development Plan':{cls:'b-green',txt:'✓ Weekly'}
+    'Inbound Booking Accuracy':{cls:'b-green',txt:'✓ On track'},
+    'Escalation Resolution':{cls:'b-amber',txt:'In progress'},
+    'Coaching Sessions':{cls:'b-amber',txt:'In progress'},
+    'Improvement Plans':{cls:'b-amber',txt:'In progress'},
+    'Process Enhancement':{cls:'b-green',txt:'✓ Done (Inbound Dashboard)'},
+    'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
   };
   let html=`<div class="sec-label">Supervisor KPIs</div>
     <div class="card" style="margin-bottom:16px">
