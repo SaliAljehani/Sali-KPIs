@@ -431,7 +431,8 @@ async function loadAll(){
   try{
     const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows]=await Promise.all([
       fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
-      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap)
+      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap),
+      fetchCSV(GID.monthly),fetchCSV(GID.reports)
     ]);
     renderInbound(inbRows);
     renderWorkDone(inbRows);
@@ -441,6 +442,8 @@ async function loadAll(){
     renderCoaching(coachRows);
     renderImprovement(impRows);
     renderPerfGap(gapRows);
+    renderMonthly(monthlyRows);
+    renderReports(reportsRows);
   }catch(e){
     ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
       document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
