@@ -241,7 +241,7 @@ function showTab(name){
   _currentTab=name;
 }
 
-// ── FETCH via Apps Script Proxy ──
+// ── FETCH via JSONP Proxy ──
 const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 
 const GID_TO_NAME = {
@@ -256,43 +256,39 @@ const GID_TO_NAME = {
   '2136858309': 'Reports'
 };
 
-function fetchSheet(sheetName){
-  return new Promise(function(resolve,reject){
-    const cb='cb_'+sheetName.replace(/[^a-zA-Z0-9]/g,'_')+'_'+Date.now();
-    const url=PROXY+'?sheetName='+encodeURIComponent(sheetName)+'&callback='+cb;
-    const script=document.createElement('script');
-    const timer=setTimeout(function(){
-      delete window[cb];
-      try{document.body.removeChild(script);}catch(e){}
-      reject(new Error('Timeout: '+sheetName));
-    },20000);
-    window[cb]=function(data){
+function fetchCSV(gid){
+  const sheetName = GID_TO_NAME[String(gid)];
+  if(!sheetName) return Promise.reject(new Error('Unknown GID: '+gid));
+  return new Promise(function(resolve, reject){
+    const cbName = 'jscb_' + Math.random().toString(36).slice(2);
+    const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+    const script = document.createElement('script');
+    const timer = setTimeout(function(){
+      cleanup();
+      reject(new Error('Timeout: ' + sheetName));
+    }, 20000);
+    function cleanup(){
+      if(window[cbName]) delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
       clearTimeout(timer);
-      delete window[cb];
-      try{document.body.removeChild(script);}catch(e){}
-      if(!data||!data.length){resolve([]);return;}
-      // Convert objects to 2D array
-      const headers=Object.keys(data[0]);
-      const rows=[headers].concat(data.map(function(obj){
-        return headers.map(function(h){return String(obj[h]||'');});
+    }
+    window[cbName] = function(data){
+      cleanup();
+      if(!data || data.error){ reject(new Error(data && data.error ? data.error : 'No data: '+sheetName)); return; }
+      if(!data.length){ resolve([]); return; }
+      const headers = Object.keys(data[0]);
+      const rows = [headers].concat(data.map(function(obj){
+        return headers.map(function(h){ return String(obj[h]||''); });
       }));
       resolve(rows);
     };
-    script.onerror=function(){
-      clearTimeout(timer);
-      delete window[cb];
-      try{document.body.removeChild(script);}catch(e){}
-      reject(new Error('Load error: '+sheetName));
+    script.src = url;
+    script.onerror = function(){
+      cleanup();
+      reject(new Error('Script load error: ' + sheetName));
     };
-    script.src=url;
-    document.head.appendChild(script);
+    document.body.appendChild(script);
   });
-}
-
-async function fetchCSV(gid){
-  const name=GID_TO_NAME[String(gid)];
-  if(!name)throw new Error('Unknown GID: '+gid);
-  return fetchSheet(name);
 }
 
 // ══ MONTHLY PERFORMANCE — Static reference data ══
