@@ -387,8 +387,13 @@ function renderReports(rows){
     const b=String(r[1]||'').trim();
     const c=String(r[2]||'').trim();
     if(!a) return;
-    // Detect section headers
-    if(a.toLowerCase().includes('ameyo') || a==="CRM-MASTERDECK- Ghada" || a==='WhatsApp'){
+    // Detect section headers — full row is a header if col A has value and cols B,C empty OR it's a known header
+    const isHeader = (a.toLowerCase().includes('ameyo') || a.includes('CRM-MASTERDECK') || a==='WhatsApp') && !b;
+    if(isHeader){
+      cur={title:a,items:[]}; sections.push(cur); return;
+    }
+    // Also detect merged header rows (B and C empty, A has section name)
+    if(!b && !c && (a.includes('Ameyo') || a.includes('CRM') || a==='WhatsApp')){
       cur={title:a,items:[]}; sections.push(cur); return;
     }
     if(cur) cur.items.push({name:a, desc:b, note:c});
@@ -421,12 +426,16 @@ function renderReports(rows){
       {name:'Feedback Section',desc:'تقييم العملاء',note:'محادثة التقييم من الأرشيف برقم العميل'},
       {name:'Chat Statistics',desc:'حالة المحادثة (الإغلاق)',note:''},
       {name:'Archive',desc:'سجل المحادثات',note:''},
+      {name:'Permission',desc:'الخصائص',note:''},
       {name:'User List',desc:'معلومات الموظفات',note:''},
       {name:'Canned Response',desc:'هاشتاق',note:''},
+      {name:'Supervise & Tip Off',desc:'نفس الداش بورد حق الكيو',note:''},
       {name:'Download Center',desc:'ملف التقارير',note:''},
       {name:'User Logging',desc:'وقت دخول الموظفات',note:''},
+      {name:'Offline Queries',desc:'محادثات العملاء خارج أوقات الدوام',note:''},
       {name:'Missed Chats',desc:'مفقود',note:''},
-      {name:'Agent Performance',desc:'أداء الموظفات',note:''}
+      {name:'Agent Performance',desc:'أداء الموظفات',note:''},
+      {name:'Customer List',desc:'Push',note:''}
     ]});
   }
 
@@ -441,11 +450,11 @@ function renderReports(rows){
     html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
       <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
       ${sec.items.map((item,i)=>`
-        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:flex;gap:12px;align-items:flex-start">
-          <div style="min-width:220px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
-          <div style="flex:1">
-            <div style="font-size:11px;color:var(--muted);line-height:1.6">${item.desc}</div>
-            ${item.note?`<div style="font-size:10px;color:${col};margin-top:4px;background:${bg};padding:2px 9px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
+        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <div style="min-width:200px;max-width:220px;font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="flex:1;min-width:150px">
+            <div style="font-size:11px;color:var(--muted);line-height:1.6;direction:rtl;text-align:right">${item.desc}</div>
+            ${item.note?`<div style="font-size:10px;color:${col};margin-top:4px;direction:rtl;text-align:right;background:${bg};padding:2px 9px;border-radius:6px;display:inline-block">${item.note}</div>`:''}
           </div>
         </div>`).join('')}
     </div>`;
@@ -587,9 +596,9 @@ function renderKPIs(rows){
   let phase='';
   rows.forEach(r=>{
     const a=(r[0]||'').trim(),b=(r[1]||'').trim(),c=(r[2]||'').trim();
-    if(a==='Inbound Performance'){phase='';return;}
-    if(a==='Category'&&b==='KPIs Covered'){phase='inbound';return;}
-    if(a==='Category'&&b==='Measurement'&&c==='Weight'){phase='supervisor';return;}
+    if(a==='Inbound Performance'){phase='inbound_header';return;}
+    if((a==='Category'&&b==='KPIs Covered')||(a==='Category'&&b.includes('KPI'))){phase='inbound';return;}
+    if(a==='Category'&&(b==='Measurement'||b.includes('Measure'))){phase='supervisor';return;}
     if(a==='Final Total'||!a)return;
     if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
     if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
