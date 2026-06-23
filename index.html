@@ -594,12 +594,18 @@ function renderWorkDone(rows){
 function renderKPIs(rows){
   const inboundPerf=[],supervisorKPIs=[];
   let phase='';
-  rows.forEach(r=>{
+  // rows[0] from proxy = header row (column names from sheet row 1)
+  // actual data starts from rows[1]
+  // But Sali KPIs sheet has merged/complex structure so we scan all rows
+  const allRows = rows.length && rows[0][0]==='Inbound Performance' ? rows : rows.slice(1);
+  (allRows.length ? allRows : rows).forEach(r=>{
     const a=(r[0]||'').trim(),b=(r[1]||'').trim(),c=(r[2]||'').trim();
     if(a==='Inbound Performance'){phase='inbound_header';return;}
-    if((a==='Category'&&b==='KPIs Covered')||(a==='Category'&&b.includes('KPI'))){phase='inbound';return;}
-    if(a==='Category'&&(b==='Measurement'||b.includes('Measure'))){phase='supervisor';return;}
+    if(a==='Category'&&(b==='KPIs Covered'||b.includes('KPI'))){phase='inbound';return;}
+    if(a==='Category'&&(b==='Measurement'||b==='KPIs Covered')){phase='supervisor';return;}
     if(a==='Final Total'||!a)return;
+    // Detect supervisor section by weight column having %
+    if(phase===''&&c&&c.includes('%')&&b&&!b.includes('KPI')){phase='supervisor';}
     if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
     if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
   });
@@ -869,7 +875,7 @@ function renderPerfGap(rows){
   document.getElementById('tab-perfgap').innerHTML=html;
 }
 
-loadAll();
+document.addEventListener('DOMContentLoaded', loadAll);
 </script>
 </body>
 </html>
