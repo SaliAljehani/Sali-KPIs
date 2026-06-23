@@ -241,26 +241,55 @@ function showTab(name){
   _currentTab=name;
 }
 
-// ── FETCH ──
-async function fetchCSV(gid){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-  const res=await fetch(url);
-  if(!res.ok) throw new Error('Cannot load sheet (make sure it is public) — '+res.status);
-  return parseCSV(await res.text());
-}
-function parseCSV(text){
-  const rows=[];let row=[],field='',inQ=false;
-  for(let i=0;i<text.length;i++){
-    const c=text[i],n=text[i+1];
-    if(inQ){if(c==='"'&&n==='"'){field+='"';i++;}else if(c==='"')inQ=false;else field+=c;}
-    else{if(c==='"')inQ=true;else if(c===','){row.push(field.trim());field='';}
-      else if(c==='\r'){}else if(c==='\n'){row.push(field.trim());if(row.some(v=>v))rows.push(row);row=[];field='';}
-      else field+=c;}
-  }
-  if(field!==''||row.length){row.push(field.trim());if(row.some(v=>v))rows.push(row);}
-  return rows;
+// ── FETCH via Apps Script Proxy ──
+const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
+
+const GID_TO_NAME = {
+  '0':          'Inbound Work',
+  '209241740':  'Sali Attendance',
+  '72593736':   'Sali KPIs',
+  '1272140156': 'Check List',
+  '144857263':  'Coaching Sessions',
+  '115510114':  'Improvement Plans',
+  '1669804764': 'Performance Gap',
+  '413119919':  'Monthly Performance',
+  '2136858309': 'Reports'
+};
+
+function fetchSheet(sheetName){
+  return new Promise(function(resolve,reject){
+    const cb='cb_'+sheetName.replace(/[^a-zA-Z0-9]/g,'_')+'_'+Date.now();
+    const url=PROXY+'?sheetName='+encodeURIComponent(sheetName)+'&callback='+cb;
+    const script=document.createElement('script');
+    const timer=setTimeout(function(){
+      delete window[cb];try{document.body.removeChild(script);}catch(e){}
+      reject(new Error('Timeout: '+sheetName));
+    },15000);
+    window[cb]=function(data){
+      clearTimeout(timer);delete window[cb];
+      try{document.body.removeChild(script);}catch(e){}
+      if(!data||!data.length){resolve([]);return;}
+      const headers=Object.keys(data[0]);
+      const rows=[headers].concat(data.map(function(obj){
+        return headers.map(function(h){return obj[h]||'';});
+      }));
+      resolve(rows);
+    };
+    script.src=url;
+    script.onerror=function(){
+      clearTimeout(timer);delete window[cb];
+      try{document.body.removeChild(script);}catch(e){}
+      reject(new Error('Load error: '+sheetName));
+    };
+    document.body.appendChild(script);
+  });
 }
 
+async function fetchCSV(gid){
+  const name=GID_TO_NAME[String(gid)];
+  if(!name)throw new Error('Unknown GID: '+gid);
+  return fetchSheet(name);
+}
 
 // ══ MONTHLY PERFORMANCE — Static reference data ══
 function renderMonthly(rows){
