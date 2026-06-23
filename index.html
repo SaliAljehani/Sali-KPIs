@@ -262,26 +262,30 @@ function fetchSheet(sheetName){
     const url=PROXY+'?sheetName='+encodeURIComponent(sheetName)+'&callback='+cb;
     const script=document.createElement('script');
     const timer=setTimeout(function(){
-      delete window[cb];try{document.body.removeChild(script);}catch(e){}
+      delete window[cb];
+      try{document.body.removeChild(script);}catch(e){}
       reject(new Error('Timeout: '+sheetName));
-    },15000);
+    },20000);
     window[cb]=function(data){
-      clearTimeout(timer);delete window[cb];
+      clearTimeout(timer);
+      delete window[cb];
       try{document.body.removeChild(script);}catch(e){}
       if(!data||!data.length){resolve([]);return;}
+      // Convert objects to 2D array
       const headers=Object.keys(data[0]);
       const rows=[headers].concat(data.map(function(obj){
-        return headers.map(function(h){return obj[h]||'';});
+        return headers.map(function(h){return String(obj[h]||'');});
       }));
       resolve(rows);
     };
-    script.src=url;
     script.onerror=function(){
-      clearTimeout(timer);delete window[cb];
+      clearTimeout(timer);
+      delete window[cb];
       try{document.body.removeChild(script);}catch(e){}
       reject(new Error('Load error: '+sheetName));
     };
-    document.body.appendChild(script);
+    script.src=url;
+    document.head.appendChild(script);
   });
 }
 
