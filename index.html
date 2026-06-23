@@ -274,10 +274,17 @@ function fetchCSV(gid){
     }
     window[cbName] = function(data){
       cleanup();
-      if(!data || data.error){ reject(new Error(data && data.error ? data.error : 'No data: '+sheetName)); return; }
+      if(!data){ reject(new Error('No data: '+sheetName)); return; }
+      if(!Array.isArray(data) && data.error){ reject(new Error(data.error)); return; }
       if(!data.length){ resolve([]); return; }
-      const headers = Object.keys(data[0]);
-      const rows = [headers].concat(data.map(function(obj){
+      // Raw 2D array from updated proxy
+      if(Array.isArray(data[0])){
+        resolve(data.map(function(row){ return row.map(function(c){ return String(c||''); }); }));
+        return;
+      }
+      // Fallback: old object format
+      const headers=Object.keys(data[0]);
+      const rows=[headers].concat(data.map(function(obj){
         return headers.map(function(h){ return String(obj[h]||''); });
       }));
       resolve(rows);
