@@ -334,8 +334,8 @@ function renderMonthly(rows){
   const QA = callsQA.length ? callsQA : [
     {item:'Welcome',score:'10',ar:'المقدمة'},
     {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
-    {item:'Understanding the customer's problem',score:'10',ar:'فهم العميل'},
-    {item:'Answering the customer's question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
+    {item:'Understanding the customer problem',score:'10',ar:'فهم العميل'},
+    {item:'Answering the customer question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
     {item:'How long it took to answer',score:'5',ar:'كم استغرق الرد'},
     {item:'Attitude & Language',score:'5',ar:'السلوك واللغة'},
     {item:'Personal Enthusiasm',score:'5',ar:'الحماس الشخصي'},
@@ -396,7 +396,7 @@ function renderReports(rows){
 
   if(!sections.length || sections.every(s=>!s.items.length)){
     // Static fallback
-    sections.push({title:"Ameyo Report's",items:[
+    sections.push({title:"Ameyo Reports",items:[
       {name:'ACD Call Details',desc:'المفقود + اختيار الموظفة للاتصال (Disposition)',note:''},
       {name:'AGENT Productivity Interval Summary',desc:'تقرير الموظفة كامل لفترة الدوام',note:'Staffed Duration · First Login Time · Avg Handling Time'},
       {name:'Agent Session Details',desc:'وقت تسجيل الدخول والخروج',note:''},
