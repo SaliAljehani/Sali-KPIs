@@ -563,25 +563,47 @@ function renderEscalations(rawRows){
   }).length;
 
   el.innerHTML=`
-  <div style="display:grid;grid-template-columns:1fr 180px;gap:14px;align-items:start">
-
-    <div>
-      <div class="card" style="margin-bottom:12px">
-        <div class="card-title"><span class="dot" style="background:#A32D2D"></span>Escalations 2026</div>
-        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:0">
-          <div class="stat"><div class="stat-num">${total}</div><div class="stat-lbl">Total</div></div>
-          <div class="stat" style="background:#FAF0F0"><div class="stat-num" style="color:#A32D2D">${pending}</div><div class="stat-lbl">Pending</div></div>
-          <div class="stat" style="background:#EAF3DE"><div class="stat-num" style="color:#3B6D11">${closed}</div><div class="stat-lbl">Closed</div></div>
+  <div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="card" style="margin:0;display:flex;align-items:center;gap:14px">
+        <div style="font-size:40px;font-weight:700;color:var(--teal);line-height:1">${todayCount}</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Today's cases</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:5px">${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+          <div style="font-size:11px;color:#085041;background:var(--teal-light);padding:2px 9px;border-radius:6px;display:inline-block;font-weight:600">Sali Aljehani</div>
         </div>
       </div>
+      <div class="card" style="margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Total</div>
+          <div style="font-size:22px;font-weight:700;color:var(--text)">${total}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Pending</div>
+          <div style="font-size:22px;font-weight:700;color:#A32D2D">${pending}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Closed</div>
+          <div style="font-size:22px;font-weight:700;color:#3B6D11">${closed}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="flex:1;min-width:120px">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Check any date</div>
+          <input type="date" id="esc-date-picker" style="width:100%;padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px" oninput="calcEscDate(this.value)">
+          <div style="font-size:12px;font-weight:600;color:var(--teal);margin-top:3px"><span id="esc-date-count">—</span> cases</div>
+        </div>
+      </div>
+    </div>
 
-      <div class="card">
-        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-          <input id="esc-search" type="text" placeholder="Search case ID or assigned..."
-            style="flex:1;min-width:150px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
-            oninput="filterEsc()">
+    <div class="card" style="margin:0">
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <input id="esc-search" type="text" placeholder="Search case ID or assigned..."
+          style="flex:1;min-width:150px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
+          oninput="filterEsc()">
           <select id="esc-sf" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
             <option value="">All status</option>
             <option>Pending</option><option>Pending Refund</option><option>Pending MCI</option>
             <option>Pending with Sales</option><option>Pending Compensation</option>
@@ -589,13 +611,13 @@ function renderEscalations(rawRows){
             <option>Duplicate</option><option>Raise a new complaint</option><option>Closed</option>
           </select>
           <select id="esc-df" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
             <option value="">All departments</option>
             <option>PAC</option><option>Nissan</option><option>Stellantis</option>
             <option>PE</option><option>Bodyshop</option><option>Foton</option>
           </select>
           <select id="esc-mf" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
             <option value="">All agents</option>
             <option>Sali Aljehani</option><option>Shahad Ammar</option>
           </select>
@@ -635,45 +657,6 @@ function renderEscalations(rawRows){
         </div>
         <div id="esc-count" style="margin-top:8px;font-size:11px;color:var(--muted)">Showing ${total} cases</div>
       </div>
-    </div>
-
-    <div style="display:flex;flex-direction:column;gap:10px">
-
-      <div class="card">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Today's cases</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
-        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
-          <span style="font-size:38px;font-weight:700;color:var(--teal)">${todayCount}</span>
-          <span style="font-size:12px;color:var(--muted)">cases handled</span>
-        </div>
-        <div style="background:var(--teal-light);color:#085041;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;display:inline-block">Sali Aljehani</div>
-      </div>
-
-      <div class="card">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Check any date</div>
-        <input type="date" id="esc-date-picker" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;margin-bottom:10px" oninput="calcEscDate(this.value)">
-        <div style="display:flex;align-items:baseline;gap:6px">
-          <span id="esc-date-count" style="font-size:30px;font-weight:700;color:var(--teal)">—</span>
-          <span style="font-size:12px;color:var(--muted)">cases</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Summary</div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border)">
-          <span style="font-size:12px;color:var(--muted)">Total</span>
-          <span style="font-size:12px;font-weight:600;color:var(--text)">${total}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border)">
-          <span style="font-size:12px;color:var(--muted)">Pending</span>
-          <span style="font-size:12px;font-weight:600;color:#A32D2D">${pending}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:6px 0">
-          <span style="font-size:12px;color:var(--muted)">Closed</span>
-          <span style="font-size:12px;font-weight:600;color:#3B6D11">${closed}</span>
-        </div>
-      </div>
-
     </div>
   </div>`;
 
