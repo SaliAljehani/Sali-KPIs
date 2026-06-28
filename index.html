@@ -178,6 +178,9 @@
     <div class="sb-section">Reports</div>
     <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">Escalations</div>
+    <div class="nav-item" id="nav-escalations" onclick="showTab('escalations')"><span class="ico">🚨</span> Escalations 2026</div>
   </nav>
 
   <!-- CONTENT -->
@@ -192,6 +195,7 @@
     <div id="tab-perfgap" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
   </main>
 </div>
 
@@ -202,7 +206,8 @@ const GID = {
   checklist:'1272140156', coaching:'144857263',
   improvement:'115510114', perfgap:'1669804764',
   monthly:'413119919',
-  reports:'2136858309'
+  reports:'2136858309',
+  escalations:'371798932'
 };
 const AGENTS=[
   'Ahdab Shalabi',
@@ -253,7 +258,8 @@ const GID_TO_NAME = {
   '115510114':  'Improvement Plans',
   '1669804764': 'Performance Gap',
   '413119919':  'Monthly Performance',
-  '2136858309': 'Reports'
+  '2136858309': 'Reports',
+  '371798932':  'Escalations 2026'
 };
 
 function fetchCSV(gid){
@@ -472,10 +478,10 @@ async function loadAll(){
     document.getElementById('tab-'+id).innerHTML='<div class="loading">⏳ Loading...</div>';
   });
   try{
-    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows]=await Promise.all([
+    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows,escRows]=await Promise.all([
       fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
       fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap),
-      fetchCSV(GID.monthly),fetchCSV(GID.reports)
+      fetchCSV(GID.monthly),fetchCSV(GID.reports),fetchCSV(GID.escalations)
     ]);
     renderInbound(inbRows);
     renderWorkDone(inbRows);
@@ -487,6 +493,7 @@ async function loadAll(){
     renderPerfGap(gapRows);
     renderMonthly(monthlyRows);
     renderReports(reportsRows);
+    renderEscalations(escRows);
   }catch(e){
     ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
       document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
@@ -494,6 +501,229 @@ async function loadAll(){
     // Monthly and Reports use static fallback even on error
     renderMonthly([]);
     renderReports([]);
+  }
+}
+
+// ── ESCALATIONS ──
+function renderEscalations(rows){
+  const el=document.getElementById('tab-escalations');
+  if(!el)return;
+
+  const STATUS_COLORS={
+    'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8',
+    'Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8',
+    'Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2',
+    'Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8',
+    'Closed':'#EAF3DE','Resolved':'#EAF3DE'
+  };
+  const DEPT_COLORS={
+    'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2',
+    'PE':'#EBF4F2','Bodyshop':'#F0E8FE','Foton':'#F1EFE8'
+  };
+
+  const getStatus=r=>r['Status']||r['Status Value']||'';
+  const getDept=r=>r['Department']||r['Department Value']||'';
+  const getModBy=r=>r['Modified By']||'';
+  const getModDate=r=>r['Modified Date']||r['Modified']||'';
+  const getCaseId=r=>r['Case ID']||r['Title']||'';
+
+  const statusBadge=s=>{
+    if(!s)return'<span style="color:#aaa">—</span>';
+    const bg=STATUS_COLORS[s]||'#F1EFE8';
+    const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';
+    return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;
+  };
+  const deptBadge=d=>{
+    if(!d)return'<span style="color:#aaa">—</span>';
+    const bg=DEPT_COLORS[d]||'#F1EFE8';
+    return`<span style="background:${bg};color:#444;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600">${d}</span>`;
+  };
+
+  const total=rows.length;
+  const pending=rows.filter(r=>getStatus(r).toLowerCase().includes('pending')).length;
+  const closed=rows.filter(r=>{const s=getStatus(r);return s==='Closed'||s==='Resolved';}).length;
+
+  const todayStr=new Date().toISOString().slice(0,10);
+  const todayCount=rows.filter(r=>{
+    const d=getModDate(r);const mb=getModBy(r);
+    return d&&d.slice(0,10)===todayStr&&mb.toLowerCase().includes('sali');
+  }).length;
+
+  el.innerHTML=`
+  <div style="display:grid;grid-template-columns:1fr 240px;gap:14px;align-items:start">
+
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title"><span class="dot" style="background:#A32D2D"></span>Escalations 2026</div>
+        <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:0">
+          <div class="stat"><div class="stat-num">${total}</div><div class="stat-lbl">Total</div></div>
+          <div class="stat" style="background:#FAF0F0"><div class="stat-num" style="color:#A32D2D">${pending}</div><div class="stat-lbl">Pending</div></div>
+          <div class="stat" style="background:#EAF3DE"><div class="stat-num" style="color:#3B6D11">${closed}</div><div class="stat-lbl">Closed</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <input id="esc-search" type="text" placeholder="Search case ID or assigned..."
+            style="flex:1;min-width:150px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
+            oninput="filterEsc()">
+          <select id="esc-sf" onchange="filterEsc()"
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            <option value="">All status</option>
+            <option>Pending</option><option>Pending Refund</option><option>Pending MCI</option>
+            <option>Pending with Sales</option><option>Pending Compensation</option>
+            <option>Pending Customer contact</option><option>Pending for parts</option>
+            <option>Duplicate</option><option>Raise a new complaint</option><option>Closed</option>
+          </select>
+          <select id="esc-df" onchange="filterEsc()"
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            <option value="">All departments</option>
+            <option>PAC</option><option>Nissan</option><option>Stellantis</option>
+            <option>PE</option><option>Bodyshop</option><option>Foton</option>
+          </select>
+          <select id="esc-mf" onchange="filterEsc()"
+            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:var(--surface);color:var(--text)">
+            <option value="">All agents</option>
+            <option>Sali Aljehani</option><option>Shahad Ammar</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead style="position:sticky;top:0;z-index:1">
+              <tr style="background:var(--teal-light)">
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">#</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Case ID</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Status</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Dept</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Assigned to</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Modified by</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Comments</th>
+              </tr>
+            </thead>
+            <tbody id="esc-tbody">${rows.map((r,i)=>{
+              const caseId=getCaseId(r);
+              const status=getStatus(r);
+              const dept=getDept(r);
+              const assigned=r['Assigned to']||'';
+              const modby=getModBy(r);
+              const comments=r['Comments']||'';
+              const rowBg=i%2===0?'':'background:#F7FAF8';
+              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'':'#F7FAF8'}'">
+                <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
+                <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
+                <td style="padding:8px 10px">${statusBadge(status)}</td>
+                <td style="padding:8px 10px">${deptBadge(dept)}</td>
+                <td style="padding:8px 10px;color:var(--text);font-size:11px">${assigned}</td>
+                <td style="padding:8px 10px;font-size:11px;color:${modby.toLowerCase().includes('sali')?'var(--teal)':'var(--muted)'};font-weight:${modby.toLowerCase().includes('sali')?'600':'400'}">${modby}</td>
+                <td style="padding:8px 10px;color:var(--muted);font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${comments}</td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+        <div id="esc-count" style="margin-top:8px;font-size:11px;color:var(--muted)">Showing ${total} cases</div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <div class="card">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Today's cases</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+        <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px">
+          <span style="font-size:38px;font-weight:700;color:var(--teal)">${todayCount}</span>
+          <span style="font-size:12px;color:var(--muted)">cases handled</span>
+        </div>
+        <div style="background:var(--teal-light);color:#085041;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;display:inline-block">Sali Aljehani</div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Check any date</div>
+        <input type="date" id="esc-date-picker" style="width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:12px;margin-bottom:10px" oninput="calcEscDate(this.value)">
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <span id="esc-date-count" style="font-size:30px;font-weight:700;color:var(--teal)">—</span>
+          <span style="font-size:12px;color:var(--muted)">cases</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Summary</div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border)">
+          <span style="font-size:12px;color:var(--muted)">Total</span>
+          <span style="font-size:12px;font-weight:600;color:var(--text)">${total}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border)">
+          <span style="font-size:12px;color:var(--muted)">Pending</span>
+          <span style="font-size:12px;font-weight:600;color:#A32D2D">${pending}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0">
+          <span style="font-size:12px;color:var(--muted)">Closed</span>
+          <span style="font-size:12px;font-weight:600;color:#3B6D11">${closed}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+
+  window._escRows=rows;
+}
+
+function calcEscDate(dateStr){
+  const rows=window._escRows||[];
+  const count=rows.filter(r=>{
+    const d=String(r['Modified Date']||r['Modified']||'');
+    const mb=String(r['Modified By']||'');
+    return d.slice(0,10)===dateStr&&mb.toLowerCase().includes('sali');
+  }).length;
+  const el=document.getElementById('esc-date-count');
+  if(el)el.textContent=count;
+}
+
+function filterEsc(){
+  const rows=window._escRows||[];
+  const q=(document.getElementById('esc-search')?.value||'').toLowerCase();
+  const sf=document.getElementById('esc-sf')?.value||'';
+  const df=document.getElementById('esc-df')?.value||'';
+  const mf=document.getElementById('esc-mf')?.value||'';
+
+  const STATUS_COLORS={'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8','Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8','Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2','Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8','Closed':'#EAF3DE','Resolved':'#EAF3DE'};
+  const DEPT_COLORS={'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2','PE':'#EBF4F2','Bodyshop':'#F0E8FE','Foton':'#F1EFE8'};
+  const sb=s=>{if(!s)return'<span style="color:#aaa">—</span>';const bg=STATUS_COLORS[s]||'#F1EFE8';const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;};
+  const db=d=>{if(!d)return'<span style="color:#aaa">—</span>';const bg=DEPT_COLORS[d]||'#F1EFE8';return`<span style="background:${bg};color:#444;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600">${d}</span>`;};
+
+  const filtered=rows.filter(r=>{
+    const caseId=String(r['Case ID']||r['Title']||'').toLowerCase();
+    const status=String(r['Status']||r['Status Value']||'');
+    const dept=String(r['Department']||r['Department Value']||'');
+    const assigned=String(r['Assigned to']||'').toLowerCase();
+    const modby=String(r['Modified By']||'');
+    const comments=String(r['Comments']||'').toLowerCase();
+    return(!q||(caseId+status.toLowerCase()+assigned+comments).includes(q))
+      &&(!sf||status===sf)&&(!df||dept===df)
+      &&(!mf||modby.toLowerCase().includes(mf.toLowerCase()));
+  });
+
+  const tbody=document.getElementById('esc-tbody');
+  if(tbody){
+    tbody.innerHTML=filtered.map((r,i)=>{
+      const caseId=r['Case ID']||r['Title']||'';
+      const status=r['Status']||r['Status Value']||'';
+      const dept=r['Department']||r['Department Value']||'';
+      const assigned=r['Assigned to']||'';
+      const modby=r['Modified By']||'';
+      const comments=r['Comments']||'';
+      const rowBg=i%2===0?'':'background:#F7FAF8';
+      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'':'#F7FAF8'}'">
+        <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
+        <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
+        <td style="padding:8px 10px">${sb(status)}</td>
+        <td style="padding:8px 10px">${db(dept)}</td>
+        <td style="padding:8px 10px;color:var(--text);font-size:11px">${assigned}</td>
+        <td style="padding:8px 10px;font-size:11px;color:${modby.toLowerCase().includes('sali')?'var(--teal)':'var(--muted)'};font-weight:${modby.toLowerCase().includes('sali')?'600':'400'}">${modby}</td>
+        <td style="padding:8px 10px;color:var(--muted);font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${comments}</td>
+      </tr>`;
+    }).join('');
+    const cnt=document.getElementById('esc-count');
+    if(cnt)cnt.textContent=`Showing ${filtered.length} of ${rows.length} cases`;
   }
 }
 
