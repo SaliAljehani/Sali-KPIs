@@ -557,9 +557,16 @@ function renderEscalations(rawRows){
   const closed=rows.filter(r=>{const s=getStatus(r);return s==='Closed'||s==='Resolved';}).length;
 
   const todayStr=new Date().toISOString().slice(0,10);
+  const parseEscDate=d=>{
+    if(!d)return'';
+    const s=String(d).trim();
+    if(s.match(/^\d{4}-\d{2}-\d{2}/))return s.slice(0,10);
+    if(s.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){const p=s.split('/');return p[2]+'-'+p[0].padStart(2,'0')+'-'+p[1].padStart(2,'0');}
+    return s.slice(0,10);
+  };
   const todayCount=rows.filter(r=>{
-    const d=getModDate(r);const mb=getModBy(r);
-    return d&&d.slice(0,10)===todayStr&&mb.toLowerCase().includes('sali');
+    const d=parseEscDate(getModDate(r));const mb=getModBy(r);
+    return d===todayStr&&mb.toLowerCase().includes('sali');
   }).length;
 
   el.innerHTML=`
@@ -576,23 +583,23 @@ function renderEscalations(rawRows){
       <div class="card" style="margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted)">Total</div>
-          <div style="font-size:22px;font-weight:700;color:var(--text)">${total}</div>
+          <div id="esc-stat-total" style="font-size:22px;font-weight:700;color:var(--text)">${total}</div>
         </div>
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted)">Pending</div>
-          <div style="font-size:22px;font-weight:700;color:#A32D2D">${pending}</div>
+          <div id="esc-stat-pending" style="font-size:22px;font-weight:700;color:#A32D2D">${pending}</div>
         </div>
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted)">Closed</div>
-          <div style="font-size:22px;font-weight:700;color:#3B6D11">${closed}</div>
+          <div id="esc-stat-closed" style="font-size:22px;font-weight:700;color:#3B6D11">${closed}</div>
         </div>
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="flex:1;min-width:120px">
           <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Check any date</div>
           <input type="date" id="esc-date-picker" style="width:100%;padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px" oninput="calcEscDate(this.value)">
-          <div style="font-size:12px;font-weight:600;color:var(--teal);margin-top:3px"><span id="esc-date-count">—</span> cases</div>
+          <div id="esc-date-count" style="font-size:12px;margin-top:5px;color:var(--muted)">— select a date</div>
         </div>
       </div>
     </div>
@@ -759,13 +766,46 @@ function saveEscEdit(idx){
 
 function calcEscDate(dateStr){
   const rows=window._escRows||[];
-  const count=rows.filter(r=>{
-    const d=String(r['Modified Date']||r['Modified']||'');
-    const mb=String(r['Modified By']||'');
-    return d.slice(0,10)===dateStr&&mb.toLowerCase().includes('sali');
-  }).length;
+  const parseEscDate=d=>{
+    if(!d)return'';
+    const s=String(d).trim();
+    if(s.match(/^\d{4}-\d{2}-\d{2}/))return s.slice(0,10);
+    if(s.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){const p=s.split('/');return p[2]+'-'+p[0].padStart(2,'0')+'-'+p[1].padStart(2,'0');}
+    return s.slice(0,10);
+  };
+
+  if(!dateStr){
+    const total=rows.length;
+    const pending=rows.filter(r=>(r['Status']||'').toLowerCase().includes('pending')).length;
+    const closed=rows.filter(r=>{const s=r['Status']||'';return s==='Closed'||s==='Resolved';}).length;
+    const t=document.getElementById('esc-stat-total');const p=document.getElementById('esc-stat-pending');const c=document.getElementById('esc-stat-closed');
+    if(t)t.textContent=total;if(p)p.textContent=pending;if(c)c.textContent=closed;
+    const el=document.getElementById('esc-date-count');if(el)el.innerHTML='— select a date';
+    return;
+  }
+
+  const dateRows=rows.filter(r=>parseEscDate(String(r['Modified Date']||r['Modified']||''))===dateStr);
+  const total=dateRows.length;
+  const pending=dateRows.filter(r=>(r['Status']||'').toLowerCase().includes('pending')).length;
+  const closed=dateRows.filter(r=>{const s=r['Status']||'';return s==='Closed'||s==='Resolved';}).length;
+  const saliCount=dateRows.filter(r=>String(r['Modified By']||'').toLowerCase().includes('sali')).length;
+  const shahadCount=dateRows.filter(r=>String(r['Modified By']||'').toLowerCase().includes('shahad')).length;
+
+  const t=document.getElementById('esc-stat-total');const p=document.getElementById('esc-stat-pending');const c=document.getElementById('esc-stat-closed');
+  if(t)t.textContent=total;if(p)p.textContent=pending;if(c)c.textContent=closed;
+
   const el=document.getElementById('esc-date-count');
-  if(el)el.textContent=count;
+  if(el)el.innerHTML=`
+    <div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:15px;font-weight:700;color:#0F6E56">${saliCount}</span>
+        <span style="font-size:10px;color:#085041;background:#E1F5EE;padding:1px 7px;border-radius:6px;font-weight:600">Sali Aljehani</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:15px;font-weight:700;color:#888">${shahadCount}</span>
+        <span style="font-size:10px;color:#555;background:#F1EFE8;padding:1px 7px;border-radius:6px;font-weight:600">Shahad Ammar</span>
+      </div>
+    </div>`;
 }
 
 function filterEsc(){
