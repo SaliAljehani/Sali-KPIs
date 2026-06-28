@@ -168,6 +168,7 @@
     <div class="nav-item" id="nav-workdone" onclick="showTab('workdone')"><span class="ico">✅</span> Work Done</div>
     <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
     <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Check List</div>
+    <div class="nav-item" id="nav-escalations" onclick="showTab('escalations')"><span class="ico">🚨</span> Escalations 2026</div>
     <div class="nav-divider"></div>
     <div class="sb-section">KPIs</div>
     <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
@@ -178,9 +179,6 @@
     <div class="sb-section">Reports</div>
     <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
-    <div class="nav-divider"></div>
-    <div class="sb-section">Escalations</div>
-    <div class="nav-item" id="nav-escalations" onclick="showTab('escalations')"><span class="ico">🚨</span> Escalations 2026</div>
   </nav>
 
   <!-- CONTENT -->
@@ -505,9 +503,24 @@ async function loadAll(){
 }
 
 // ── ESCALATIONS ──
-function renderEscalations(rows){
+function renderEscalations(rawRows){
   const el=document.getElementById('tab-escalations');
   if(!el)return;
+
+  // Convert 2D array to objects using first row as headers
+  let rows=[];
+  if(rawRows&&rawRows.length>0){
+    if(Array.isArray(rawRows[0])){
+      const headers=rawRows[0];
+      rows=rawRows.slice(1).map(r=>{
+        const obj={};
+        headers.forEach((h,i)=>obj[h]=r[i]||'');
+        return obj;
+      }).filter(r=>Object.values(r).some(v=>v));
+    } else {
+      rows=rawRows.filter(r=>Object.values(r).some(v=>v));
+    }
+  }
 
   const STATUS_COLORS={
     'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8',
