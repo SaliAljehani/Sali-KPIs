@@ -205,6 +205,7 @@
     <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
     <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
+    <div class="nav-item" id="nav-qa" onclick="showTab('qa')"><span class="ico">⭐</span> Quality Assessment</div>
   </nav>
 
   <!-- CONTENT -->
@@ -221,6 +222,7 @@
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
+    <div id="tab-qa" style="display:none"></div>
   </main>
 </div>
 
@@ -270,6 +272,7 @@ function showTab(name){
   document.getElementById('tab-'+name).style.display='block';
   _currentTab=name;
   if(name==='eom' && !EOM_LOADED) loadEOM();
+  if(name==='qa') renderQA();
 }
 
 // ── FETCH via JSONP Proxy ──
@@ -1842,6 +1845,291 @@ function renderEOMScores(results){
 function renderEOMManual(results,month){}
 
 function saveEOMManual(){saveEOMAll();}
+
+// ══ QUALITY ASSESSMENT ══════════════════════════════════════════════════════
+const QA_COLS = [
+  {key:'welcome',    label:'Welcome',                                     max:10},
+  {key:'question',   label:'Question or Inquiry / Purpose of call',       max:10},
+  {key:'understand', label:'Understanding the customers problem',          max:10},
+  {key:'answering',  label:'Answering the Customers question or problem',  max:10},
+  {key:'howlong',    label:'How long it took to answer',                   max:5},
+  {key:'attitude',   label:'Attitude & Language',                          max:5},
+  {key:'enthusiasm', label:'Personal Enthusiasm',                          max:5},
+  {key:'hold',       label:'Hold time / mute',                             max:5},
+  {key:'closer',     label:'Closer of call',                               max:10},
+  {key:'ticket',     label:'Ticket Quality / System input',                max:30},
+];
+const QA_TOTAL_MAX = 100;
+
+const QA_AGENT_COMPANIES = {
+  'Bayan Jazzar':       ['NI','ST','PE'],
+  'Hanin Yajizi':       ['NI','ST','PE'],
+  'Nedaa Shorbaji':     ['NI','ST','PE'],
+  'Sara Sami':          ['NI','ST','PE'],
+  'Ghadeer Motadares':  ['PE','NI','ST'],
+  'Manar Alshehri':     ['NI','ST','PE'],
+  'Mawadah Essam':      ['NI','ST','PE'],
+  'Nesreen Mansoor':    ['NI','ST','PE'],
+  'Yosra Alsalami':     ['NI','ST'],
+  'Asmaa M. Bawayan':   ['ST','NI','PE'],
+  'Hibah Almuwallad':   ['ST','ST'],
+  'Mashael Alshehri':   ['ST','NI','PE'],
+  'Wejdan Mustafa':     ['NI','PE'],
+  'Ghofran Hussain Rafie': ['Foton','NO'],
+  'Shatha Bawayan':     ['Foton','NO'],
+};
+
+const QA_MONTHS = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06',
+                   '2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+let QA_DATA = {};
+let QA_ACTIVE_MONTH = '2026-' + String(new Date().getMonth()+1).padStart(2,'0');
+
+try{ QA_DATA = JSON.parse(localStorage.getItem('qa_data')||'{}'); }catch(e){}
+
+function saveQAData(){ try{localStorage.setItem('qa_data',JSON.stringify(QA_DATA));}catch(e){} }
+
+function fmtMonthQA(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderQA(){
+  const el=document.getElementById('tab-qa');
+  if(!el)return;
+
+  const selHTML=QA_MONTHS.map(m=>`<option value="${m}"${m===QA_ACTIVE_MONTH?' selected':''}>${fmtMonthQA(m)}</option>`).join('');
+
+  // Build rows
+  const rows=[];
+  Object.entries(QA_AGENT_COMPANIES).forEach(([agent,companies])=>{
+    companies.forEach(co=>{
+      rows.push({agent,co});
+    });
+  });
+
+  // Build table headers
+  const colHeaders=QA_COLS.map(c=>`<th style="text-align:center;min-width:60px;white-space:nowrap;font-size:10px;padding:6px 4px" title="${c.label}">${c.label.split(' ').slice(0,2).join(' ')}<br><span style="color:#c0a020;font-weight:400">|${c.max}</span></th>`).join('');
+
+  let html=`
+  <div class="sec-label">⭐ Quality Assessment — Calls Evaluation</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select onchange="QA_ACTIVE_MONTH=this.value;renderQA()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveQAData();showQASaveMsg()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">💾 Save</button>
+      <span id="qaSaveMsg" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+      <button onclick="exportQA()" style="padding:7px 14px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Copy Summary</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="overflow-x:auto;max-height:70vh;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead style="position:sticky;top:0;z-index:2">
+          <!-- Group row -->
+          <tr>
+            <th colspan="4" style="padding:6px 10px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2);position:sticky;left:0;z-index:3">Info</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">تقييم العميل |20</th>
+            <th colspan="6" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">خدمة العملاء |50</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">جودة التكت |30</th>
+            <th colspan="3" style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Result</th>
+            <th style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500">Comments</th>
+          </tr>
+          <!-- Column headers -->
+          <tr style="background:#f4faf7;border-bottom:2px solid #9FE1CB">
+            <th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:500;color:#085041;min-width:120px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:50px">Company</th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:80px">Date</th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:100px;border-right:1px solid #9FE1CB">Customer Number</th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Welcome<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px;border-right:1px solid #9FE1CB">Question or Inquiry<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px">Understanding<br>the problem<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px">Answering<br>the question<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:58px">How long<br>to answer<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Attitude &<br>Language<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Personal<br>Enthusiasm<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:58px">Hold time<br>/ mute<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px;border-right:1px solid #9FE1CB">Closer<br>of call<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
+            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:70px;border-right:1px solid #9FE1CB">Ticket Quality<br>/ System input<br><span style="color:#0F6E56;font-weight:700">|30</span></th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#0F6E56;min-width:50px">Total<br>|100</th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:50px">Target</th>
+            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">%</th>
+            <th style="padding:7px 8px;text-align:left;font-size:10px;font-weight:500;color:var(--muted);min-width:150px">Other comments</th>
+          </tr>
+        </thead>
+        <tbody id="qaTbody">
+          ${buildQARows(rows)}
+        </tbody>
+        <tfoot>
+          <tr style="background:#e8f5ee;font-weight:700;border-top:2px solid #9FE1CB">
+            <td colspan="4" style="padding:8px 10px;font-size:11px;color:var(--teal);font-weight:600">Total</td>
+            ${QA_COLS.map((_,i)=>`<td id="qa_ft_${i}" style="text-align:center;font-size:11px;color:var(--teal)">—</td>`).join('')}
+            <td id="qa_ft_total" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td style="text-align:center;font-size:11px;color:var(--muted)">100</td>
+            <td id="qa_ft_pct" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>`;
+
+  el.innerHTML=html;
+  updateQATotals();
+}
+
+function buildQARows(rows){
+  let html='';
+  let lastAgent='';
+  rows.forEach((r,i)=>{
+    const key=QA_ACTIVE_MONTH+'_'+r.agent+'_'+r.co;
+    const d=QA_DATA[key]||{};
+    const isFirst=r.agent!==lastAgent;
+    lastAgent=r.agent;
+    const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
+
+    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+    const pct=total>0?Math.round(total/QA_TOTAL_MAX*100)+'%':'0%';
+    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
+
+    const coColor={NI:'#fde8e8',ST:'#e3edf8',PE:'#e8f5ee',Foton:'#eceff1',NO:'#f5f0e8'}[r.co]||'#f5f5f5';
+    const coTextColor={NI:'#c0272d',ST:'#1565c0',PE:'#2e7d32',Foton:'#546e7a',NO:'#6a5818'}[r.co]||'#555';
+
+    const colInputs=QA_COLS.map(c=>{
+      const v=d[c.key]||'';
+      const vn=parseFloat(v);
+      const over=!isNaN(vn)&&vn>c.max;
+      return`<td style="text-align:center;padding:2px"><input type="number" min="0" max="${c.max}" value="${v}" placeholder="—"
+        style="width:48px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid ${over?'#c0272d':'var(--border)'};border-radius:5px;background:${over?'#fde':'#fff'}"
+        oninput="setQA('${key}','${c.key}',this.value,${c.max},this)"
+        title="Max: ${c.max}"></td>`;
+    }).join('');
+
+    html+=`<tr style="${bg};border-bottom:0.5px solid var(--border)" data-qa-key="${key}">
+      <td style="padding:6px 10px;font-weight:${isFirst?'700':'400'};font-size:11px;color:var(--text);position:sticky;left:0;${bg}">${isFirst?r.agent:''}</td>
+      <td style="text-align:center;padding:4px">
+        <span style="background:${coColor};color:${coTextColor};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">${r.co}</span>
+      </td>
+      <td style="text-align:center;padding:2px"><input type="date" value="${d.date||''}"
+        style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:5px;width:100px"
+        oninput="setQA('${key}','date',this.value,null,null)"></td>
+      <td style="text-align:center;padding:2px"><input type="text" value="${d.cusnum||''}" placeholder="—"
+        style="width:90px;font-size:10px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;text-align:center"
+        oninput="setQA('${key}','cusnum',this.value,null,null)"></td>
+      ${colInputs}
+      <td style="text-align:center;font-weight:700;font-size:12px;color:var(--text)" id="qa_tot_${i}">${total||0}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">100</td>
+      <td style="text-align:center;font-weight:700;font-size:12px;color:${pctColor}" id="qa_pct_${i}">${pct}</td>
+      <td style="padding:2px"><input type="text" value="${d.comments||''}" placeholder="—"
+        style="width:140px;font-size:10px;padding:3px 5px;border:1px solid var(--border);border-radius:5px"
+        oninput="setQA('${key}','comments',this.value,null,null)"></td>
+    </tr>`;
+  });
+  return html;
+}
+
+function setQA(key, field, value, max, el){
+  if(!QA_DATA[key])QA_DATA[key]={};
+  QA_DATA[key][field]=value;
+  if(el&&max!==null){
+    const v=parseFloat(value);
+    const over=!isNaN(v)&&v>max;
+    el.style.border=over?'1px solid #c0272d':'1px solid var(--border)';
+    el.style.background=over?'#fde':'#fff';
+  }
+  saveQAData();
+  updateQARow(key);
+  updateQATotals();
+}
+
+function updateQARow(key){
+  const rows=document.querySelectorAll('[data-qa-key="'+key+'"]');
+  rows.forEach((row,idx)=>{
+    const d=QA_DATA[key]||{};
+    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+    const pct=Math.round(total/QA_TOTAL_MAX*100)+'%';
+    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
+    const totEl=row.querySelector('[id^="qa_tot_"]');
+    const pctEl=row.querySelector('[id^="qa_pct_"]');
+    if(totEl)totEl.textContent=total||0;
+    if(pctEl){pctEl.textContent=pct;pctEl.style.color=pctColor;}
+  });
+  // update all rows by re-reading ids
+  document.querySelectorAll('#qaTbody tr').forEach((row,i)=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+    const pct=Math.round(total/QA_TOTAL_MAX*100)+'%';
+    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
+    const totEl=document.getElementById('qa_tot_'+i);
+    const pctEl=document.getElementById('qa_pct_'+i);
+    if(totEl)totEl.textContent=total||0;
+    if(pctEl){pctEl.textContent=pct;pctEl.style.color=pctColor;}
+  });
+}
+
+function updateQATotals(){
+  const colSums=QA_COLS.map(()=>0);
+  let grandTotal=0,rowCount=0;
+  document.querySelectorAll('#qaTbody tr').forEach((row,i)=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    let rowTotal=0;
+    QA_COLS.forEach((c,ci)=>{
+      const v=parseFloat(d[c.key]||0)||0;
+      colSums[ci]+=v;
+      rowTotal+=v;
+    });
+    if(rowTotal>0){grandTotal+=rowTotal;rowCount++;}
+    const totEl=document.getElementById('qa_tot_'+i);
+    const pctEl=document.getElementById('qa_pct_'+i);
+    if(totEl)totEl.textContent=rowTotal||0;
+    if(pctEl){
+      const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);
+      pctEl.textContent=pct+'%';
+      pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
+    }
+  });
+  QA_COLS.forEach((_,i)=>{
+    const el=document.getElementById('qa_ft_'+i);
+    if(el)el.textContent=colSums[i]||'—';
+  });
+  const totEl=document.getElementById('qa_ft_total');
+  const pctEl=document.getElementById('qa_ft_pct');
+  if(totEl)totEl.textContent=grandTotal||'—';
+  if(pctEl&&rowCount>0){
+    const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);
+    pctEl.textContent=avg+'%';
+    pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';
+  }
+}
+
+function showQASaveMsg(){
+  const el=document.getElementById('qaSaveMsg');
+  if(!el)return;
+  el.textContent='✅ تم الحفظ!';el.style.color='#2e7d32';
+  setTimeout(()=>{el.textContent='البيانات محفوظة تلقائياً';el.style.color='var(--muted)';},2000);
+}
+
+function exportQA(){
+  const rows=document.querySelectorAll('#qaTbody tr');
+  let text=`Quality Assessment — ${fmtMonthQA(QA_ACTIVE_MONTH)}\n\n`;
+  text+='Name\tCompany\t'+QA_COLS.map(c=>c.label).join('\t')+'\tTotal\t%\tComments\n';
+  rows.forEach(row=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    const [,agent,co]=k.split('_');
+    const vals=QA_COLS.map(c=>d[c.key]||'0').join('\t');
+    const total=QA_COLS.reduce((s,c)=>s+(parseFloat(d[c.key]||0)||0),0);
+    text+=`${agent}\t${co}\t${vals}\t${total}\t${Math.round(total)}%\t${d.comments||''}\n`;
+  });
+  navigator.clipboard.writeText(text).then(()=>alert('✅ Copied to clipboard!'));
+}
 
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
