@@ -238,7 +238,7 @@ const GID = {
 };
 const AGENTS=[
   'Ahdab Shalabi',
-  'Asmaa M. Bawayan',
+  'Asmaa Bawayan',
   'Bayan Jazzar',
   'Ghadeer Motadares',
   'Ghofran Hussain Rafie',
@@ -1863,7 +1863,7 @@ const QA_COLS = [
 const QA_TOTAL_MAX = 100;
 
 const QA_AGENT_COMPANIES = {
-  'Asmaa M. Bawayan':      ['NI','ST','PE'],
+  'Asmaa Bawayan':      ['NI','ST','PE'],
   'Bayan Jazzar':          ['NI','ST','PE'],
   'Ghadeer Motadares':     ['NI','ST','PE'],
   'Ghofran Hussain Rafie': ['Foton','NI','NI'],
@@ -2004,7 +2004,10 @@ function buildQARows(rows){
   let html='';let agentIdx=0;
   Object.entries(agents).forEach(([agent,agentRows])=>{
     const rowspan=agentRows.length;
-    const initials=agent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const displayName=agent.replace(' M. ',' ');
+    const initials=displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const rowBg=agentIdx%2===0?'background:#ffffff':'background:#f0faf5';
+    const stickyBg=agentIdx%2===0?'#ffffff':'#f0faf5';
 
     agentRows.forEach((r,ri)=>{
       const key=QA_ACTIVE_MONTH+'_'+agent+'_'+r.co;
@@ -2012,8 +2015,7 @@ function buildQARows(rows){
       const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
       const pct=Math.round(total/QA_TOTAL_MAX*100);
       const pctCol=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
-      const rowBg=agentIdx%2===0?'background:#fff':'background:#f4faf7';
-      const borderBottom=ri===rowspan-1?'border-bottom:1.5px solid var(--border-strong)':'border-bottom:0.5px solid var(--border)';
+      const borderBottom=ri===rowspan-1?'border-bottom:2px solid #c8e6c9':'border-bottom:0.5px solid #ddd';
       const coSt=CO_STYLE[r.co]||'background:#f5f5f5;color:#555';
       const colInputs=QA_COLS.map(c=>{
         const v=d[c.key]||'';
@@ -2025,12 +2027,9 @@ function buildQARows(rows){
 
       html+=`<tr style="${rowBg};${borderBottom}" data-qa-key="${key}">`;
       if(ri===0){
-        html+=`<td rowspan="${rowspan}" style="padding:4px 8px;font-size:10px;font-weight:500;text-align:center;vertical-align:middle;position:sticky;left:0;${rowBg};border-right:0.5px solid var(--border)">
-          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
-            <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700">${initials}</div>
-            <span style="font-size:9px;font-weight:600;text-align:center;line-height:1.2">${agent}</span>
-          </div>
-        </td>`;
+        html+=`<td rowspan="${rowspan}" style="padding:4px 8px;font-size:10px;font-weight:600;text-align:center;vertical-align:middle;position:sticky;left:0;background:${stickyBg};border-right:0.5px solid var(--border)">
+            ${displayName}
+          </td>`;
       }
       html+=`<td style="text-align:center;padding:2px 3px">
         <span style="${coSt};padding:1px 6px;border-radius:8px;font-size:9px;font-weight:600">${r.co}</span>
@@ -2049,7 +2048,7 @@ function buildQARows(rows){
         style="width:120px;font-size:9px;${inp}"
         oninput="setQA('${key}','comments',this.value,null,null)"></td>
       </tr>`;
-      if(ri===0) agentIdx++;
+      if(ri===rowspan-1) agentIdx++;
     });
   });
   return html;
