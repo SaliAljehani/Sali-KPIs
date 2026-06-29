@@ -1357,8 +1357,8 @@ function renderEOMTab(){
     <div class="card-title" onclick="toggleEOMSection('eomFbSection','eomFbArrow')" style="cursor:pointer">
       <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
       Feedback — أدخلي الأرقام من تقرير Feedback
-      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
       <span id="eomFbArrow" style="font-size:11px;color:var(--muted)">▲</span>
+      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
     </div>
     <div id="eomFbSection">
       <div style="overflow-x:auto">
@@ -1386,11 +1386,11 @@ function renderEOMTab(){
     <div class="card-title" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')" style="cursor:pointer">
       <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
       Agent Performance
-      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">
-        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;margin-left:4px">● تلقائي</span>
-        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px">✏️ يدوي</span>
-      </span>
       <span id="eomPerfArrow" style="font-size:11px;color:var(--muted)">▲</span>
+      <span style="margin-right:auto;display:flex;gap:5px">
+        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
+        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
+      </span>
     </div>
     <div id="eomPerfSection">
       <div style="overflow-x:auto">
@@ -1438,7 +1438,7 @@ function renderEOMTab(){
     <div class="card-title" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')" style="cursor:pointer;justify-content:center">
       <div style="width:20px;height:20px;border-radius:50%;background:#DAA520;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">3</div>
       <span id="eomPodiumTitle">🏆 ${fmtMonthEOM(month)}</span>
-      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted);margin-right:auto">▲</span>
+      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted)">▲</span>
     </div>
     <div id="eomPodiumBody">
       <div id="eomPodium"><div style="color:var(--muted);padding:30px;font-size:13px">أدخلي البيانات واضغطي Save & Calculate</div></div>
@@ -1450,7 +1450,7 @@ function renderEOMTab(){
     <div class="card-title" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')" style="cursor:pointer">
       <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
       جدول النقاط التفصيلي
-      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);margin-right:auto">▲</span>
+      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted)">▲</span>
     </div>
     <div id="eomScoresBody">
       <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">أدخلي البيانات واضغطي Save & Calculate</div></div>
