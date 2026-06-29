@@ -1370,14 +1370,52 @@ function renderEOMTab(){
     </div>
   </div>
 
-  <!-- STEP 2: QUALITY -->
+  <!-- STEP 2: PERFORMANCE TABLE 15 COLS -->
   <div class="card" style="margin-bottom:12px">
     <div class="card-title">
-      <div style="width:20px;height:20px;border-radius:50%;background:#e65100;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
-      Quality % — من تقييمك للمكالمات
+      <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+      Agent Performance
+      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">
+        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;margin-left:4px">● تلقائي</span>
+        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px">✏️ يدوي</span>
+      </span>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;background:var(--teal-light);padding:8px 12px;border-radius:8px">💡 أدخلي نسبة الجودة لكل موظفة من تقييمك الشهري للمكالمات</div>
-    <div id="eomQualityGrid" style="display:grid;gap:7px"></div>
+    <div style="overflow-x:auto">
+      <table class="tbl" style="min-width:1100px">
+        <thead>
+          <tr style="background:#f4faf7">
+            <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted)">Info</th>
+            <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Time ●</th>
+            <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Calls ●</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">WA ✏️</th>
+            <th style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Total ●</th>
+            <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">CSAT ✏️</th>
+            <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Tickets ●</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">Quality ✏️</th>
+            <th style="text-align:center;font-size:9px;color:var(--purple);background:var(--purple-light)">Score</th>
+          </tr>
+          <tr>
+            <th style="text-align:center;font-size:10px">#</th>
+            <th style="font-size:10px">User Name</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Badge #</th>
+            <th style="text-align:center;font-size:10px">Avg Talk</th>
+            <th style="text-align:center;font-size:10px">Avg ACW</th>
+            <th style="text-align:center;font-size:10px">AHT</th>
+            <th style="text-align:center;font-size:10px">Manual</th>
+            <th style="text-align:center;font-size:10px">Inbound</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">WhatsApp</th>
+            <th style="text-align:center;font-size:10px">Total</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">To CSAT</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">CSAT%</th>
+            <th style="text-align:center;font-size:10px">Tickets</th>
+            <th style="text-align:center;font-size:10px">%</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Quality%</th>
+            <th style="text-align:center;font-size:10px;color:var(--purple)">Score</th>
+          </tr>
+        </thead>
+        <tbody id="eomPerfBody"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- STEP 3: PODIUM -->
@@ -1418,13 +1456,17 @@ function calcEOM(){
   rows.forEach(r=>{
     const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
     if(!name)return;
-    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,days:0};
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,days:0};
     const a=agents[name];
     a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
     a.manual +=parseInt(r['Manual Dials']||0)||0;
     a.tickets+=parseInt(r['Tickets']||0)||0;
     const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
+    const talk=parseTimeEOM(r['Avg. Talk Time']||r['Avg Talk Time']||'');
+    const acw=parseTimeEOM(r['Avg.ACW Duration']||r['Avg ACW Duration']||r['Avg. ACW']||'');
     if(aht>0){a.ahtSum+=aht;a.ahtCount++;}
+    if(talk>0){a.talkSum+=talk;a.talkCount++;}
+    if(acw>0){a.acwSum+=acw;a.acwCount++;}
     a.days++;
   });
 
@@ -1432,10 +1474,10 @@ function calcEOM(){
 
   // Build feedback table rows
   renderEOMFeedbackTable(agentNames, month);
-  // Build quality inputs
-  renderEOMQualityGrid(agentNames, month);
+  // Build perf table
+  renderEOMPerfTable(agentNames, agents, month);
 
-  // Get CSAT from feedback inputs + quality from quality inputs
+  // Calculate scores
   const maxCalls=Math.max(...Object.values(agents).map(a=>a.calls+a.manual),1);
   const results=agentNames.map(name=>{
     const a=agents[name];
@@ -1462,8 +1504,74 @@ function calcEOM(){
     return{name,total,avgAHT,ahtMin,tktPct,quality,csat,s_calls,s_aht,s_tickets,final,days:a.days};
   });
   results.sort((a,b)=>b.final-a.final);
+
+  // Update rank & score in perf table
+  const em=['🥇','🥈','🥉'];
+  const scCols=['#DAA520','#9e9e9e','#cd7f32'];
+  results.forEach((r,rank)=>{
+    const nid=r.name.replace(/\s/g,'_');
+    const sc=document.getElementById('eomPerf_score_'+nid);
+    const no=document.getElementById('eomPerf_no_'+nid);
+    if(sc){sc.textContent=r.final.toFixed(1);sc.style.color=rank<3?scCols[rank]:'var(--text)';sc.style.fontWeight='800';}
+    if(no){no.textContent=rank<3?em[rank]:String(rank+1);}
+  });
+
   renderEOMPodium(results);
   renderEOMScores(results);
+}
+
+function renderEOMPerfTable(agentNames, agents, month){
+  const el=document.getElementById('eomPerfBody');
+  if(!el)return;
+  const fmtT=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const inp=`border:1px solid var(--border);border-radius:5px;background:#fff3e0;font-size:11px;padding:3px 5px;text-align:center`;
+  let html='';
+  agentNames.forEach((name,i)=>{
+    const a=agents[name];
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const total=a.calls+a.manual;
+    const tktPct=total?Math.round(a.tickets/total*100)+'%':'—';
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
+    const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const ahtOk=avgAHT/60>=3;
+    const tktOk=total&&(a.tickets/total*100)>=95;
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const nid=name.replace(/\s/g,'_');
+    const bg=i%2===0?'':'background:var(--gray)';
+    html+=`<tr style="${bg}" data-perf-agent="${name}">
+      <td style="text-align:center;font-size:12px" id="eomPerf_no_${nid}">—</td>
+      <td style="padding:5px 8px"><div style="display:flex;align-items:center;gap:6px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${init}</div>
+        <span style="font-size:11px;font-weight:600">${name}</span>
+      </div></td>
+      <td style="text-align:center;padding:3px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:52px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgTalk)}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgACW)}</td>
+      <td style="text-align:center;font-size:11px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtT(avgAHT)}</td>
+      <td style="text-align:center;font-size:11px">${a.manual}</td>
+      <td style="text-align:center;font-size:11px">${a.calls}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-wa" placeholder="—" value="${md.wa||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','wa',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px;font-weight:700">${total}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px">${a.tickets}</td>
+      <td style="text-align:center;font-size:11px;${tktOk?'color:#2e7d32;font-weight:700':'color:var(--muted)'}">${tktPct}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-quality" placeholder="—" value="${md.quality||''}" min="0" max="100" step="0.1" style="width:50px;${inp}" oninput="savePerfField('${name}','quality',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:13px;font-weight:800" id="eomPerf_score_${nid}">—</td>
+    </tr>`;
+  });
+  el.innerHTML=html;
+}
+
+function savePerfField(name,field,value,month){
+  const mk=month+'_'+name;
+  if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+  const v=parseFloat(value);
+  EOM_MANUAL[mk][field]=isNaN(v)?value:v;
+  try{localStorage.setItem('eom_manual',JSON.stringify(EOM_MANUAL));}catch(e){}
+  if(field==='csat'||field==='quality') calcEOM();
 }
 
 function renderEOMFeedbackTable(agentNames, month){
@@ -1568,14 +1676,14 @@ function renderEOMQualityGrid(agentNames, month){
     const md=EOM_MANUAL[mk]||{};
     const qV=md.quality??'';
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    html+=`<div class="eom-manual-row" data-agent="${name}" style="grid-template-columns:1fr 140px">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="width:26px;height:26px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0">${init}</div>
+    html+=`<div class="eom-manual-row" data-agent="${name}" style="grid-template-columns:1fr 110px;padding:7px 10px">
+      <div style="display:flex;align-items:center;gap:7px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${init}</div>
         <span style="font-size:12px;font-weight:600">${name}</span>
       </div>
       <div>
-        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">⭐ Quality %</div>
-        <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="e.g. 97.5" value="${qV}" oninput="liveCalcEOM()">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px">⭐ Quality %</div>
+        <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="97.5" value="${qV}" oninput="liveCalcEOM()" style="padding:4px 8px;font-size:12px">
       </div>
     </div>`;
   });
@@ -1597,17 +1705,21 @@ function liveCalcEOM(){
 
 function saveEOMAll(){
   const month=document.getElementById('eomMonthSel').value;
-  // Save feedback
   document.querySelectorAll('#eomFbBody tr[data-fb-agent]').forEach(row=>{
     updateFBRow(row.querySelector('.fb-ans'), row.dataset.fbAgent);
   });
-  // Save quality
-  document.querySelectorAll('#eomQualityGrid .eom-manual-row').forEach(row=>{
-    const agent=row.dataset.agent;
-    const mk=month+'_'+agent;
+  document.querySelectorAll('#eomPerfBody tr[data-perf-agent]').forEach(row=>{
+    const name=row.dataset.perfAgent;
+    const mk=month+'_'+name;
     if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
-    const qv=parseFloat(row.querySelector('.q-inp').value);
-    if(!isNaN(qv))EOM_MANUAL[mk].quality=qv;
+    const get=(cls)=>{const el=row.querySelector('.'+cls);return el?el.value:'';};
+    const badge=get('perf-badge'); const wa=get('perf-wa');
+    const tocsat=get('perf-tocsat'); const csat=get('perf-csat'); const quality=get('perf-quality');
+    if(badge) EOM_MANUAL[mk].badge=badge;
+    if(wa)    EOM_MANUAL[mk].wa=parseFloat(wa);
+    if(tocsat)EOM_MANUAL[mk].tocsat=parseFloat(tocsat);
+    if(csat)  EOM_MANUAL[mk].csat=parseFloat(csat);
+    if(quality)EOM_MANUAL[mk].quality=parseFloat(quality);
   });
   try{localStorage.setItem('eom_manual',JSON.stringify(EOM_MANUAL));}catch(e){}
   const st=document.getElementById('eomSaveStatus');
