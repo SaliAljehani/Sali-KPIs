@@ -133,6 +133,29 @@
   .brand-foton{background:#eceff1;color:#546e7a}
   .brand-electromin{background:#ede7f6;color:#4527a0}
 
+  /* ── EOM ── */
+  .eom-podium{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:20px 0}
+  .eom-p-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .eom-p-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+  .eom-p-name{font-size:11px;font-weight:700;color:var(--text);text-align:center;max-width:90px}
+  .eom-p-score{font-size:15px;font-weight:800}
+  .eom-p-block{border-radius:8px 8px 0 0;width:88px;display:flex;align-items:center;justify-content:center;font-size:24px}
+  .eom-p1 .eom-p-block{background:linear-gradient(135deg,#DAA520,#b8860b);height:90px}
+  .eom-p2 .eom-p-block{background:linear-gradient(135deg,#9e9e9e,#757575);height:68px}
+  .eom-p3 .eom-p-block{background:linear-gradient(135deg,#cd7f32,#a0522d);height:50px}
+  .eom-p1 .eom-p-score{color:#DAA520}
+  .eom-p2 .eom-p-score{color:#9e9e9e}
+  .eom-p3 .eom-p-score{color:#cd7f32}
+  .eom-p1 .eom-p-av{background:linear-gradient(135deg,#DAA520,#b8860b)}
+  .eom-p2 .eom-p-av{background:linear-gradient(135deg,#9e9e9e,#757575)}
+  .eom-p3 .eom-p-av{background:linear-gradient(135deg,#cd7f32,#a0522d)}
+  .eom-manual-row{display:grid;grid-template-columns:180px 1fr 1fr;gap:10px;align-items:center;padding:9px 12px;background:var(--gray);border-radius:8px;margin-bottom:6px}
+  .eom-input{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;outline:none;width:100%;background:#fff;color:var(--text)}
+  .eom-input:focus{border-color:var(--teal-mid)}
+  .eom-meet{color:#2e7d32;font-weight:700}
+  .eom-miss{color:#A32D2D;font-weight:700}
+  .eom-na{color:#bbb}
+
   @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -179,6 +202,7 @@
     <div class="sb-section">Reports</div>
     <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
   </nav>
 
   <!-- CONTENT -->
@@ -194,6 +218,7 @@
     <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
   </main>
 </div>
 
@@ -242,6 +267,7 @@ function showTab(name){
   document.querySelectorAll('.content > div').forEach(el=>el.style.display='none');
   document.getElementById('tab-'+name).style.display='block';
   _currentTab=name;
+  if(name==='eom' && !EOM_LOADED) loadEOM();
 }
 
 // ── FETCH via JSONP Proxy ──
@@ -1238,6 +1264,287 @@ function renderPerfGap(rows){
       </tbody></table></div></div>`;
   }
   document.getElementById('tab-perfgap').innerHTML=html;
+}
+
+// ══ EOM CALCULATOR ══
+const EOM_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
+const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
+const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
+let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
+
+try{ EOM_MANUAL=JSON.parse(localStorage.getItem('eom_manual')||'{}'); }catch(e){}
+
+async function fetchEOMSheet(id, sheet){
+  const url=`${GAS_EOM}?id=${id}&sheetName=${encodeURIComponent(sheet)}`;
+  const res=await fetch(url);
+  const data=await res.json();
+  return Array.isArray(data)?data:(data.rows||[]);
+}
+
+function parseTimeEOM(v){
+  if(!v)return 0;
+  const s=String(v).trim();
+  const p=s.split(':').map(Number);
+  if(p.length===3)return p[0]*3600+p[1]*60+p[2];
+  if(p.length===2)return p[0]*60+p[1];
+  return 0;
+}
+
+async function loadEOM(){
+  document.getElementById('tab-eom').innerHTML='<div class="loading">⏳ Loading EOM data...</div>';
+  try{
+    const [agentRows, eomRows]=await Promise.all([
+      fetchEOMSheet(AGENT_PERF_SHEET_ID,'Agent Performance'),
+      fetchEOMSheet(EOM_SHEET_ID,'EOM Data').catch(()=>[])
+    ]);
+    EOM_RAW=agentRows;
+    EOM_SHEET_DATA=eomRows;
+    // Build months
+    const mSet=new Set();
+    EOM_RAW.forEach(r=>{
+      const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim().slice(0,7);
+      if(/^\d{4}-\d{2}$/.test(d)) mSet.add(d);
+    });
+    EOM_MONTHS=[...mSet].sort().reverse();
+    EOM_LOADED=true;
+    renderEOMTab();
+  }catch(e){
+    document.getElementById('tab-eom').innerHTML=`<div class="err">⚠️ ${e.message}</div>`;
+  }
+}
+
+function fmtMonthEOM(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderEOMTab(){
+  const month=EOM_MONTHS[0]||'';
+  const selHTML=EOM_MONTHS.map(m=>`<option value="${m}">${fmtMonthEOM(m)}</option>`).join('');
+  const html=`
+  <div class="sec-label">🏆 Employee of the Month Calculator</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select id="eomMonthSel" onchange="calcEOM()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveEOMManual()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">💾 Save & Calculate</button>
+      <span style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً في المتصفح</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--teal-light);color:var(--teal)">📞 Calls 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#fff3e0;color:#e65100">⭐ Quality 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--purple-light);color:var(--purple)">😊 CSAT 20%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber-light);color:var(--amber)">⏱ AHT 15%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--gray);color:var(--muted)">🎫 Tickets% 15%</span>
+    </div>
+  </div>
+
+  <!-- PODIUM -->
+  <div class="card" style="text-align:center;margin-bottom:12px">
+    <div class="card-title" style="justify-content:center"><span class="dot" style="background:#DAA520"></span><span id="eomPodiumTitle">🏆 ${fmtMonthEOM(month)}</span></div>
+    <div id="eomPodium"><div style="color:var(--muted);padding:30px;font-size:13px">جاري الحساب...</div></div>
+  </div>
+
+  <!-- MANUAL INPUT -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>✏️ Quality % & CSAT % — إدخال يدوي</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;background:var(--teal-light);padding:8px 12px;border-radius:8px">💡 أدخلي Quality من تقييمك للمكالمات، وCSAT من تقرير Feedback — محفوظة تلقائياً</div>
+    <div id="eomManualGrid"></div>
+  </div>
+
+  <!-- SCORES TABLE -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>📊 جدول النقاط التفصيلي</div>
+    <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">جاري الحساب...</div></div>
+  </div>`;
+  document.getElementById('tab-eom').innerHTML=html;
+  calcEOM();
+}
+
+function calcEOM(){
+  if(!EOM_LOADED)return;
+  const month=document.getElementById('eomMonthSel')?document.getElementById('eomMonthSel').value:EOM_MONTHS[0];
+  if(!month)return;
+  document.getElementById('eomPodiumTitle').textContent='🏆 '+fmtMonthEOM(month);
+
+  // Filter rows
+  const rows=EOM_RAW.filter(r=>{
+    const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim();
+    return d.startsWith(month);
+  });
+
+  // Group by agent
+  const agents={};
+  rows.forEach(r=>{
+    const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
+    if(!name)return;
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,days:0};
+    const a=agents[name];
+    a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
+    a.manual +=parseInt(r['Manual Dials']||0)||0;
+    a.tickets+=parseInt(r['Tickets']||0)||0;
+    const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
+    if(aht>0){a.ahtSum+=aht;a.ahtCount++;}
+    a.days++;
+  });
+
+  // Merge EOM sheet (Quality/CSAT from sheet)
+  EOM_SHEET_DATA.forEach(r=>{
+    const rm=String(r['Month']||Object.values(r)[0]||'').trim();
+    const ra=String(r['Agent']||Object.values(r)[1]||'').trim();
+    const q=parseFloat(String(r['Quality %']||r['Quality']||'').replace('%',''))||null;
+    const c=parseFloat(String(r['CSAT %']||r['CSAT']||'').replace('%',''))||null;
+    if(rm===month&&ra&&agents[ra]){
+      if(q!==null)agents[ra].qSheet=q;
+      if(c!==null)agents[ra].cSheet=c;
+    }
+  });
+
+  const maxCalls=Math.max(...Object.values(agents).map(a=>a.calls+a.manual),1);
+  const results=Object.entries(agents).map(([name,a])=>{
+    const total=a.calls+a.manual;
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const tktPct=total?(a.tickets/total)*100:0;
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const quality=md.quality??a.qSheet??null;
+    const csat   =md.csat??a.cSheet??null;
+    const s_calls  =(total/maxCalls)*100;
+    const s_quality=quality!==null?Math.min(quality,100):null;
+    const s_csat   =csat!==null?Math.min(csat,100):null;
+    const ahtMin   =avgAHT/60;
+    const s_aht    =ahtMin>=3?100:(ahtMin/3)*100;
+    const s_tickets=Math.min((tktPct/95)*100,100);
+    let score=0,wUsed=0;
+    score+=s_calls*W_EOM.calls; wUsed+=W_EOM.calls;
+    if(s_quality!==null){score+=s_quality*W_EOM.quality;wUsed+=W_EOM.quality;}
+    if(s_csat!==null)   {score+=s_csat*W_EOM.csat;    wUsed+=W_EOM.csat;}
+    score+=s_aht*W_EOM.aht;       wUsed+=W_EOM.aht;
+    score+=s_tickets*W_EOM.tickets;wUsed+=W_EOM.tickets;
+    const final=wUsed>0?score/wUsed*100:0;
+    return{name,total,avgAHT,ahtMin,tktPct,quality,csat,s_calls,s_aht,s_tickets,final,days:a.days};
+  });
+  results.sort((a,b)=>b.final-a.final);
+  renderEOMPodium(results);
+  renderEOMScores(results);
+  renderEOMManual(results,month);
+}
+
+function renderEOMPodium(results){
+  if(!results.length){document.getElementById('eomPodium').innerHTML='<div style="color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const top=results.slice(0,3);
+  const order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
+  const cls=['eom-p2','eom-p1','eom-p3'];
+  const medals=['🥈','🥇','🥉'];
+  const cols=['#9e9e9e','#DAA520','#cd7f32'];
+  let html='<div class="eom-podium">';
+  order.forEach((a,i)=>{
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-p-item ${cls[i]}">
+      <div class="eom-p-av">${init}</div>
+      <div class="eom-p-name">${a.name}</div>
+      <div class="eom-p-score" style="color:${cols[i]}">${a.final.toFixed(1)}</div>
+      <div class="eom-p-block">${medals[i]}</div>
+    </div>`;
+  });
+  html+='</div>';
+  if(top[0]){
+    html+=`<div style="background:linear-gradient(135deg,#fff8e1,#fff3cd);border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:12px;border:2px solid #DAA520;margin-top:4px">
+      <span style="font-size:28px">🏆</span>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em">موظفة الشهر</div>
+        <div style="font-size:17px;font-weight:800;color:var(--text)">${top[0].name}</div>
+        <div style="font-size:12px;color:#DAA520;font-weight:700">النقاط: ${top[0].final.toFixed(2)} / 100</div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('eomPodium').innerHTML=html;
+}
+
+function renderEOMScores(results){
+  if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const em=['🥇','🥈','🥉'];
+  let html=`<div style="overflow-x:auto"><table class="tbl">
+    <thead><tr>
+      <th>#</th><th>Agent</th>
+      <th style="text-align:center">Calls<br><span style="color:#bbb;font-weight:400">25%</span></th>
+      <th style="text-align:center">Quality<br><span style="color:#bbb;font-weight:400">25%</span></th>
+      <th style="text-align:center">CSAT<br><span style="color:#bbb;font-weight:400">20%</span></th>
+      <th style="text-align:center">AHT<br><span style="color:#bbb;font-weight:400">15%</span></th>
+      <th style="text-align:center">Tickets%<br><span style="color:#bbb;font-weight:400">15%</span></th>
+      <th style="text-align:center">Score</th>
+    </tr></thead><tbody>`;
+  results.forEach((a,i)=>{
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const rank=i<3?`<span style="font-size:14px">${em[i]}</span>`:`<span style="color:#ccc;font-size:11px">${i+1}</span>`;
+    const ahtD=a.avgAHT>0?`${Math.floor(a.avgAHT/60)}:${String(Math.round(a.avgAHT%60)).padStart(2,'0')}`:'—';
+    const qD=a.quality!==null?a.quality.toFixed(1)+'%':'<span class="eom-na">—</span>';
+    const cD=a.csat!==null?a.csat.toFixed(1)+'%':'<span class="eom-na">—</span>';
+    const qCls=a.quality!==null?(a.quality>=95?'eom-meet':'eom-miss'):'';
+    const cCls=a.csat!==null?(a.csat>=95?'eom-meet':'eom-miss'):'';
+    const aCls=a.ahtMin>=3?'eom-meet':'eom-miss';
+    const tCls=a.tktPct>=95?'eom-meet':'eom-miss';
+    const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
+    html+=`<tr>
+      <td style="text-align:center">${rank}</td>
+      <td><div style="display:flex;align-items:center;gap:7px">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0">${init}</div>
+        <span style="font-size:12px;font-weight:600">${a.name}</span>
+      </div></td>
+      <td style="text-align:center;font-weight:700">${a.total}</td>
+      <td style="text-align:center" class="${qCls}">${qD}</td>
+      <td style="text-align:center" class="${cCls}">${cD}</td>
+      <td style="text-align:center" class="${aCls}">${ahtD}</td>
+      <td style="text-align:center" class="${tCls}">${a.tktPct.toFixed(0)}%</td>
+      <td style="text-align:center;font-size:15px;font-weight:800;color:${scoreCol}">${a.final.toFixed(1)}</td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('eomScoresTable').innerHTML=html;
+}
+
+function renderEOMManual(results,month){
+  let html='';
+  results.forEach(a=>{
+    const key=month+'_'+a.name;
+    const saved=EOM_MANUAL[key]||{};
+    const qV=saved.quality??a.quality??'';
+    const cV=saved.csat??a.csat??'';
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-manual-row" data-agent="${a.name}">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0">${init}</div>
+        <span style="font-size:12px;font-weight:600">${a.name}</span>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">⭐ Quality %</div>
+        <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="e.g. 97.5" value="${qV}">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">😊 CSAT %</div>
+        <input class="eom-input c-inp" type="number" min="0" max="100" step="0.1" placeholder="e.g. 95.0" value="${cV}">
+      </div>
+    </div>`;
+  });
+  document.getElementById('eomManualGrid').innerHTML=html;
+}
+
+function saveEOMManual(){
+  const month=document.getElementById('eomMonthSel').value;
+  document.querySelectorAll('#eomManualGrid .eom-manual-row').forEach(row=>{
+    const agent=row.dataset.agent;
+    const key=month+'_'+agent;
+    const qv=parseFloat(row.querySelector('.q-inp').value);
+    const cv=parseFloat(row.querySelector('.c-inp').value);
+    if(!EOM_MANUAL[key])EOM_MANUAL[key]={};
+    if(!isNaN(qv))EOM_MANUAL[key].quality=qv;
+    if(!isNaN(cv))EOM_MANUAL[key].csat=cv;
+  });
+  try{localStorage.setItem('eom_manual',JSON.stringify(EOM_MANUAL));}catch(e){}
+  calcEOM();
 }
 
 document.addEventListener('DOMContentLoaded', loadAll);
