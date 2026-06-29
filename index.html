@@ -1584,10 +1584,7 @@ function renderEOMPerfTable(agentNames, agents, month){
     const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:12px" id="eomPerf_no_${nid}">—</td>
-      <td style="padding:5px 8px"><div style="display:flex;align-items:center;gap:6px">
-        <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${init}</div>
-        <span style="font-size:11px;font-weight:600">${name}</span>
-      </div></td>
+      <td style="padding:5px 8px;font-size:11px;font-weight:600">${name}</td>
       <td style="text-align:center;padding:3px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:52px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
       <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgTalk)}</td>
       <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgACW)}</td>
@@ -1631,10 +1628,7 @@ function renderEOMFeedbackTable(agentNames, month){
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
     html+=`<tr data-fb-agent="${name}">
-      <td style="padding:4px 10px"><div style="display:flex;align-items:center;gap:6px">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0">${init}</div>
-        <span style="font-weight:600;font-size:11px">${name}</span>
-      </div></td>
+      <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
@@ -1720,10 +1714,7 @@ function renderEOMQualityGrid(agentNames, month){
     const qV=md.quality??'';
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     html+=`<div class="eom-manual-row" data-agent="${name}" style="grid-template-columns:1fr 110px;padding:7px 10px">
-      <div style="display:flex;align-items:center;gap:7px">
-        <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${init}</div>
-        <span style="font-size:12px;font-weight:600">${name}</span>
-      </div>
+      <span style="font-size:12px;font-weight:600">${name}</span>
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px">⭐ Quality %</div>
         <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="97.5" value="${qV}" oninput="liveCalcEOM()" style="padding:4px 8px;font-size:12px">
@@ -1827,10 +1818,7 @@ function renderEOMScores(results){
     const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
     html+=`<tr>
       <td style="text-align:center">${rank}</td>
-      <td><div style="display:flex;align-items:center;gap:7px">
-        <div style="width:26px;height:26px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0">${init}</div>
-        <span style="font-size:12px;font-weight:600">${a.name}</span>
-      </div></td>
+      <td style="padding:6px 8px;font-size:12px;font-weight:600">${a.name}</td>
       <td style="text-align:center;font-weight:700">${a.total}</td>
       <td style="text-align:center" class="${qCls}">${qD}</td>
       <td style="text-align:center" class="${cCls}">${cD}</td>
