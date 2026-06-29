@@ -1346,53 +1346,59 @@ function renderEOMTab(){
 
   <!-- STEP 1: FEEDBACK -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title">
+    <div class="card-title" onclick="toggleEOMSection('eomFbSection','eomFbArrow')" style="cursor:pointer">
       <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
       Feedback — أدخلي الأرقام من تقرير Feedback
       <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
+      <span id="eomFbArrow" style="font-size:11px;color:var(--muted)">▲</span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="tbl" style="min-width:750px">
-        <thead><tr>
-          <th>Agent</th>
-          <th style="text-align:center">Customers<br>Answered</th>
-          <th style="text-align:center">Customers<br>Transferred</th>
-          <th style="text-align:center;color:var(--teal)">CT%</th>
-          <th style="text-align:center">Customers<br>Evaluated</th>
-          <th style="text-align:center;color:var(--teal)">CE%</th>
-          <th style="text-align:center">Satisfied</th>
-          <th style="text-align:center;color:#2e7d32">Satisfied%</th>
-          <th style="text-align:center">Dissatisfied</th>
-          <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
-        </tr></thead>
-        <tbody id="eomFbBody"></tbody>
-      </table>
+    <div id="eomFbSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:750px">
+          <thead><tr>
+            <th>Agent</th>
+            <th style="text-align:center">Customers<br>Answered</th>
+            <th style="text-align:center">Customers<br>Transferred</th>
+            <th style="text-align:center;color:var(--teal)">CT%</th>
+            <th style="text-align:center">Customers<br>Evaluated</th>
+            <th style="text-align:center;color:var(--teal)">CE%</th>
+            <th style="text-align:center">Satisfied</th>
+            <th style="text-align:center;color:#2e7d32">Satisfied%</th>
+            <th style="text-align:center">Dissatisfied</th>
+            <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
+          </tr></thead>
+          <tbody id="eomFbBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- STEP 2: PERFORMANCE TABLE 15 COLS -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title">
+    <div class="card-title" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')" style="cursor:pointer">
       <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
       Agent Performance
       <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">
         <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;margin-left:4px">● تلقائي</span>
         <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px">✏️ يدوي</span>
       </span>
+      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted)">▲</span>
     </div>
-    <div style="overflow-x:auto">
-      <table class="tbl" style="min-width:1100px">
-        <thead>
-          <tr style="background:#f4faf7">
-            <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted)">Info</th>
-            <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Time ●</th>
-            <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Calls ●</th>
-            <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">WA ✏️</th>
-            <th style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Total ●</th>
-            <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">CSAT ✏️</th>
-            <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Tickets ●</th>
-            <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">Quality ✏️</th>
-            <th style="text-align:center;font-size:9px;color:var(--purple);background:var(--purple-light)">Score</th>
+    <div id="eomPerfSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:1100px">
+          <thead>
+            <tr style="background:#f4faf7">
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted)">Info</th>
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Time ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Calls ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">WA ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Total ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">CSAT ✏️</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:var(--teal-light)">Tickets ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fff3e0">Quality ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--purple);background:var(--purple-light)">Score</th>
+            </tr>
           </tr>
           <tr>
             <th style="text-align:center;font-size:10px">#</th>
@@ -1416,6 +1422,7 @@ function renderEOMTab(){
         <tbody id="eomPerfBody"></tbody>
       </table>
     </div>
+    </div>
   </div>
 
   <!-- STEP 3: PODIUM -->
@@ -1437,6 +1444,15 @@ function renderEOMTab(){
   </div>`;
   document.getElementById('tab-eom').innerHTML=html;
   calcEOM();
+}
+
+function toggleEOMSection(bodyId, arrowId){
+  const body=document.getElementById(bodyId);
+  const arrow=document.getElementById(arrowId);
+  if(!body)return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  if(arrow)arrow.textContent=open?'▼':'▲';
 }
 
 function calcEOM(){
@@ -1539,7 +1555,7 @@ function renderEOMPerfTable(agentNames, agents, month){
     const tktOk=total&&(a.tickets/total*100)>=95;
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const nid=name.replace(/\s/g,'_');
-    const bg=i%2===0?'':'background:var(--gray)';
+    const bg=i%2===0?'background:#fff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:12px" id="eomPerf_no_${nid}">—</td>
       <td style="padding:5px 8px"><div style="display:flex;align-items:center;gap:6px">
@@ -1604,7 +1620,7 @@ function renderEOMFeedbackTable(agentNames, month){
     </tr>`;
   });
   // Total row
-  html+=`<tr style="background:var(--gray)" id="fb_total_row">
+  html+=`<tr style="background:#e8f5ee;font-weight:700" id="fb_total_row">
     <td style="font-weight:700;font-size:12px;color:var(--muted)">Total</td>
     <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ans">—</td>
     <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_tr">—</td>
