@@ -111,8 +111,8 @@
 
   /* ── TABLES ── */
   .tbl{width:100%;border-collapse:collapse;font-size:12px}
-  .tbl th{background:#f4faf7;padding:9px 13px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
-  .tbl td{padding:9px 13px;border-bottom:1px solid #eef5f1;vertical-align:middle}
+  .tbl th{background:#f4faf7;padding:6px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:5px 10px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
   .tbl tr:hover td{background:#f8fdf9}
 
@@ -1629,20 +1629,21 @@ function renderEOMFeedbackTable(agentNames, month){
     const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
     const dp=ev&&dis?Math.round(dis/ev*100)+'%':'—';
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
     html+=`<tr data-fb-agent="${name}">
-      <td><div style="display:flex;align-items:center;gap:7px">
-        <div style="width:24px;height:24px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${init}</div>
-        <span style="font-weight:600;font-size:12px">${name}</span>
+      <td style="padding:4px 10px"><div style="display:flex;align-items:center;gap:6px">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0">${init}</div>
+        <span style="font-weight:600;font-size:11px">${name}</span>
       </div></td>
-      <td style="text-align:center"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="width:65px;text-align:center;font-size:12px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;outline:none"></td>
-      <td style="text-align:center"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="width:65px;text-align:center;font-size:12px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;outline:none"></td>
-      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:12px" id="fb_ct_${i}">${ct}</td>
-      <td style="text-align:center"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="width:65px;text-align:center;font-size:12px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;outline:none"></td>
-      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:12px" id="fb_ce_${i}">${ce}</td>
-      <td style="text-align:center"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="width:65px;text-align:center;font-size:12px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;outline:none"></td>
-      <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:12px" id="fb_sp_${i}">${sp}</td>
-      <td style="text-align:center"><input class="fb-inp fb-dis" type="number" min="0" placeholder="—" value="${dis}" oninput="updateFBRow(this,'${name}')" style="width:65px;text-align:center;font-size:12px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;outline:none"></td>
-      <td style="text-align:center;font-weight:600;color:#A32D2D;font-size:12px" id="fb_dp_${i}">${dp}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ce_${i}">${ce}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-dis" type="number" min="0" placeholder="—" value="${dis}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#A32D2D;font-size:11px;padding:3px 6px" id="fb_dp_${i}">${dp}</td>
     </tr>`;
   });
   // Total row
@@ -1848,35 +1849,36 @@ function saveEOMManual(){saveEOMAll();}
 
 // ══ QUALITY ASSESSMENT ══════════════════════════════════════════════════════
 const QA_COLS = [
-  {key:'welcome',    label:'Welcome',                                     max:10},
-  {key:'question',   label:'Question or Inquiry / Purpose of call',       max:10},
-  {key:'understand', label:'Understanding the customers problem',          max:10},
-  {key:'answering',  label:'Answering the Customers question or problem',  max:10},
-  {key:'howlong',    label:'How long it took to answer',                   max:5},
-  {key:'attitude',   label:'Attitude & Language',                          max:5},
-  {key:'enthusiasm', label:'Personal Enthusiasm',                          max:5},
-  {key:'hold',       label:'Hold time / mute',                             max:5},
-  {key:'closer',     label:'Closer of call',                               max:10},
-  {key:'ticket',     label:'Ticket Quality / System input',                max:30},
+  {key:'welcome',    label:'Welcome',                                                              short:'Welcome',         max:10},
+  {key:'question',   label:'Question or Inquiry from the customer / or informing him the purpose of call', short:'Question / Inquiry', max:10},
+  {key:'understand', label:'Understanding the customers problem',                                  short:'Understanding',   max:10},
+  {key:'answering',  label:'Answering the Customers question or problem',                          short:'Answering',       max:10},
+  {key:'howlong',    label:'How long it took to answer',                                           short:'How long',        max:5},
+  {key:'attitude',   label:'Attitude & Language',                                                  short:'Attitude',        max:5},
+  {key:'enthusiasm', label:'Personal Enthusiasm',                                                  short:'Enthusiasm',      max:5},
+  {key:'hold',       label:'Hold time / mute',                                                     short:'Hold time',       max:5},
+  {key:'closer',     label:'Closer of call',                                                       short:'Closer',          max:10},
+  {key:'ticket',     label:'Ticket Quality / System input',                                        short:'Ticket QA',       max:30},
 ];
 const QA_TOTAL_MAX = 100;
 
 const QA_AGENT_COMPANIES = {
-  'Bayan Jazzar':       ['NI','ST','PE'],
-  'Hanin Yajizi':       ['NI','ST','PE'],
-  'Nedaa Shorbaji':     ['NI','ST','PE'],
-  'Sara Sami':          ['NI','ST','PE'],
-  'Ghadeer Motadares':  ['PE','NI','ST'],
-  'Manar Alshehri':     ['NI','ST','PE'],
-  'Mawadah Essam':      ['NI','ST','PE'],
-  'Nesreen Mansoor':    ['NI','ST','PE'],
-  'Yosra Alsalami':     ['NI','ST'],
-  'Asmaa M. Bawayan':   ['ST','NI','PE'],
-  'Hibah Almuwallad':   ['ST','ST'],
-  'Mashael Alshehri':   ['ST','NI','PE'],
-  'Wejdan Mustafa':     ['NI','PE'],
-  'Ghofran Hussain Rafie': ['Foton','NO'],
-  'Shatha Bawayan':     ['Foton','NO'],
+  'Asmaa M. Bawayan':      ['NI','ST','PE'],
+  'Bayan Jazzar':          ['NI','ST','PE'],
+  'Ghadeer Motadares':     ['NI','ST','PE'],
+  'Ghofran Hussain Rafie': ['Foton','NI','NI'],
+  'Hanin Yajizi':          ['NI','ST','PE'],
+  'Hibah Almuwallad':      ['ST','ST','ST'],
+  'Manar Alshehri':        ['NI','ST','PE'],
+  'Mashael Alshehri':      ['NI','ST','PE'],
+  'Mawadah Essam':         ['NI','ST','PE'],
+  'Nedaa Shorbaji':        ['NI','ST','PE'],
+  'Nesreen Mansoor':       ['NI','ST','PE'],
+  'Sara Sami':             ['NI','ST','PE'],
+  'Shatha Bawayan':        ['Foton','PE','PE'],
+  'Walaa Meezi':           ['NI','ST','PE'],
+  'Wejdan Mustafa':        ['NI','ST','PE'],
+  'Yosra Alsalami':        ['NI','ST','PE'],
 };
 
 const QA_MONTHS = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06',
@@ -1909,8 +1911,19 @@ function renderQA(){
     });
   });
 
-  // Build table headers
-  const colHeaders=QA_COLS.map(c=>`<th style="text-align:center;min-width:60px;white-space:nowrap;font-size:10px;padding:6px 4px" title="${c.label}">${c.label.split(' ').slice(0,2).join(' ')}<br><span style="color:#c0a020;font-weight:400">|${c.max}</span></th>`).join('');
+  // Build table headers - full description in 2 lines, compact
+  const QA_COL_HEADERS = [
+    {t:'Welcome',                                                  max:10},
+    {t:'Question or Inquiry<br>/ purpose of call',                 max:10},
+    {t:'Understanding<br>the customers problem',                   max:10},
+    {t:'Answering the Customers<br>question or problem',           max:10},
+    {t:'How long it took<br>to answer',                            max:5},
+    {t:'Attitude &<br>Language',                                   max:5},
+    {t:'Personal<br>Enthusiasm',                                   max:5},
+    {t:'Hold time<br>/ mute',                                      max:5},
+    {t:'Closer<br>of call',                                        max:10},
+    {t:'Ticket Quality<br>/ System input',                         max:30},
+  ];
 
   let html=`
   <div class="sec-label">⭐ Quality Assessment — Calls Evaluation</div>
@@ -1939,24 +1952,15 @@ function renderQA(){
           </tr>
           <!-- Column headers -->
           <tr style="background:#f4faf7;border-bottom:2px solid #9FE1CB">
-            <th style="padding:7px 10px;text-align:left;font-size:10px;font-weight:500;color:#085041;min-width:120px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:50px">Company</th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:80px">Date</th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#085041;min-width:100px;border-right:1px solid #9FE1CB">Customer Number</th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Welcome<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px;border-right:1px solid #9FE1CB">Question or Inquiry<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px">Understanding<br>the problem<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:80px">Answering<br>the question<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:58px">How long<br>to answer<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Attitude &<br>Language<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px">Personal<br>Enthusiasm<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:58px">Hold time<br>/ mute<br><span style="color:#0F6E56;font-weight:700">|5</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:62px;border-right:1px solid #9FE1CB">Closer<br>of call<br><span style="color:#0F6E56;font-weight:700">|10</span></th>
-            <th style="padding:7px 4px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:70px;border-right:1px solid #9FE1CB">Ticket Quality<br>/ System input<br><span style="color:#0F6E56;font-weight:700">|30</span></th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#0F6E56;min-width:50px">Total<br>|100</th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:var(--muted);min-width:50px">Target</th>
-            <th style="padding:7px 6px;text-align:center;font-size:10px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">%</th>
-            <th style="padding:7px 8px;text-align:left;font-size:10px;font-weight:500;color:var(--muted);min-width:150px">Other comments</th>
+            <th style="padding:5px 10px;text-align:left;font-size:9px;font-weight:500;color:#085041;min-width:110px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:42px">Company</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:76px">Date</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:88px;border-right:1px solid #9FE1CB">Customer number</th>
+            ${QA_COL_HEADERS.map(c=>`<th title="${c.t.replace(/<br>/g,' ')}" style="padding:4px 3px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:${c.max===30?62:c.max<=5?48:52}px;line-height:1.4;cursor:help">${c.t}<br><span style="color:#0F6E56;font-weight:700">|${c.max}</span></th>`).join('')}
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">Total<br>|100</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:42px">Target</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:38px;border-right:1px solid #9FE1CB">%</th>
+            <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:130px">Other comments</th>
           </tr>
         </thead>
         <tbody id="qaTbody">
@@ -1981,51 +1985,72 @@ function renderQA(){
 }
 
 function buildQARows(rows){
-  let html='';
-  let lastAgent='';
-  rows.forEach((r,i)=>{
-    const key=QA_ACTIVE_MONTH+'_'+r.agent+'_'+r.co;
-    const d=QA_DATA[key]||{};
-    const isFirst=r.agent!==lastAgent;
-    lastAgent=r.agent;
-    const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
+  const CO_STYLE={
+    NI:   'background:#fde8e8;color:#c0272d',
+    ST:   'background:#e3edf8;color:#1565c0',
+    PE:   'background:#e8f5ee;color:#2e7d32',
+    Foton:'background:#eceff1;color:#546e7a',
+    NO:   'background:#f5f0e8;color:#6a5818',
+  };
+  const inp=`border:0.5px solid var(--border);border-radius:4px;background:#fff;font-size:10px;padding:2px 3px;text-align:center`;
 
-    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
-    const pct=total>0?Math.round(total/QA_TOTAL_MAX*100)+'%':'0%';
-    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
+  // Group rows by agent
+  const agents={};
+  rows.forEach(r=>{
+    if(!agents[r.agent]) agents[r.agent]=[];
+    agents[r.agent].push(r);
+  });
 
-    const coColor={NI:'#fde8e8',ST:'#e3edf8',PE:'#e8f5ee',Foton:'#eceff1',NO:'#f5f0e8'}[r.co]||'#f5f5f5';
-    const coTextColor={NI:'#c0272d',ST:'#1565c0',PE:'#2e7d32',Foton:'#546e7a',NO:'#6a5818'}[r.co]||'#555';
+  let html='';let agentIdx=0;
+  Object.entries(agents).forEach(([agent,agentRows])=>{
+    const rowspan=agentRows.length;
+    const initials=agent.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
 
-    const colInputs=QA_COLS.map(c=>{
-      const v=d[c.key]||'';
-      const vn=parseFloat(v);
-      const over=!isNaN(vn)&&vn>c.max;
-      return`<td style="text-align:center;padding:2px"><input type="number" min="0" max="${c.max}" value="${v}" placeholder="—"
-        style="width:48px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid ${over?'#c0272d':'var(--border)'};border-radius:5px;background:${over?'#fde':'#fff'}"
-        oninput="setQA('${key}','${c.key}',this.value,${c.max},this)"
-        title="Max: ${c.max}"></td>`;
-    }).join('');
+    agentRows.forEach((r,ri)=>{
+      const key=QA_ACTIVE_MONTH+'_'+agent+'_'+r.co;
+      const d=QA_DATA[key]||{};
+      const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+      const pct=Math.round(total/QA_TOTAL_MAX*100);
+      const pctCol=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
+      const rowBg=agentIdx%2===0?'background:#fff':'background:#f4faf7';
+      const borderBottom=ri===rowspan-1?'border-bottom:1.5px solid var(--border-strong)':'border-bottom:0.5px solid var(--border)';
+      const coSt=CO_STYLE[r.co]||'background:#f5f5f5;color:#555';
+      const colInputs=QA_COLS.map(c=>{
+        const v=d[c.key]||'';
+        const vn=parseFloat(v);const over=!isNaN(vn)&&vn>c.max;
+        return`<td style="text-align:center;padding:1px 2px"><input type="number" min="0" max="${c.max}" value="${v}" placeholder="—"
+          style="width:${c.max===30?'40px':'34px'};${inp};border-color:${over?'#c0272d':'var(--border)'};background:${over?'#fde':'#fff'}"
+          oninput="setQA('${key}','${c.key}',this.value,${c.max},this)" title="${c.label} (max ${c.max})"></td>`;
+      }).join('');
 
-    html+=`<tr style="${bg};border-bottom:0.5px solid var(--border)" data-qa-key="${key}">
-      <td style="padding:6px 10px;font-weight:${isFirst?'700':'400'};font-size:11px;color:var(--text);position:sticky;left:0;${bg}">${isFirst?r.agent:''}</td>
-      <td style="text-align:center;padding:4px">
-        <span style="background:${coColor};color:${coTextColor};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700">${r.co}</span>
+      html+=`<tr style="${rowBg};${borderBottom}" data-qa-key="${key}">`;
+      if(ri===0){
+        html+=`<td rowspan="${rowspan}" style="padding:4px 8px;font-size:10px;font-weight:500;text-align:center;vertical-align:middle;position:sticky;left:0;${rowBg};border-right:0.5px solid var(--border)">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--teal-light);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700">${initials}</div>
+            <span style="font-size:9px;font-weight:600;text-align:center;line-height:1.2">${agent}</span>
+          </div>
+        </td>`;
+      }
+      html+=`<td style="text-align:center;padding:2px 3px">
+        <span style="${coSt};padding:1px 6px;border-radius:8px;font-size:9px;font-weight:600">${r.co}</span>
       </td>
-      <td style="text-align:center;padding:2px"><input type="date" value="${d.date||''}"
-        style="font-size:10px;padding:2px 4px;border:1px solid var(--border);border-radius:5px;width:100px"
+      <td style="padding:2px 3px"><input type="date" value="${d.date||''}"
+        style="font-size:9px;padding:2px 3px;${inp};width:88px"
         oninput="setQA('${key}','date',this.value,null,null)"></td>
-      <td style="text-align:center;padding:2px"><input type="text" value="${d.cusnum||''}" placeholder="—"
-        style="width:90px;font-size:10px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;text-align:center"
+      <td style="padding:2px 3px"><input type="text" value="${d.cusnum||''}" placeholder="—"
+        style="width:76px;font-size:9px;${inp}"
         oninput="setQA('${key}','cusnum',this.value,null,null)"></td>
       ${colInputs}
-      <td style="text-align:center;font-weight:700;font-size:12px;color:var(--text)" id="qa_tot_${i}">${total||0}</td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">100</td>
-      <td style="text-align:center;font-weight:700;font-size:12px;color:${pctColor}" id="qa_pct_${i}">${pct}</td>
-      <td style="padding:2px"><input type="text" value="${d.comments||''}" placeholder="—"
-        style="width:140px;font-size:10px;padding:3px 5px;border:1px solid var(--border);border-radius:5px"
+      <td style="text-align:center;font-weight:600;font-size:11px;color:var(--text)" id="qa_tot_${key.replace(/[^a-z0-9]/gi,'_')}">${total||0}</td>
+      <td style="text-align:center;font-size:10px;color:var(--muted)">100</td>
+      <td style="text-align:center;font-weight:600;font-size:11px;color:${pctCol}" id="qa_pct_${key.replace(/[^a-z0-9]/gi,'_')}">${pct}%</td>
+      <td style="padding:2px 4px"><input type="text" value="${d.comments||''}" placeholder="—"
+        style="width:120px;font-size:9px;${inp}"
         oninput="setQA('${key}','comments',this.value,null,null)"></td>
-    </tr>`;
+      </tr>`;
+      if(ri===0) agentIdx++;
+    });
   });
   return html;
 }
@@ -2045,68 +2070,39 @@ function setQA(key, field, value, max, el){
 }
 
 function updateQARow(key){
-  const rows=document.querySelectorAll('[data-qa-key="'+key+'"]');
-  rows.forEach((row,idx)=>{
-    const d=QA_DATA[key]||{};
-    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
-    const pct=Math.round(total/QA_TOTAL_MAX*100)+'%';
-    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
-    const totEl=row.querySelector('[id^="qa_tot_"]');
-    const pctEl=row.querySelector('[id^="qa_pct_"]');
-    if(totEl)totEl.textContent=total||0;
-    if(pctEl){pctEl.textContent=pct;pctEl.style.color=pctColor;}
-  });
-  // update all rows by re-reading ids
-  document.querySelectorAll('#qaTbody tr').forEach((row,i)=>{
-    const k=row.dataset.qaKey;
-    if(!k)return;
-    const d=QA_DATA[k]||{};
-    const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
-    const pct=Math.round(total/QA_TOTAL_MAX*100)+'%';
-    const pctColor=total>=95?'#2e7d32':total>=80?'#e65100':'#c0272d';
-    const totEl=document.getElementById('qa_tot_'+i);
-    const pctEl=document.getElementById('qa_pct_'+i);
-    if(totEl)totEl.textContent=total||0;
-    if(pctEl){pctEl.textContent=pct;pctEl.style.color=pctColor;}
-  });
+  const d=QA_DATA[key]||{};
+  const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+  const pct=Math.round(total/QA_TOTAL_MAX*100);
+  const nid=key.replace(/[^a-z0-9]/gi,'_');
+  const totEl=document.getElementById('qa_tot_'+nid);
+  const pctEl=document.getElementById('qa_pct_'+nid);
+  if(totEl)totEl.textContent=total||0;
+  if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
 }
 
 function updateQATotals(){
   const colSums=QA_COLS.map(()=>0);
   let grandTotal=0,rowCount=0;
-  document.querySelectorAll('#qaTbody tr').forEach((row,i)=>{
+  document.querySelectorAll('#qaTbody tr[data-qa-key]').forEach(row=>{
     const k=row.dataset.qaKey;
     if(!k)return;
     const d=QA_DATA[k]||{};
     let rowTotal=0;
-    QA_COLS.forEach((c,ci)=>{
-      const v=parseFloat(d[c.key]||0)||0;
-      colSums[ci]+=v;
-      rowTotal+=v;
-    });
+    QA_COLS.forEach((c,ci)=>{const v=parseFloat(d[c.key]||0)||0;colSums[ci]+=v;rowTotal+=v;});
     if(rowTotal>0){grandTotal+=rowTotal;rowCount++;}
-    const totEl=document.getElementById('qa_tot_'+i);
-    const pctEl=document.getElementById('qa_pct_'+i);
+    const nid=k.replace(/[^a-z0-9]/gi,'_');
+    const totEl=document.getElementById('qa_tot_'+nid);
+    const pctEl=document.getElementById('qa_pct_'+nid);
     if(totEl)totEl.textContent=rowTotal||0;
-    if(pctEl){
-      const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);
-      pctEl.textContent=pct+'%';
-      pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
-    }
+    if(pctEl){const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
   });
-  QA_COLS.forEach((_,i)=>{
-    const el=document.getElementById('qa_ft_'+i);
-    if(el)el.textContent=colSums[i]||'—';
-  });
+  QA_COLS.forEach((_,i)=>{const el=document.getElementById('qa_ft_'+i);if(el)el.textContent=colSums[i]||'—';});
   const totEl=document.getElementById('qa_ft_total');
   const pctEl=document.getElementById('qa_ft_pct');
   if(totEl)totEl.textContent=grandTotal||'—';
-  if(pctEl&&rowCount>0){
-    const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);
-    pctEl.textContent=avg+'%';
-    pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';
-  }
+  if(pctEl&&rowCount>0){const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);pctEl.textContent=avg+'%';pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';}
 }
+
 
 function showQASaveMsg(){
   const el=document.getElementById('qaSaveMsg');
