@@ -37,9 +37,9 @@
   .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
   .sb-section:first-child{margin-top:0}
-  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
-  .nav-item:hover{background:rgba(15,110,86,.08);color:var(--teal)}
-  .nav-item.active{background:var(--teal-light);color:#085041;font-weight:700}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#3d5a4e;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(15,110,86,.14);color:#085041}
+  .nav-item.active{background:#b2ddd0;color:#054035;font-weight:700}
   .nav-item .ico{font-size:15px;flex-shrink:0}
   .nav-divider{height:1px;background:var(--border);margin:8px 4px}
 
@@ -206,6 +206,7 @@
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
     <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
     <div class="nav-item" id="nav-qa" onclick="showTab('qa')"><span class="ico">⭐</span> Quality Assessment</div>
+    <div class="nav-item" id="nav-training" onclick="showTab('training')"><span class="ico">📋</span> Training Log</div>
   </nav>
 
   <!-- CONTENT -->
@@ -223,6 +224,7 @@
     <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
     <div id="tab-qa" style="display:none"></div>
+    <div id="tab-training" style="display:none"></div>
   </main>
 </div>
 
@@ -273,6 +275,7 @@ function showTab(name){
   _currentTab=name;
   if(name==='eom' && !EOM_LOADED) loadEOM();
   if(name==='qa') renderQA();
+  if(name==='training') renderTrainingLog();
 }
 
 // ── FETCH via JSONP Proxy ──
@@ -2113,6 +2116,143 @@ function exportQA(){
   });
   navigator.clipboard.writeText(text).then(()=>alert('✅ Copied to clipboard!'));
 }
+
+// ══ TRAINING LOG ══════════════════════════════════════════════════════════
+let TL_DATA = {};
+try{ TL_DATA=JSON.parse(localStorage.getItem('tl_data')||'{}'); }catch(e){}
+function saveTL(){ try{localStorage.setItem('tl_data',JSON.stringify(TL_DATA));}catch(e){} }
+
+const TL_STEPS = [
+  // Day 1
+  {id:'s1', week:'اليوم الأول', title:'التعرف على الموظفة وتعريفها بالفريق', desc:'جولة في القسم · التعريف بالزميلات · مكان العمل'},
+  {id:'s2', week:'اليوم الأول', title:'شرح عام عن الشغل واستطلاع خبراتها', desc:'آلية العمل · خبرتها السابقة · توقعات الدور'},
+  {id:'s3', week:'اليوم الأول', title:'أوقات الدوام والإجازات والشفتات', desc:'جدول الشفتات · الإجازات · سياسة الغياب'},
+  // Week 1
+  {id:'s4', week:'الأسبوع الأول', title:'شرح الأقسام عبر الداشبورد', desc:'الفروع · المعارض · الصيانة · بترومين · نيسان · ستلانتس'},
+  {id:'s5', week:'الأسبوع الأول', title:'طريقة الكولات وإكمال التكتات', desc:'استقبال المكالمات · تسجيل التكت · التصنيفات'},
+  {id:'s6', week:'الأسبوع الأول', title:'نظام الشكاوى والتصعيد', desc:'كيفية التصعيد · متى تتصل بالمشرفة · التعامل مع العميل الغاضب'},
+  {id:'s7', week:'الأسبوع الأول', title:'مجموعات الواتساب الداخلية', desc:'المجموعات الرسمية · آداب الاستخدام · التواصل الداخلي'},
+  {id:'s8', week:'الأسبوع الأول', title:'الاستماع لمكالمات الزميلات', desc:'استفسار · شكوى · حجز موعد · نقاش بعد كل مكالمة'},
+  // Week 2
+  {id:'s9', week:'الأسبوع الثاني', title:'حجز المواعيد وربط بيانات العميل', desc:'البحث في النظام · ربط البيانات · تأكيد الموعد'},
+  {id:'s10', week:'الأسبوع الثاني', title:'تطبيق عملي على التكتات التجريبية', desc:'إكمال تكتات · مراجعة مع المشرفة · التصحيح'},
+  {id:'s11', week:'الأسبوع الثاني', title:'أنواع الاستفسارات والتعامل معها', desc:'صيانة · حجز · شكوى · استفسار عام · طلب التحدث مع المشرفة'},
+  {id:'s12', week:'الأسبوع الثاني', title:'جدول الشغل اليومي', desc:'الروتين اليومي · الأولويات · المهام الصباحية والمسائية'},
+  // Week 3
+  {id:'s13', week:'الأسبوع الثالث', title:'العمل على الواتساب مع دعم زميلة', desc:'التدريب الميداني على الواتساب بإشراف الفريق'},
+  {id:'s14', week:'الأسبوع الثالث', title:'تجربة حجز مواعيد حقيقية', desc:'حجز فعلي بإشراف المشرفة · مراجعة وتقييم'},
+  {id:'s15', week:'الأسبوع الثالث', title:'مراجعة أول أسبوع مكالمات', desc:'نقاش الأخطاء · نقاط القوة · خطة التحسين'},
+  // General
+  {id:'s16', week:'عام', title:'سياسة الخصوصية وحماية بيانات العميل', desc:'ما يُشارك وما لا يُشارك · سرية المعلومات'},
+  {id:'s17', week:'عام', title:'التعامل مع المكالمات باللغة الإنجليزية', desc:'عبارات أساسية · كيفية الرد · التحويل عند الحاجة'},
+  {id:'s18', week:'عام', title:'كيفية كتابة التقرير اليومي', desc:'عناصر التقرير · التوقيت · إرساله للمشرفة'},
+];
+
+const TL_RATINGS = ['ممتاز','جيد','يحتاج دعم'];
+
+function renderTrainingLog(){
+  const el=document.getElementById('tab-training');
+  if(!el) return;
+  const d=TL_DATA;
+  const joinDate=d.joinDate||'';
+  const daysIn=joinDate?Math.floor((new Date()-new Date(joinDate))/86400000):0;
+  const done=TL_STEPS.filter(s=>d['done_'+s.id]).length;
+  const pct=Math.round(done/TL_STEPS.length*100);
+  const week3Started=TL_STEPS.filter(s=>s.week==='الأسبوع الثالث').some(s=>d['done_'+s.id]);
+  const nearEnd=daysIn>=14&&done>=12&&!week3Started;
+
+  // Group by week
+  const weeks={};
+  TL_STEPS.forEach(s=>{ if(!weeks[s.week]) weeks[s.week]=[]; weeks[s.week].push(s); });
+
+  let stepsHTML='';
+  Object.entries(weeks).forEach(([week,steps])=>{
+    stepsHTML+=`<div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${week}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">`;
+    steps.forEach(s=>{
+      const isDone=!!d['done_'+s.id];
+      const rating=d['rating_'+s.id]||'';
+      const doneDate=d['date_'+s.id]||'';
+      stepsHTML+=`<div style="background:var(--surface);border:1px solid ${isDone?'var(--border)':'var(--border)'};border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;${isDone?'opacity:.75':''}">
+        <div onclick="toggleTL('${s.id}')" style="width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;${isDone?'background:var(--teal);border:2px solid var(--teal)':'background:#fff;border:2px solid var(--border-strong)'}">
+          ${isDone?'<svg width="10" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${s.title}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${s.desc}</div>
+          ${isDone?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <select onchange="setTLRating('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--teal);font-family:inherit">
+              <option value="">تقييم...</option>
+              ${TL_RATINGS.map(r=>`<option value="${r}"${rating===r?' selected':''}>${r}</option>`).join('')}
+            </select>
+            <input type="date" value="${doneDate}" onchange="setTLDate('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;font-family:inherit">
+          </div>`:''}
+        </div>
+      </div>`;
+    });
+    stepsHTML+='</div></div>';
+  });
+
+  el.innerHTML=`
+  <div class="sec-label">📋 Training Log — موظفة جديدة</div>
+
+  ${nearEnd?`<div style="background:#fff3e0;border:1px solid #FFB300;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">⏰</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#E65100">اقتربت نهاية التدريب!</div>
+      <div style="font-size:11px;color:#BF360C;margin-top:2px">مضى ${daysIn} يوم — هل الموظفة جاهزة لاستقبال المكالمات؟</div>
+    </div>
+  </div>`:''}
+
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">اسم الموظفة</div>
+        <input id="tl_name" type="text" placeholder="الاسم الكامل..." value="${d.name||''}" oninput="TL_DATA.name=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">رقم الموظف / Badge</div>
+        <input id="tl_badge" type="text" placeholder="مثال: EMP-1234" value="${d.badge||''}" oninput="TL_DATA.badge=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">تاريخ الانضمام</div>
+        <input id="tl_join" type="date" value="${joinDate}" oninput="TL_DATA.joinDate=this.value;saveTL();renderTrainingLog()" style="font-size:12px;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">المشرفة</div>
+        <input type="text" placeholder="اسم المشرفة..." value="${d.supervisor||''}" oninput="TL_DATA.supervisor=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+    </div>
+    ${joinDate?`<div style="font-size:11px;color:var(--teal);background:var(--teal-light);padding:6px 12px;border-radius:8px;display:inline-block">📅 مضى ${daysIn} يوم على الانضمام</div>`:''}
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--teal)"></span>التقدم</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="flex:1;height:8px;background:var(--gray);border-radius:4px;overflow:hidden">
+        <div style="height:100%;background:var(--teal);border-radius:4px;width:${pct}%;transition:width .4s"></div>
+      </div>
+      <span style="font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap">${done} / ${TL_STEPS.length}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted)">${pct}% مكتمل</div>
+  </div>
+
+  ${stepsHTML}
+
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+    <button onclick="resetTL()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer">↺ إعادة تعيين</button>
+  </div>`;
+}
+
+function toggleTL(id){
+  TL_DATA['done_'+id]=!TL_DATA['done_'+id];
+  if(TL_DATA['done_'+id] && !TL_DATA['date_'+id]) TL_DATA['date_'+id]=new Date().toISOString().slice(0,10);
+  saveTL(); renderTrainingLog();
+}
+function setTLRating(id,val){ TL_DATA['rating_'+id]=val; saveTL(); }
+function setTLDate(id,val){ TL_DATA['date_'+id]=val; saveTL(); }
+function resetTL(){ if(confirm('إعادة تعيين كل شيء؟')){ TL_DATA={}; saveTL(); renderTrainingLog(); } }
 
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
