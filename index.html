@@ -48,7 +48,9 @@
 
   /* ── CARDS ── */
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
-  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px}
+  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px;text-transform:none;letter-spacing:normal}
+  .card-title-collapsible{font-size:12px;font-weight:700;color:var(--text);margin-bottom:0;display:flex;align-items:center;gap:7px;cursor:pointer;justify-content:space-between}
+  .card-title-collapsible .ctitle-left{display:flex;align-items:center;gap:7px;flex:1}
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
   .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
@@ -1354,11 +1356,13 @@ function renderEOMTab(){
 
   <!-- STEP 1: FEEDBACK -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title" onclick="toggleEOMSection('eomFbSection','eomFbArrow')" style="cursor:pointer">
-      <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
-      Feedback — أدخلي الأرقام من تقرير Feedback
-      <span id="eomFbArrow" style="font-size:11px;color:var(--muted)">▲</span>
-      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-right:auto">CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomFbSection','eomFbArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+        أدخلي الأرقام من تقرير Feedback
+        <span style="font-size:10px;font-weight:400;color:var(--muted)">· CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
+      </div>
+      <span id="eomFbArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
     <div id="eomFbSection">
       <div style="overflow-x:auto">
@@ -1383,14 +1387,14 @@ function renderEOMTab(){
 
   <!-- STEP 2: PERFORMANCE TABLE 15 COLS -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')" style="cursor:pointer">
-      <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
-      Agent Performance
-      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted)">▲</span>
-      <span style="margin-right:auto;display:flex;gap:5px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+        Agent Performance
         <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
         <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
-      </span>
+      </div>
+      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
     <div id="eomPerfSection">
       <div style="overflow-x:auto">
@@ -1435,10 +1439,13 @@ function renderEOMTab(){
 
   <!-- STEP 3: PODIUM -->
   <div class="card" style="text-align:center;margin-bottom:12px">
-    <div class="card-title" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')" style="cursor:pointer;justify-content:center">
-      <div style="width:20px;height:20px;border-radius:50%;background:#DAA520;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">3</div>
-      <span id="eomPodiumTitle">🏆 ${fmtMonthEOM(month)}</span>
-      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted)">▲</span>
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:#DAA520;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">3</div>
+        <span>🏆 <span id="eomPodiumTitle">${fmtMonthEOM(month)}</span></span>
+        <span style="font-size:11px;color:var(--muted);font-weight:400">Employee of the Month</span>
+      </div>
+      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
     <div id="eomPodiumBody">
       <div id="eomPodium"><div style="color:var(--muted);padding:30px;font-size:13px">أدخلي البيانات واضغطي Save & Calculate</div></div>
@@ -1447,10 +1454,12 @@ function renderEOMTab(){
 
   <!-- STEP 4: SCORES TABLE -->
   <div class="card">
-    <div class="card-title" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')" style="cursor:pointer">
-      <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
-      جدول النقاط التفصيلي
-      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted)">▲</span>
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
+        Detailed Scores Table
+      </div>
+      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
     <div id="eomScoresBody">
       <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">أدخلي البيانات واضغطي Save & Calculate</div></div>
