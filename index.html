@@ -1456,20 +1456,20 @@ function renderEOMTab(){
       <div style="overflow-x:auto">
         <table class="tbl" style="min-width:1620px;font-size:9.5px">
           <thead>
-            <tr style="background:#f4faf7">
-              <th colspan="3" style="text-align:center;font-size:8px;color:var(--muted);background:#f4faf7">Info</th>
-              <th colspan="7" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Time ●</th>
-              <th colspan="3" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Calls ●</th>
-              <th style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">WA ●</th>
-              <th style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Total ●</th>
-              <th colspan="3" style="text-align:center;font-size:8px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
-              <th colspan="2" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
-              <th style="text-align:center;font-size:8px;color:#e65100;background:#fef9f0">Quality ✏️</th>
-              <th style="text-align:center;font-size:8px;color:var(--purple);background:#f0effe">Score</th>
+            <tr>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
+              <th colspan="7" style="text-align:center;font-size:8px;font-weight:600;color:#085041;background:#d1f0e4;border-bottom:2px solid #9FE1CB">Time ●</th>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#185FA5;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#854F0B;background:#faeeda;border-bottom:2px solid #FAC775">WA ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#3B6D11;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total ●</th>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#993C1D;background:#fde8e0;border-bottom:2px solid #F5C4B3">CSAT ✏️</th>
+              <th colspan="2" style="text-align:center;font-size:8px;font-weight:600;color:#534AB7;background:#eeedfe;border-bottom:2px solid #CECBF6">Tickets ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#993556;background:#fbeaf0;border-bottom:2px solid #F4C0D1">Quality ✏️</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#444441;background:#e8e8e4;border-bottom:2px solid #D3D1C7">Score</th>
             </tr>
           <tr>
             <th style="text-align:center;font-size:9px;width:20px">#</th>
-            <th style="font-size:10px;white-space:nowrap">User Name</th>
+            <th style="font-size:10px;white-space:nowrap;width:auto">User Name</th>
             <th style="text-align:center;font-size:9px;color:#e65100;width:55px">Badge #</th>
             <th style="text-align:center;font-size:9px;width:64px">Final Login<br>Time Score</th>
             <th style="text-align:center;font-size:9px;width:64px">Total Ready<br>Duration</th>
@@ -1734,7 +1734,7 @@ function renderEOMPerfTable(agentNames, agents, month){
     const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:9.5px" id="eomPerf_no_${nid}">—</td>
-      <td style="padding:4px 8px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
+      <td style="padding:4px 10px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
       <td style="text-align:center;padding:2px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
       <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
       <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
@@ -1968,12 +1968,27 @@ function renderEOMScores(results){
     {key:'quality',  label:'Quality',             target:'90%',    val:r=>r.quality!==null?r.quality.toFixed(1)+'%':'—'},
   ];
 
+  const KPI_COLORS=[
+    '#d1f0e4','#d1f0e4','#d1f0e4','#d1f0e4', // Time: teal
+    '#d1f0e4','#d1f0e4','#d1f0e4',             // Time: teal
+    '#faeeda',                                  // WA: amber
+    '#fde8e0',                                  // CSAT: coral
+    '#eeedfe',                                  // Tickets: purple
+    '#fbeaf0',                                  // Quality: pink
+  ];
+  const KPI_TEXT_COLORS=[
+    '#085041','#085041','#085041','#085041',
+    '#085041','#085041','#085041',
+    '#854F0B','#993C1D','#534AB7','#993556',
+  ];
+
   let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:1300px;font-size:9.5px">
     <thead><tr>
-      <th style="font-size:9px;width:20px">#</th><th style="font-size:10px;white-space:nowrap">Agent</th>
-      <th style="text-align:center;font-size:9px;width:46px">KPIs<br>Passed</th>
-      <th style="text-align:center;font-size:9px;width:46px">Score</th>
-      ${KPI_COLS.map(c=>`<th style="text-align:center;font-size:9px;width:62px">${c.label}</th>`).join('')}
+      <th style="font-size:9px;width:20px;background:#F1EFE8">#</th>
+      <th style="font-size:10px;white-space:nowrap;background:#F1EFE8">Agent</th>
+      <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">KPIs<br>Passed</th>
+      <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">Score</th>
+      ${KPI_COLS.map((c,i)=>`<th style="text-align:center;font-size:9px;width:62px;background:${KPI_COLORS[i]||'#f4faf7'};color:${KPI_TEXT_COLORS[i]||'var(--muted)'};border-bottom:2px solid rgba(0,0,0,.08)">${c.label}</th>`).join('')}
     </tr>
     <tr style="background:#e6f1fb">
       <td colspan="4" style="padding:3px 8px;font-size:9px;color:var(--muted);font-weight:600">Target</td>
