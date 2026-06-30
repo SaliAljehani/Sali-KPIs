@@ -1454,15 +1454,15 @@ function renderEOMTab(){
     </div>
     <div id="eomPerfSection">
       <div style="overflow-x:auto">
-        <table class="tbl" style="min-width:1100px">
+        <table class="tbl" style="min-width:1700px">
           <thead>
             <tr style="background:#f4faf7">
               <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted);background:#f4faf7">Info</th>
-              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
-              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
+              <th colspan="4" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
               <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">WA ✏️</th>
               <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Total ●</th>
-              <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
+              <th colspan="3" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
               <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
               <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">Quality ✏️</th>
               <th style="text-align:center;font-size:9px;color:var(--purple);background:#f0effe">Score</th>
@@ -1471,18 +1471,24 @@ function renderEOMTab(){
             <th style="text-align:center;font-size:10px">#</th>
             <th style="font-size:10px">User Name</th>
             <th style="text-align:center;font-size:10px;color:#e65100">Badge #</th>
-            <th style="text-align:center;font-size:10px">Avg Talk</th>
-            <th style="text-align:center;font-size:10px">Avg ACW</th>
-            <th style="text-align:center;font-size:10px">AHT</th>
-            <th style="text-align:center;font-size:10px">Manual</th>
-            <th style="text-align:center;font-size:10px">Inbound</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">WhatsApp</th>
-            <th style="text-align:center;font-size:10px">Total</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">To CSAT</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">CSAT%</th>
+            <th style="text-align:center;font-size:10px">Final Login<br>Time Score</th>
+            <th style="text-align:center;font-size:10px">Total Ready<br>Duration</th>
+            <th style="text-align:center;font-size:10px">Auto Call-Off<br>Duration</th>
+            <th style="text-align:center;font-size:10px">Total Break<br>Duration</th>
+            <th style="text-align:center;font-size:10px">Avg. Talk<br>Time</th>
+            <th style="text-align:center;font-size:10px">Avg. ACW<br>Duration</th>
+            <th style="text-align:center;font-size:10px">Avg. Handling<br>Time</th>
+            <th style="text-align:center;font-size:10px">Manual<br>Dials</th>
+            <th style="text-align:center;font-size:10px">Connected<br>Inbound</th>
+            <th style="text-align:center;font-size:10px">Manual Dials<br>+Connected</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Whatsapp</th>
+            <th style="text-align:center;font-size:10px">Total All</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Whatsapp<br>Feedback Avg</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Transferred<br>to CSAT</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">CSAT</th>
             <th style="text-align:center;font-size:10px">Tickets</th>
             <th style="text-align:center;font-size:10px">%</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">Quality%</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Quality</th>
             <th style="text-align:center;font-size:10px;color:var(--purple)">Score</th>
           </tr>
         </thead>
@@ -1685,7 +1691,8 @@ function calcEOM(){
 function renderEOMPerfTable(agentNames, agents, month){
   const el=document.getElementById('eomPerfBody');
   if(!el)return;
-  const fmtT=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
   const inp=`border:1.5px solid #c8e6c9;border-radius:5px;background:#fff;font-size:11px;padding:3px 5px;text-align:center`;
   let html='';
   agentNames.forEach((name,i)=>{
@@ -1697,22 +1704,36 @@ function renderEOMPerfTable(agentNames, agents, month){
     const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
     const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
     const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const avgLogin=a.loginCount?a.loginSum/a.loginCount:0;
+    const avgReady=a.readyCount?a.readySum/a.readyCount:0;
+    const avgCallOff=a.callOffCount?a.callOffSum/a.callOffCount:0;
+    const avgBreak=a.breakCount?a.breakSum/a.breakCount:0;
+    const loginOk=avgLogin>0&&avgLogin<=9*3600;
+    const readyOk=avgReady>0&&avgReady>=8*3600;
+    const callOffOk=avgCallOff>0&&avgCallOff<=30*60;
+    const breakOk=avgBreak>0&&avgBreak<=3600;
     const ahtOk=avgAHT/60>=3;
     const tktOk=total&&(a.tickets/total*100)>=95;
-    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const totalAll=total+(parseFloat(md.wa)||0);
     const nid=name.replace(/\s/g,'_');
     const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:12px" id="eomPerf_no_${nid}">—</td>
       <td style="padding:5px 8px;font-size:11px;font-weight:600">${name}</td>
       <td style="text-align:center;padding:3px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:52px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgTalk)}</td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgACW)}</td>
-      <td style="text-align:center;font-size:11px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtT(avgAHT)}</td>
+      <td style="text-align:center;font-size:11px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
+      <td style="text-align:center;font-size:11px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
+      <td style="text-align:center;font-size:11px;${avgCallOff>0?(callOffOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtMS(avgCallOff)}</td>
+      <td style="text-align:center;font-size:11px;${avgBreak>0?(breakOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgBreak)}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtMS(avgTalk)}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtMS(avgACW)}</td>
+      <td style="text-align:center;font-size:11px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtMS(avgAHT)}</td>
       <td style="text-align:center;font-size:11px">${a.manual}</td>
       <td style="text-align:center;font-size:11px">${a.calls}</td>
-      <td style="text-align:center;padding:3px"><input type="number" class="perf-wa" placeholder="—" value="${md.wa||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','wa',this.value,'${month}')"></td>
       <td style="text-align:center;font-size:11px;font-weight:700">${total}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-wa" placeholder="—" value="${md.wa||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','wa',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px;font-weight:700">${md.wa?totalAll:total}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-wafb" placeholder="—" value="${md.wafb||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','wafb',this.value,'${month}')"></td>
       <td style="text-align:center;padding:3px"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"></td>
       <td style="text-align:center;padding:3px"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"></td>
       <td style="text-align:center;font-size:11px">${a.tickets}</td>
