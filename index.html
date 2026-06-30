@@ -115,6 +115,8 @@
   .tbl td{padding:4px 5px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
   .tbl tr:hover td{background:#f8fdf9}
+  tr.row-sel>td{background:#F2FBF8 !important}
+  tr.row-sel>td:first-child{box-shadow:inset 3px 0 0 #1D9E75 !important}
 
   /* ── KPI SUB TABS ── */
   .ksub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
@@ -377,16 +379,18 @@ function getCachedSheet(gid){
 // ══ MONTHLY PERFORMANCE — Static reference data ══
 function renderMonthly(rows){
   // Try dynamic first, fallback to static
-  const perfMetrics=[], eomSlide=[], callsQA=[];
+  const perfMetrics=[], eomSlide=[], callsQA=[], inboundCC=[];
   let section='';
   (rows||[]).forEach(r=>{
-    const a=String(r[0]||'').trim(), b=String(r[1]||'').trim();
+    const a=String(r[0]||'').trim(), b=String(r[1]||'').trim(), c=String(r[2]||'').trim(), d=String(r[3]||'').trim();
     if(a==='Monthly Agents Performance'){section='perf';return;}
     if(a==='EOM SLIDE Inbound'){section='eom';return;}
+    if(a.includes('Inbound CC')){section='cc';return;}
     if(a.includes('Calls Quality Assurance')){section='qa';return;}
     if(!a)return;
     if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
     if(section==='eom'&&b) eomSlide.push({field:a,source:b});
+    if(section==='cc'&&b&&a!=='Points') inboundCC.push({point:a,desc:b,weight:c,actual:d});
     if(section==='qa'){const p=a.split('|');callsQA.push({item:p[0].trim(),score:p[1]||'',ar:b});}
   });
 
@@ -414,6 +418,13 @@ function renderMonthly(rows){
     {field:'Total Tickets',source:'Total Tickets'},
     {field:'Tickets%',source:'Tickets%'}
   ];
+  const INBOUND_CC = inboundCC.length ? inboundCC : [
+    {point:'Number of calls Received',desc:'The total number of calls (inbound & outbound)',weight:'25%',actual:'highest'},
+    {point:'Final Quality Score',desc:'Quality score (Quality of Calls - Attitude - Ticketing - Appointments - Teamwork and problem-solving skills - escalation of the complaints)',weight:'25%',actual:'Highest not less 95%'},
+    {point:'Final CSAT Score',desc:'Customer satisfaction rate with employee',weight:'20%',actual:'Highest not less 95%'},
+    {point:'Average Handling Time',desc:'AHT should be > 3 min',weight:'15%',actual:'4Min'},
+    {point:'Total Tickets VS number of calls',desc:'Percentage ticket numbers based on the number of calls received',weight:'15%',actual:'95%'}
+  ];
   const QA = callsQA.length ? callsQA : [
     {item:'Welcome',score:'10',ar:'المقدمة'},
     {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
@@ -429,19 +440,38 @@ function renderMonthly(rows){
   const total=QA.reduce((s,r)=>{const n=parseInt(r.score)||0;return s+n;},0);
 
   const html=`
-  <div class="sec-label">📊 Monthly Agents Performance — Metrics</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:20px">
-    ${PERF.map(m=>`<div class="card" style="padding:13px 15px;margin-bottom:0">
-      <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${m.metric}</div>
-      <div style="font-size:11px;color:var(--muted);line-height:1.5">${m.desc}</div>
-    </div>`).join('')}
+  <div class="sec-label">📊 Monthly Agents Performance &amp; EOM Slide Inbound</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:start">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Monthly Agents Performance</div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr><th style="width:42%">Metric</th><th>Description</th></tr></thead>
+        <tbody>${PERF.map(m=>`<tr><td style="font-weight:600;color:var(--text)">${m.metric}</td><td style="color:var(--muted)">${m.desc}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>EOM Slide Inbound</div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr><th style="width:55%">Field</th><th>Source</th></tr></thead>
+        <tbody>${EOM.map(r=>`<tr><td style="font-weight:600;color:var(--text)">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
   </div>
-  <div class="sec-label">🏆 EOM Slide — Data Sources</div>
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Employee of the Month — Required Fields</div>
+  <div class="sec-label">📋 Inbound CC — Agent Performance</div>
+  <div class="card" style="margin-bottom:18px">
     <div style="overflow-x:auto"><table class="tbl">
-      <thead><tr><th>Field</th><th>Source</th></tr></thead>
-      <tbody>${EOM.map(r=>`<tr><td style="font-weight:600">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
+      <thead><tr>
+        <th style="width:24%">Points</th>
+        <th>Description</th>
+        <th style="text-align:center;width:13%">Weightage</th>
+        <th style="text-align:center;width:20%">Actual Metric</th>
+      </tr></thead>
+      <tbody>${INBOUND_CC.map(r=>`<tr>
+        <td style="font-weight:600;color:var(--text)">${r.point}</td>
+        <td style="color:var(--muted)">${r.desc}</td>
+        <td style="text-align:center;font-weight:700;color:var(--teal)">${r.weight||'—'}</td>
+        <td style="text-align:center;color:var(--muted)">${r.actual||'—'}</td>
+      </tr>`).join('')}</tbody>
     </table></div>
   </div>
   <div class="sec-label">✅ Calls Quality Assurance — Total: ${total} pts</div>
@@ -2444,6 +2474,19 @@ function setTLDate(id,val){ TL_DATA['date_'+id]=val; saveTL(); }
 function resetTL(){ if(confirm('إعادة تعيين كل شيء؟')){ TL_DATA={}; saveTL(); renderTrainingLog(); } }
 
 document.addEventListener('DOMContentLoaded', loadAll);
+
+// ══ ROW SELECTION — highlight the row you click in the data tables ══
+// Tables: Agent Performance, Feedback, Agent KPI Performance Ranking (EOM Calculator), Quality Assessment
+document.addEventListener('click', function(e){
+  const tr = e.target.closest('tr');
+  if(!tr || !tr.parentElement || tr.parentElement.tagName!=='TBODY') return;
+  const scope = tr.closest('#eomPerfBody, #eomFbBody, #eomScoresTable, #qaTbody');
+  if(!scope) return;
+  const tb = tr.parentElement;
+  const already = tr.classList.contains('row-sel');
+  tb.querySelectorAll('tr.row-sel').forEach(x=>x.classList.remove('row-sel'));
+  if(!already) tr.classList.add('row-sel');
+});
 </script>
 </body>
 </html>
