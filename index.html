@@ -1721,9 +1721,10 @@ function calcEOM(){
     const tktPct=total?(a.tickets/total)*100:0;
     const mk=month+'_'+name;
     const md=EOM_MANUAL[mk]||{};
-    const quality=md.quality??null;
-    const csat=md.csat??null;
-    const wa=md.wafb??null; // WA Feedback % — manual rating, not a count
+    const numOrNull=x=>{const n=parseFloat(x);return isNaN(n)?null:n;};
+    const quality=numOrNull(md.quality);
+    const csat=numOrNull(md.csat);
+    const wa=numOrNull(md.wafb); // WA Feedback % — manual rating, not a count
     const s_calls=(total/maxCalls)*100;
     const s_quality=quality!==null?Math.min(quality,100):null;
     const s_csat=csat!==null?Math.min(csat,100):null;
