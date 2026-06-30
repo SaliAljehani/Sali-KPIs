@@ -1454,7 +1454,7 @@ function renderEOMTab(){
     </div>
     <div id="eomPerfSection">
       <div style="overflow-x:auto">
-        <table class="tbl" style="min-width:1620px;font-size:9.5px">
+        <table class="tbl" style="min-width:1320px;font-size:9.5px">
           <thead>
             <tr>
               <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
@@ -1469,7 +1469,7 @@ function renderEOMTab(){
             </tr>
           <tr>
             <th style="text-align:center;font-size:9px;width:20px">#</th>
-            <th style="font-size:10px;white-space:nowrap;width:auto">User Name</th>
+            <th style="font-size:10px;white-space:nowrap;width:150px">User Name</th>
             <th style="text-align:center;font-size:9px;color:#e65100;width:55px">Badge #</th>
             <th style="text-align:center;font-size:9px;width:64px">Final Login<br>Time Score</th>
             <th style="text-align:center;font-size:9px;width:64px">Total Ready<br>Duration</th>
@@ -1982,10 +1982,10 @@ function renderEOMScores(results){
     '#854F0B','#993C1D','#534AB7','#993556',
   ];
 
-  let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:1300px;font-size:9.5px">
+  let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:950px;font-size:9.5px">
     <thead><tr>
       <th style="font-size:9px;width:20px;background:#F1EFE8">#</th>
-      <th style="font-size:10px;white-space:nowrap;background:#F1EFE8">Agent</th>
+      <th style="font-size:10px;white-space:nowrap;width:150px;background:#F1EFE8">Agent</th>
       <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">KPIs<br>Passed</th>
       <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">Score</th>
       ${KPI_COLS.map((c,i)=>`<th style="text-align:center;font-size:9px;width:62px;background:${KPI_COLORS[i]||'#f4faf7'};color:${KPI_TEXT_COLORS[i]||'var(--muted)'};border-bottom:2px solid rgba(0,0,0,.08)">${c.label}</th>`).join('')}
