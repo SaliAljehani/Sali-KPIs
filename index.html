@@ -1460,7 +1460,7 @@ function renderEOMTab(){
               <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted);background:#f4faf7">Info</th>
               <th colspan="4" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
               <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
-              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">WA ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">WA ●</th>
               <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Total ●</th>
               <th colspan="3" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
               <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
@@ -1481,7 +1481,7 @@ function renderEOMTab(){
             <th style="text-align:center;font-size:10px">Manual<br>Dials</th>
             <th style="text-align:center;font-size:10px">Connected<br>Inbound</th>
             <th style="text-align:center;font-size:10px">Manual Dials<br>+Connected</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">Whatsapp</th>
+            <th style="text-align:center;font-size:10px;color:var(--teal)">Whatsapp</th>
             <th style="text-align:center;font-size:10px">Total All</th>
             <th style="text-align:center;font-size:10px;color:#e65100">Whatsapp<br>Feedback Avg</th>
             <th style="text-align:center;font-size:10px;color:#e65100">Transferred<br>to CSAT</th>
@@ -1588,11 +1588,12 @@ function calcEOM(){
   rows.forEach(r=>{
     const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
     if(!name)return;
-    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,loginSum:0,loginCount:0,readySum:0,readyCount:0,callOffSum:0,callOffCount:0,breakSum:0,breakCount:0,days:0};
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,whatsapp:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,loginSum:0,loginCount:0,readySum:0,readyCount:0,callOffSum:0,callOffCount:0,breakSum:0,breakCount:0,days:0};
     const a=agents[name];
     a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
     a.manual +=parseInt(r['Manual Dials']||0)||0;
     a.tickets+=parseInt(r['Tickets']||0)||0;
+    a.whatsapp+=parseInt(r['Whatsapp']||r['WhatsApp']||0)||0;
     const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
     const talk=parseTimeEOM(r['Avg. Talk Time']||r['Avg Talk Time']||'');
     const acw=parseTimeEOM(r['Avg.ACW Duration']||r['Avg ACW Duration']||r['Avg. ACW']||'');
@@ -1634,7 +1635,7 @@ function calcEOM(){
     const md=EOM_MANUAL[mk]||{};
     const quality=md.quality??null;
     const csat=md.csat??null;
-    const wa=md.wa??null;
+    const wa=md.wafb??null; // WA Feedback % — manual rating, not a count
     const s_calls=(total/maxCalls)*100;
     const s_quality=quality!==null?Math.min(quality,100):null;
     const s_csat=csat!==null?Math.min(csat,100):null;
@@ -1663,15 +1664,15 @@ function calcEOM(){
       tickets:  total>0 ? tktPct>=90 : null,
       quality:  quality!==null ? quality>=90 : null,
     };
-    const kpiVals=Object.values(kpis).filter(v=>v!==null);
+    const kpiVals=Object.values(kpis);
     const kpiPassed=kpiVals.filter(v=>v===true).length;
-    const kpiTotal=kpiVals.length;
-    const kpiPct=kpiTotal>0?Math.round(kpiPassed/kpiTotal*100):0;
+    const kpiTotal=11;
+    const kpiPct=Math.round(kpiPassed/kpiTotal*100);
 
     return{name,total,avgAHT,avgTalk,avgACW,avgLogin,avgReady,avgCallOff,avgBreak,ahtMin,tktPct,quality,csat,wa,
            s_calls,s_aht,s_tickets,final,days:a.days,kpis,kpiPassed,kpiTotal,kpiPct};
   });
-  results.sort((a,b)=>b.kpiPct-a.kpiPct || b.final-a.final);
+  results.sort((a,b)=>b.kpiPassed-a.kpiPassed || b.final-a.final);
 
   // Update rank & score in perf table
   const em=['🥇','🥈','🥉'];
@@ -1714,7 +1715,7 @@ function renderEOMPerfTable(agentNames, agents, month){
     const breakOk=avgBreak>0&&avgBreak<=3600;
     const ahtOk=avgAHT/60>=3;
     const tktOk=total&&(a.tickets/total*100)>=95;
-    const totalAll=total+(parseFloat(md.wa)||0);
+    const totalAll=total+a.whatsapp;
     const nid=name.replace(/\s/g,'_');
     const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
@@ -1731,8 +1732,8 @@ function renderEOMPerfTable(agentNames, agents, month){
       <td style="text-align:center;font-size:11px">${a.manual}</td>
       <td style="text-align:center;font-size:11px">${a.calls}</td>
       <td style="text-align:center;font-size:11px;font-weight:700">${total}</td>
-      <td style="text-align:center;padding:3px"><input type="number" class="perf-wa" placeholder="—" value="${md.wa||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','wa',this.value,'${month}')"></td>
-      <td style="text-align:center;font-size:11px;font-weight:700">${md.wa?totalAll:total}</td>
+      <td style="text-align:center;font-size:11px">${a.whatsapp}</td>
+      <td style="text-align:center;font-size:11px;font-weight:700">${totalAll}</td>
       <td style="text-align:center;padding:3px"><input type="number" class="perf-wafb" placeholder="—" value="${md.wafb||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','wafb',this.value,'${month}')"></td>
       <td style="text-align:center;padding:3px"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"></td>
       <td style="text-align:center;padding:3px"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"></td>
