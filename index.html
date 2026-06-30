@@ -202,8 +202,8 @@
     <div class="nav-item" id="nav-perfgap" onclick="showTab('perfgap')"><span class="ico">🔍</span> Perf. Gap</div>
     <div class="nav-divider"></div>
     <div class="sb-section">Reports</div>
-    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
     <div class="nav-item" id="nav-qa" onclick="showTab('qa')"><span class="ico">⭐</span> Quality Assessment</div>
     <div class="nav-item" id="nav-training" onclick="showTab('training')"><span class="ico">📋</span> Training Log</div>
@@ -1458,7 +1458,7 @@ function renderEOMTab(){
           <thead>
             <tr style="background:#f4faf7">
               <th colspan="3" style="text-align:center;font-size:8px;color:var(--muted);background:#f4faf7">Info</th>
-              <th colspan="4" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Time ●</th>
+              <th colspan="7" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Time ●</th>
               <th colspan="3" style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Calls ●</th>
               <th style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">WA ●</th>
               <th style="text-align:center;font-size:8px;color:var(--teal);background:#e8f5ee">Total ●</th>
@@ -1469,7 +1469,7 @@ function renderEOMTab(){
             </tr>
           <tr>
             <th style="text-align:center;font-size:9px;width:20px">#</th>
-            <th style="font-size:10px;white-space:nowrap;width:1%">User Name</th>
+            <th style="font-size:10px;white-space:nowrap">User Name</th>
             <th style="text-align:center;font-size:9px;color:#e65100;width:55px">Badge #</th>
             <th style="text-align:center;font-size:9px;width:64px">Final Login<br>Time Score</th>
             <th style="text-align:center;font-size:9px;width:64px">Total Ready<br>Duration</th>
@@ -1970,7 +1970,7 @@ function renderEOMScores(results){
 
   let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:1300px;font-size:9.5px">
     <thead><tr>
-      <th style="font-size:9px;width:20px">#</th><th style="font-size:10px;white-space:nowrap;width:1%">Agent</th>
+      <th style="font-size:9px;width:20px">#</th><th style="font-size:10px;white-space:nowrap">Agent</th>
       <th style="text-align:center;font-size:9px;width:46px">KPIs<br>Passed</th>
       <th style="text-align:center;font-size:9px;width:46px">Score</th>
       ${KPI_COLS.map(c=>`<th style="text-align:center;font-size:9px;width:62px">${c.label}</th>`).join('')}
