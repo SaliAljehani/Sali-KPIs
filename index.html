@@ -1441,11 +1441,62 @@ function renderEOMTab(){
     </div>
   </div>
 
-  <!-- STEP 1: FEEDBACK -->
+  <!-- STEP 1: PERFORMANCE TABLE -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+        Agent Performance
+        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
+        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
+      </div>
+      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomPerfSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:1100px">
+          <thead>
+            <tr style="background:#f4faf7">
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted);background:#f4faf7">Info</th>
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">WA ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Total ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">Quality ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--purple);background:#f0effe">Score</th>
+            </tr>
+          <tr>
+            <th style="text-align:center;font-size:10px">#</th>
+            <th style="font-size:10px">User Name</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Badge #</th>
+            <th style="text-align:center;font-size:10px">Avg Talk</th>
+            <th style="text-align:center;font-size:10px">Avg ACW</th>
+            <th style="text-align:center;font-size:10px">AHT</th>
+            <th style="text-align:center;font-size:10px">Manual</th>
+            <th style="text-align:center;font-size:10px">Inbound</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">WhatsApp</th>
+            <th style="text-align:center;font-size:10px">Total</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">To CSAT</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">CSAT%</th>
+            <th style="text-align:center;font-size:10px">Tickets</th>
+            <th style="text-align:center;font-size:10px">%</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Quality%</th>
+            <th style="text-align:center;font-size:10px;color:var(--purple)">Score</th>
+          </tr>
+        </thead>
+        <tbody id="eomPerfBody"></tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: FEEDBACK -->
   <div class="card" style="margin-bottom:12px">
     <div class="card-title-collapsible" onclick="toggleEOMSection('eomFbSection','eomFbArrow')">
       <div class="ctitle-left">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
         Feedback
         <span style="font-size:10px;font-weight:400;color:var(--muted)">· CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
       </div>
@@ -1472,58 +1523,6 @@ function renderEOMTab(){
     </div>
   </div>
 
-  <!-- STEP 2: PERFORMANCE TABLE 15 COLS -->
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')">
-      <div class="ctitle-left">
-        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
-        Agent Performance
-        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
-        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
-      </div>
-      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
-    </div>
-    <div id="eomPerfSection">
-      <div style="overflow-x:auto">
-        <table class="tbl" style="min-width:1100px">
-          <thead>
-            <tr style="background:#f4faf7">
-              <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted);background:#f4faf7">Info</th>
-              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
-              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
-              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">WA ✏️</th>
-              <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Total ●</th>
-              <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
-              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
-              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">Quality ✏️</th>
-              <th style="text-align:center;font-size:9px;color:var(--purple);background:#f0effe">Score</th>
-            </tr>
-          </tr>
-          <tr>
-            <th style="text-align:center;font-size:10px">#</th>
-            <th style="font-size:10px">User Name</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">Badge #</th>
-            <th style="text-align:center;font-size:10px">Avg Talk</th>
-            <th style="text-align:center;font-size:10px">Avg ACW</th>
-            <th style="text-align:center;font-size:10px">AHT</th>
-            <th style="text-align:center;font-size:10px">Manual</th>
-            <th style="text-align:center;font-size:10px">Inbound</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">WhatsApp</th>
-            <th style="text-align:center;font-size:10px">Total</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">To CSAT</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">CSAT%</th>
-            <th style="text-align:center;font-size:10px">Tickets</th>
-            <th style="text-align:center;font-size:10px">%</th>
-            <th style="text-align:center;font-size:10px;color:#e65100">Quality%</th>
-            <th style="text-align:center;font-size:10px;color:var(--purple)">Score</th>
-          </tr>
-        </thead>
-        <tbody id="eomPerfBody"></tbody>
-      </table>
-    </div>
-    </div>
-  </div>
-
   <!-- STEP 3: PODIUM -->
   <div class="card" style="text-align:center;margin-bottom:12px">
     <div class="card-title-collapsible" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')">
@@ -1539,12 +1538,13 @@ function renderEOMTab(){
     </div>
   </div>
 
-  <!-- STEP 4: SCORES TABLE -->
+  <!-- STEP 4: KPI RANKING TABLE -->
   <div class="card">
     <div class="card-title-collapsible" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')">
       <div class="ctitle-left">
         <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
-        Detailed Scores Table
+        Agent KPI Performance Ranking
+        <span style="font-size:10px;font-weight:400;color:var(--muted)">· KPIs: Login ≤09:00 · Ready ≥8h · Auto Call-Off ≤30m · Break ≤1h · Talk ≤3m · ACW ≤30s · Handling ≤4m · WA Feedback ≥5% · CSAT ≥95% · Tickets ≥90% · Quality ≥90%</span>
       </div>
       <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
@@ -1582,7 +1582,7 @@ function calcEOM(){
   rows.forEach(r=>{
     const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
     if(!name)return;
-    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,days:0};
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,loginSum:0,loginCount:0,readySum:0,readyCount:0,callOffSum:0,callOffCount:0,breakSum:0,breakCount:0,days:0};
     const a=agents[name];
     a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
     a.manual +=parseInt(r['Manual Dials']||0)||0;
@@ -1590,9 +1590,17 @@ function calcEOM(){
     const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
     const talk=parseTimeEOM(r['Avg. Talk Time']||r['Avg Talk Time']||'');
     const acw=parseTimeEOM(r['Avg.ACW Duration']||r['Avg ACW Duration']||r['Avg. ACW']||'');
+    const login=parseTimeEOM(r['Login Time']||r['Login']||'');
+    const ready=parseTimeEOM(r['Total Ready Duration']||r['Ready']||'');
+    const callOff=parseTimeEOM(r['Auto Call-Off']||r['Auto Call-Off Duration']||'');
+    const brk=parseTimeEOM(r['Total Break']||r['Total Break Duration']||r['Break']||'');
     if(aht>0){a.ahtSum+=aht;a.ahtCount++;}
     if(talk>0){a.talkSum+=talk;a.talkCount++;}
     if(acw>0){a.acwSum+=acw;a.acwCount++;}
+    if(login>0){a.loginSum+=login;a.loginCount++;}
+    if(ready>0){a.readySum+=ready;a.readyCount++;}
+    if(callOff>0){a.callOffSum+=callOff;a.callOffCount++;}
+    if(brk>0){a.breakSum+=brk;a.breakCount++;}
     a.days++;
   });
 
@@ -1609,11 +1617,18 @@ function calcEOM(){
     const a=agents[name];
     const total=a.calls+a.manual;
     const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
+    const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const avgLogin=a.loginCount?a.loginSum/a.loginCount:0;
+    const avgReady=a.readyCount?a.readySum/a.readyCount:0;
+    const avgCallOff=a.callOffCount?a.callOffSum/a.callOffCount:0;
+    const avgBreak=a.breakCount?a.breakSum/a.breakCount:0;
     const tktPct=total?(a.tickets/total)*100:0;
     const mk=month+'_'+name;
     const md=EOM_MANUAL[mk]||{};
     const quality=md.quality??null;
     const csat=md.csat??null;
+    const wa=md.wa??null;
     const s_calls=(total/maxCalls)*100;
     const s_quality=quality!==null?Math.min(quality,100):null;
     const s_csat=csat!==null?Math.min(csat,100):null;
@@ -1627,9 +1642,30 @@ function calcEOM(){
     score+=s_aht*W_EOM.aht; wUsed+=W_EOM.aht;
     score+=s_tickets*W_EOM.tickets; wUsed+=W_EOM.tickets;
     const final=wUsed>0?score/wUsed*100:0;
-    return{name,total,avgAHT,ahtMin,tktPct,quality,csat,s_calls,s_aht,s_tickets,final,days:a.days};
+
+    // 11 KPI checks (login≤09:00, ready≥8h, callOff≤30m, break≤1h, talk≤3m, acw≤30s, handling≤4m, wa≥5%, csat≥95%, tickets≥90%, quality≥90%)
+    const kpis={
+      login:    avgLogin>0 ? avgLogin<=9*3600 : null,
+      ready:    avgReady>0 ? avgReady>=8*3600 : null,
+      callOff:  avgCallOff>0 ? avgCallOff<=30*60 : null,
+      brk:      avgBreak>0 ? avgBreak<=3600 : null,
+      talk:     avgTalk>0 ? avgTalk<=180 : null,
+      acw:      avgACW>0 ? avgACW<=30 : null,
+      handling: avgAHT>0 ? avgAHT<=240 : null,
+      wa:       wa!==null ? wa>=5 : null,
+      csat:     csat!==null ? csat>=95 : null,
+      tickets:  total>0 ? tktPct>=90 : null,
+      quality:  quality!==null ? quality>=90 : null,
+    };
+    const kpiVals=Object.values(kpis).filter(v=>v!==null);
+    const kpiPassed=kpiVals.filter(v=>v===true).length;
+    const kpiTotal=kpiVals.length;
+    const kpiPct=kpiTotal>0?Math.round(kpiPassed/kpiTotal*100):0;
+
+    return{name,total,avgAHT,avgTalk,avgACW,avgLogin,avgReady,avgCallOff,avgBreak,ahtMin,tktPct,quality,csat,wa,
+           s_calls,s_aht,s_tickets,final,days:a.days,kpis,kpiPassed,kpiTotal,kpiPct};
   });
-  results.sort((a,b)=>b.final-a.final);
+  results.sort((a,b)=>b.kpiPct-a.kpiPct || b.final-a.final);
 
   // Update rank & score in perf table
   const em=['🥇','🥈','🥉'];
@@ -1879,36 +1915,52 @@ function renderEOMPodium(results){
 function renderEOMScores(results){
   if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
   const em=['🥇','🥈','🥉'];
-  let html=`<div style="overflow-x:auto"><table class="tbl">
+  const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}`:'—';
+  const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+
+  const KPI_COLS = [
+    {key:'login',    label:'Login<br>≤09:00',     val:r=>fmtT(r.avgLogin)},
+    {key:'ready',    label:'Ready<br>≥8h',         val:r=>fmtT(r.avgReady)},
+    {key:'callOff',  label:'Auto Call-Off<br>≤30m',val:r=>fmtMS(r.avgCallOff)},
+    {key:'brk',      label:'Break<br>≤1h',         val:r=>fmtT(r.avgBreak)},
+    {key:'talk',     label:'Avg Talk<br>≤3m',      val:r=>fmtMS(r.avgTalk)},
+    {key:'acw',      label:'ACW<br>≤30s',          val:r=>fmtMS(r.avgACW)},
+    {key:'handling', label:'Handling<br>≤4m',      val:r=>fmtMS(r.avgAHT)},
+    {key:'wa',       label:'WA Feedback<br>≥5%',   val:r=>r.wa!==null?r.wa.toFixed(1)+'%':'—'},
+    {key:'csat',     label:'CSAT<br>≥95%',         val:r=>r.csat!==null?r.csat.toFixed(1)+'%':'—'},
+    {key:'tickets',  label:'Tickets<br>≥90%',      val:r=>r.total>0?r.tktPct.toFixed(0)+'%':'—'},
+    {key:'quality',  label:'Quality<br>≥90%',      val:r=>r.quality!==null?r.quality.toFixed(1)+'%':'—'},
+  ];
+
+  let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:1100px">
     <thead><tr>
       <th>#</th><th>Agent</th>
-      <th style="text-align:center">Calls<br><span style="color:#bbb;font-weight:400">25%</span></th>
-      <th style="text-align:center">Quality<br><span style="color:#bbb;font-weight:400">25%</span></th>
-      <th style="text-align:center">CSAT<br><span style="color:#bbb;font-weight:400">20%</span></th>
-      <th style="text-align:center">AHT<br><span style="color:#bbb;font-weight:400">15%</span></th>
-      <th style="text-align:center">Tickets%<br><span style="color:#bbb;font-weight:400">15%</span></th>
+      <th style="text-align:center">KPIs<br>Passed</th>
       <th style="text-align:center">Score</th>
+      ${KPI_COLS.map(c=>`<th style="text-align:center;font-size:10px">${c.label}</th>`).join('')}
     </tr></thead><tbody>`;
-  results.forEach((a,i)=>{
-    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  results.forEach((r,i)=>{
     const rank=i<3?`<span style="font-size:14px">${em[i]}</span>`:`<span style="color:#ccc;font-size:11px">${i+1}</span>`;
-    const ahtD=a.avgAHT>0?`${Math.floor(a.avgAHT/60)}:${String(Math.round(a.avgAHT%60)).padStart(2,'0')}`:'—';
-    const qD=a.quality!==null?a.quality.toFixed(1)+'%':'<span class="eom-na">—</span>';
-    const cD=a.csat!==null?a.csat.toFixed(1)+'%':'<span class="eom-na">—</span>';
-    const qCls=a.quality!==null?(a.quality>=95?'eom-meet':'eom-miss'):'';
-    const cCls=a.csat!==null?(a.csat>=95?'eom-meet':'eom-miss'):'';
-    const aCls=a.ahtMin>=3?'eom-meet':'eom-miss';
-    const tCls=a.tktPct>=95?'eom-meet':'eom-miss';
     const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
-    html+=`<tr>
+    const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    const kpiCells=KPI_COLS.map(c=>{
+      const passed=r.kpis[c.key];
+      const display=c.val(r);
+      let icon='—', col='var(--muted)';
+      if(passed===true){icon='✓';col='#2e7d32';}
+      else if(passed===false){icon='✗';col='#A32D2D';}
+      return `<td style="text-align:center;font-size:10px">
+        <div style="font-weight:700;color:${col}">${icon}</div>
+        <div style="color:var(--muted);font-size:9px">${display}</div>
+      </td>`;
+    }).join('');
+    html+=`<tr style="${rowBg}">
       <td style="text-align:center">${rank}</td>
-      <td style="padding:6px 8px;font-size:12px;font-weight:600">${a.name}</td>
-      <td style="text-align:center;font-weight:700">${a.total}</td>
-      <td style="text-align:center" class="${qCls}">${qD}</td>
-      <td style="text-align:center" class="${cCls}">${cD}</td>
-      <td style="text-align:center" class="${aCls}">${ahtD}</td>
-      <td style="text-align:center" class="${tCls}">${a.tktPct.toFixed(0)}%</td>
-      <td style="text-align:center;font-size:15px;font-weight:800;color:${scoreCol}">${a.final.toFixed(1)}</td>
+      <td style="padding:6px 8px;font-size:12px;font-weight:600">${r.name}</td>
+      <td style="text-align:center;font-size:12px;font-weight:700">${r.kpiPassed}/${r.kpiTotal}</td>
+      <td style="text-align:center;font-size:13px;font-weight:800;color:${scoreCol}">${r.kpiPct}%</td>
+      ${kpiCells}
     </tr>`;
   });
   html+='</tbody></table></div>';
