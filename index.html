@@ -37,9 +37,9 @@
   .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
   .sb-section:first-child{margin-top:0}
-  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
-  .nav-item:hover{background:rgba(15,110,86,.08);color:var(--teal)}
-  .nav-item.active{background:var(--teal-light);color:#085041;font-weight:700}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#3d5a4e;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(15,110,86,.14);color:#085041}
+  .nav-item.active{background:#b2ddd0;color:#054035;font-weight:700}
   .nav-item .ico{font-size:15px;flex-shrink:0}
   .nav-divider{height:1px;background:var(--border);margin:8px 4px}
 
@@ -48,7 +48,9 @@
 
   /* ── CARDS ── */
   .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
-  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px}
+  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px;text-transform:none;letter-spacing:normal}
+  .card-title-collapsible{font-size:12px;font-weight:700;color:var(--text);margin-bottom:0;display:flex;align-items:center;gap:7px;cursor:pointer;justify-content:space-between}
+  .card-title-collapsible .ctitle-left{display:flex;align-items:center;gap:7px;flex:1}
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
   .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
@@ -109,8 +111,8 @@
 
   /* ── TABLES ── */
   .tbl{width:100%;border-collapse:collapse;font-size:12px}
-  .tbl th{background:#f4faf7;padding:9px 13px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--border);text-align:left}
-  .tbl td{padding:9px 13px;border-bottom:1px solid #eef5f1;vertical-align:middle}
+  .tbl th{background:#f4faf7;padding:6px 10px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:5px 10px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
   .tbl tr:hover td{background:#f8fdf9}
 
@@ -132,6 +134,29 @@
   .brand-nos{background:#e8f5e9;color:#2e7d32}
   .brand-foton{background:#eceff1;color:#546e7a}
   .brand-electromin{background:#ede7f6;color:#4527a0}
+
+  /* ── EOM ── */
+  .eom-podium{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:20px 0}
+  .eom-p-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .eom-p-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+  .eom-p-name{font-size:11px;font-weight:700;color:var(--text);text-align:center;max-width:90px}
+  .eom-p-score{font-size:15px;font-weight:800}
+  .eom-p-block{border-radius:8px 8px 0 0;width:88px;display:flex;align-items:center;justify-content:center;font-size:24px}
+  .eom-p1 .eom-p-block{background:linear-gradient(135deg,#DAA520,#b8860b);height:90px}
+  .eom-p2 .eom-p-block{background:linear-gradient(135deg,#9e9e9e,#757575);height:68px}
+  .eom-p3 .eom-p-block{background:linear-gradient(135deg,#cd7f32,#a0522d);height:50px}
+  .eom-p1 .eom-p-score{color:#DAA520}
+  .eom-p2 .eom-p-score{color:#9e9e9e}
+  .eom-p3 .eom-p-score{color:#cd7f32}
+  .eom-p1 .eom-p-av{background:linear-gradient(135deg,#DAA520,#b8860b)}
+  .eom-p2 .eom-p-av{background:linear-gradient(135deg,#9e9e9e,#757575)}
+  .eom-p3 .eom-p-av{background:linear-gradient(135deg,#cd7f32,#a0522d)}
+  .eom-manual-row{display:grid;grid-template-columns:180px 1fr 1fr;gap:10px;align-items:center;padding:9px 12px;background:var(--gray);border-radius:8px;margin-bottom:6px}
+  .eom-input{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;outline:none;width:100%;background:#fff;color:var(--text)}
+  .eom-input:focus{border-color:var(--teal-mid)}
+  .eom-meet{color:#2e7d32;font-weight:700}
+  .eom-miss{color:#A32D2D;font-weight:700}
+  .eom-na{color:#bbb}
 
   @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
 </style>
@@ -179,6 +204,9 @@
     <div class="sb-section">Reports</div>
     <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
     <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
+    <div class="nav-item" id="nav-qa" onclick="showTab('qa')"><span class="ico">⭐</span> Quality Assessment</div>
+    <div class="nav-item" id="nav-training" onclick="showTab('training')"><span class="ico">📋</span> Training Log</div>
   </nav>
 
   <!-- CONTENT -->
@@ -194,6 +222,9 @@
     <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
+    <div id="tab-qa" style="display:none"></div>
+    <div id="tab-training" style="display:none"></div>
   </main>
 </div>
 
@@ -209,7 +240,7 @@ const GID = {
 };
 const AGENTS=[
   'Ahdab Shalabi',
-  'Asmaa M. Bawayan',
+  'Asmaa Bawayan',
   'Bayan Jazzar',
   'Ghadeer Motadares',
   'Ghofran Hussain Rafie',
@@ -242,6 +273,9 @@ function showTab(name){
   document.querySelectorAll('.content > div').forEach(el=>el.style.display='none');
   document.getElementById('tab-'+name).style.display='block';
   _currentTab=name;
+  if(name==='eom' && !EOM_LOADED) loadEOM();
+  if(name==='qa') renderQA();
+  if(name==='training') renderTrainingLog();
 }
 
 // ── FETCH via JSONP Proxy ──
@@ -605,30 +639,36 @@ function renderEscalations(rawRows){
     </div>
 
     <div class="card" style="margin:0">
-      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-        <input id="esc-search" type="text" placeholder="Search case ID or assigned..."
-          style="flex:1;min-width:150px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+        <input id="esc-search" type="text" placeholder="🔍 ابحث بـ Case ID أو الاسم..."
+          style="flex:1;min-width:180px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
           oninput="filterEsc()">
-          <select id="esc-sf" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
-            <option value="">All status</option>
-            <option>Pending</option><option>Pending Refund</option><option>Pending MCI</option>
-            <option>Pending with Sales</option><option>Pending Compensation</option>
-            <option>Pending Customer contact</option><option>Pending for parts</option>
-            <option>Duplicate</option><option>Raise a new complaint</option><option>Closed</option>
-          </select>
-          <select id="esc-df" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
-            <option value="">All departments</option>
-            <option>PAC</option><option>Nissan</option><option>Stellantis</option>
-            <option>PE</option><option>Bodyshop</option><option>Foton</option>
-          </select>
-          <select id="esc-mf" onchange="filterEsc()"
-            style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
-            <option value="">All agents</option>
-            <option>Sali Aljehani</option><option>Shahad Ammar</option>
-          </select>
-        </div>
+        <select id="esc-sf" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Status</option>
+          <option>Pending</option><option>Pending Refund</option><option>Pending MCI</option>
+          <option>Pending with Sales</option><option>Pending Compensation</option>
+          <option>Pending Customer contact</option><option>Pending for parts</option>
+          <option>Duplicate</option><option>Raise a new complaint</option><option>Closed</option>
+        </select>
+        <select id="esc-df" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Departments</option>
+          <option>PAC</option><option>Nissan</option><option>Stellantis</option>
+          <option>PE</option><option>Bodyshop</option><option>Foton</option>
+        </select>
+        <select id="esc-af" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Assigned to</option>
+          ${[...new Set(rows.map(r=>r['Assigned to']||'').filter(Boolean))].sort().map(a=>`<option>${a}</option>`).join('')}
+        </select>
+        <select id="esc-mf" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Modified by</option>
+          <option>Sali Aljehani</option><option>Shahad Ammar</option>
+        </select>
+        <button onclick="document.getElementById('esc-search').value='';document.getElementById('esc-sf').value='';document.getElementById('esc-df').value='';document.getElementById('esc-af').value='';document.getElementById('esc-mf').value='';filterEsc()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;cursor:pointer">↺ Reset</button>
+      </div>
         <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
           <table style="width:100%;border-collapse:collapse;font-size:12px">
             <thead style="position:sticky;top:0;z-index:1">
@@ -636,7 +676,7 @@ function renderEscalations(rawRows){
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">#</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Case ID</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Status</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Dept</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Department</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Assigned to</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Modified by</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Comments</th>
@@ -649,8 +689,8 @@ function renderEscalations(rawRows){
               const assigned=r['Assigned to']||'';
               const modby=getModBy(r);
               const comments=r['Comments']||'';
-              const rowBg=i%2===0?'':'background:#F7FAF8';
-              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'':'#F7FAF8'}'" onclick="openEscEdit(${i})">
+              const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'" onclick="openEscEdit(${i})">
                 <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
                 <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
                 <td style="padding:8px 10px">${statusBadge(status)}</td>
@@ -745,7 +785,7 @@ function saveEscEdit(idx){
 
   fetch(PROXY,{
     method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({sheetName:'Escalations 2026',rowIndex:idx+1,updates})
   }).then(res=>res.json()).then(data=>{
     if(data.success){
@@ -813,6 +853,7 @@ function filterEsc(){
   const q=(document.getElementById('esc-search')?.value||'').toLowerCase();
   const sf=document.getElementById('esc-sf')?.value||'';
   const df=document.getElementById('esc-df')?.value||'';
+  const af=document.getElementById('esc-af')?.value||'';
   const mf=document.getElementById('esc-mf')?.value||'';
 
   const STATUS_COLORS={'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8','Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8','Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2','Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8','Closed':'#EAF3DE','Resolved':'#EAF3DE'};
@@ -824,11 +865,12 @@ function filterEsc(){
     const caseId=String(r['Case ID']||r['Title']||'').toLowerCase();
     const status=String(r['Status']||r['Status Value']||'');
     const dept=String(r['Department']||r['Department Value']||'');
-    const assigned=String(r['Assigned to']||'').toLowerCase();
+    const assigned=String(r['Assigned to']||'');
     const modby=String(r['Modified By']||'');
     const comments=String(r['Comments']||'').toLowerCase();
-    return(!q||(caseId+status.toLowerCase()+assigned+comments).includes(q))
+    return(!q||(caseId+status.toLowerCase()+assigned.toLowerCase()+comments).includes(q))
       &&(!sf||status===sf)&&(!df||dept===df)
+      &&(!af||assigned===af)
       &&(!mf||modby.toLowerCase().includes(mf.toLowerCase()));
   });
 
@@ -841,8 +883,8 @@ function filterEsc(){
       const assigned=r['Assigned to']||'';
       const modby=r['Modified By']||'';
       const comments=r['Comments']||'';
-      const rowBg=i%2===0?'':'background:#F7FAF8';
-      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'':'#F7FAF8'}'">
+      const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'">
         <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
         <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
         <td style="padding:8px 10px">${sb(status)}</td>
@@ -1239,6 +1281,978 @@ function renderPerfGap(rows){
   }
   document.getElementById('tab-perfgap').innerHTML=html;
 }
+
+// ══ EOM CALCULATOR ══
+const EOM_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
+const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
+const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
+let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
+
+try{ EOM_MANUAL=JSON.parse(localStorage.getItem('eom_manual')||'{}'); }catch(e){}
+
+async function fetchEOMSheet(id, sheet){
+  const url=`${GAS_EOM}?id=${id}&sheetName=${encodeURIComponent(sheet)}`;
+  const res=await fetch(url);
+  const data=await res.json();
+  return Array.isArray(data)?data:(data.rows||[]);
+}
+
+function parseTimeEOM(v){
+  if(!v)return 0;
+  const s=String(v).trim();
+  const p=s.split(':').map(Number);
+  if(p.length===3)return p[0]*3600+p[1]*60+p[2];
+  if(p.length===2)return p[0]*60+p[1];
+  return 0;
+}
+
+async function loadEOM(){
+  document.getElementById('tab-eom').innerHTML='<div class="loading">⏳ Loading EOM data...</div>';
+  try{
+    const [agentRows, eomRows]=await Promise.all([
+      fetchEOMSheet(AGENT_PERF_SHEET_ID,'Agent Performance'),
+      fetchEOMSheet(EOM_SHEET_ID,'EOM Data').catch(()=>[])
+    ]);
+    EOM_RAW=agentRows;
+    EOM_SHEET_DATA=eomRows;
+    // Build months
+    const mSet=new Set();
+    EOM_RAW.forEach(r=>{
+      const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim().slice(0,7);
+      if(/^\d{4}-\d{2}$/.test(d)) mSet.add(d);
+    });
+    EOM_MONTHS=[...mSet].sort().reverse();
+    EOM_LOADED=true;
+    renderEOMTab();
+  }catch(e){
+    document.getElementById('tab-eom').innerHTML=`<div class="err">⚠️ ${e.message}</div>`;
+  }
+}
+
+function fmtMonthEOM(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderEOMTab(){
+  const month=EOM_MONTHS[0]||'';
+  const selHTML=EOM_MONTHS.map(m=>`<option value="${m}">${fmtMonthEOM(m)}</option>`).join('');
+  const html=`
+  <div class="sec-label">🏆 Employee of the Month Calculator</div>
+
+  <!-- CONTROLS -->
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select id="eomMonthSel" onchange="calcEOM()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveEOMAll()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">⚡ Save & Calculate</button>
+      <span id="eomSaveStatus" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--teal-light);color:var(--teal)">📞 Calls 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#fff3e0;color:#e65100">⭐ Quality 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--purple-light);color:var(--purple)">😊 CSAT 20%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber-light);color:var(--amber)">⏱ AHT 15%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--gray);color:var(--muted)">🎫 Tickets% 15%</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: FEEDBACK -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomFbSection','eomFbArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+        Feedback
+        <span style="font-size:10px;font-weight:400;color:var(--muted)">· CT% · CE% · Satisfied% · Dissatisfied% تحسب تلقائي</span>
+      </div>
+      <span id="eomFbArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomFbSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:750px">
+          <thead><tr>
+            <th>Agent</th>
+            <th style="text-align:center">Customers<br>Answered</th>
+            <th style="text-align:center">Customers<br>Transferred</th>
+            <th style="text-align:center;color:var(--teal)">CT%</th>
+            <th style="text-align:center">Customers<br>Evaluated</th>
+            <th style="text-align:center;color:var(--teal)">CE%</th>
+            <th style="text-align:center">Satisfied</th>
+            <th style="text-align:center;color:#2e7d32">Satisfied%</th>
+            <th style="text-align:center">Dissatisfied</th>
+            <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
+          </tr></thead>
+          <tbody id="eomFbBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: PERFORMANCE TABLE 15 COLS -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+        Agent Performance
+        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
+        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
+      </div>
+      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomPerfSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:1100px">
+          <thead>
+            <tr style="background:#f4faf7">
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--muted);background:#f4faf7">Info</th>
+              <th colspan="3" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Time ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Calls ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">WA ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Total ●</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">CSAT ✏️</th>
+              <th colspan="2" style="text-align:center;font-size:9px;color:var(--teal);background:#e8f5ee">Tickets ●</th>
+              <th style="text-align:center;font-size:9px;color:#e65100;background:#fef9f0">Quality ✏️</th>
+              <th style="text-align:center;font-size:9px;color:var(--purple);background:#f0effe">Score</th>
+            </tr>
+          </tr>
+          <tr>
+            <th style="text-align:center;font-size:10px">#</th>
+            <th style="font-size:10px">User Name</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Badge #</th>
+            <th style="text-align:center;font-size:10px">Avg Talk</th>
+            <th style="text-align:center;font-size:10px">Avg ACW</th>
+            <th style="text-align:center;font-size:10px">AHT</th>
+            <th style="text-align:center;font-size:10px">Manual</th>
+            <th style="text-align:center;font-size:10px">Inbound</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">WhatsApp</th>
+            <th style="text-align:center;font-size:10px">Total</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">To CSAT</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">CSAT%</th>
+            <th style="text-align:center;font-size:10px">Tickets</th>
+            <th style="text-align:center;font-size:10px">%</th>
+            <th style="text-align:center;font-size:10px;color:#e65100">Quality%</th>
+            <th style="text-align:center;font-size:10px;color:var(--purple)">Score</th>
+          </tr>
+        </thead>
+        <tbody id="eomPerfBody"></tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: PODIUM -->
+  <div class="card" style="text-align:center;margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:#DAA520;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">3</div>
+        <span>🏆 <span id="eomPodiumTitle">${fmtMonthEOM(month)}</span></span>
+        <span style="font-size:11px;color:var(--muted);font-weight:400">Employee of the Month</span>
+      </div>
+      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomPodiumBody">
+      <div id="eomPodium"><div style="color:var(--muted);padding:30px;font-size:13px">أدخلي البيانات واضغطي Save & Calculate</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: SCORES TABLE -->
+  <div class="card">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
+        Detailed Scores Table
+      </div>
+      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomScoresBody">
+      <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">أدخلي البيانات واضغطي Save & Calculate</div></div>
+    </div>
+  </div>`;
+  document.getElementById('tab-eom').innerHTML=html;
+  calcEOM();
+}
+
+function toggleEOMSection(bodyId, arrowId){
+  const body=document.getElementById(bodyId);
+  const arrow=document.getElementById(arrowId);
+  if(!body)return;
+  const open=body.style.display!=='none'&&body.style.display!=='';
+  body.style.display=open?'none':'block';
+  if(arrow)arrow.textContent=open?'▼':'▲';
+}
+
+function calcEOM(){
+  if(!EOM_LOADED)return;
+  const month=document.getElementById('eomMonthSel')?document.getElementById('eomMonthSel').value:EOM_MONTHS[0];
+  if(!month)return;
+  document.getElementById('eomPodiumTitle').textContent='🏆 '+fmtMonthEOM(month);
+
+  // Filter rows for selected month
+  const rows=EOM_RAW.filter(r=>{
+    const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim();
+    return d.startsWith(month);
+  });
+
+  // Group by agent — sum monthly totals
+  const agents={};
+  rows.forEach(r=>{
+    const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
+    if(!name)return;
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,days:0};
+    const a=agents[name];
+    a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
+    a.manual +=parseInt(r['Manual Dials']||0)||0;
+    a.tickets+=parseInt(r['Tickets']||0)||0;
+    const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
+    const talk=parseTimeEOM(r['Avg. Talk Time']||r['Avg Talk Time']||'');
+    const acw=parseTimeEOM(r['Avg.ACW Duration']||r['Avg ACW Duration']||r['Avg. ACW']||'');
+    if(aht>0){a.ahtSum+=aht;a.ahtCount++;}
+    if(talk>0){a.talkSum+=talk;a.talkCount++;}
+    if(acw>0){a.acwSum+=acw;a.acwCount++;}
+    a.days++;
+  });
+
+  const agentNames=Object.keys(agents).sort();
+
+  // Build feedback table rows
+  renderEOMFeedbackTable(agentNames, month);
+  // Build perf table
+  renderEOMPerfTable(agentNames, agents, month);
+
+  // Calculate scores
+  const maxCalls=Math.max(...Object.values(agents).map(a=>a.calls+a.manual),1);
+  const results=agentNames.map(name=>{
+    const a=agents[name];
+    const total=a.calls+a.manual;
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const tktPct=total?(a.tickets/total)*100:0;
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const quality=md.quality??null;
+    const csat=md.csat??null;
+    const s_calls=(total/maxCalls)*100;
+    const s_quality=quality!==null?Math.min(quality,100):null;
+    const s_csat=csat!==null?Math.min(csat,100):null;
+    const ahtMin=avgAHT/60;
+    const s_aht=ahtMin>=3?100:(ahtMin/3)*100;
+    const s_tickets=Math.min((tktPct/95)*100,100);
+    let score=0,wUsed=0;
+    score+=s_calls*W_EOM.calls; wUsed+=W_EOM.calls;
+    if(s_quality!==null){score+=s_quality*W_EOM.quality;wUsed+=W_EOM.quality;}
+    if(s_csat!==null){score+=s_csat*W_EOM.csat;wUsed+=W_EOM.csat;}
+    score+=s_aht*W_EOM.aht; wUsed+=W_EOM.aht;
+    score+=s_tickets*W_EOM.tickets; wUsed+=W_EOM.tickets;
+    const final=wUsed>0?score/wUsed*100:0;
+    return{name,total,avgAHT,ahtMin,tktPct,quality,csat,s_calls,s_aht,s_tickets,final,days:a.days};
+  });
+  results.sort((a,b)=>b.final-a.final);
+
+  // Update rank & score in perf table
+  const em=['🥇','🥈','🥉'];
+  const scCols=['#DAA520','#9e9e9e','#cd7f32'];
+  results.forEach((r,rank)=>{
+    const nid=r.name.replace(/\s/g,'_');
+    const sc=document.getElementById('eomPerf_score_'+nid);
+    const no=document.getElementById('eomPerf_no_'+nid);
+    if(sc){sc.textContent=r.final.toFixed(1);sc.style.color=rank<3?scCols[rank]:'var(--text)';sc.style.fontWeight='800';}
+    if(no){no.textContent=rank<3?em[rank]:String(rank+1);}
+  });
+
+  renderEOMPodium(results);
+  renderEOMScores(results);
+}
+
+function renderEOMPerfTable(agentNames, agents, month){
+  const el=document.getElementById('eomPerfBody');
+  if(!el)return;
+  const fmtT=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const inp=`border:1.5px solid #c8e6c9;border-radius:5px;background:#fff;font-size:11px;padding:3px 5px;text-align:center`;
+  let html='';
+  agentNames.forEach((name,i)=>{
+    const a=agents[name];
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const total=a.calls+a.manual;
+    const tktPct=total?Math.round(a.tickets/total*100)+'%':'—';
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
+    const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const ahtOk=avgAHT/60>=3;
+    const tktOk=total&&(a.tickets/total*100)>=95;
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const nid=name.replace(/\s/g,'_');
+    const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    html+=`<tr style="${bg}" data-perf-agent="${name}">
+      <td style="text-align:center;font-size:12px" id="eomPerf_no_${nid}">—</td>
+      <td style="padding:5px 8px;font-size:11px;font-weight:600">${name}</td>
+      <td style="text-align:center;padding:3px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:52px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgTalk)}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${fmtT(avgACW)}</td>
+      <td style="text-align:center;font-size:11px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtT(avgAHT)}</td>
+      <td style="text-align:center;font-size:11px">${a.manual}</td>
+      <td style="text-align:center;font-size:11px">${a.calls}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-wa" placeholder="—" value="${md.wa||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','wa',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px;font-weight:700">${total}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:50px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:50px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:11px">${a.tickets}</td>
+      <td style="text-align:center;font-size:11px;${tktOk?'color:#2e7d32;font-weight:700':'color:var(--muted)'}">${tktPct}</td>
+      <td style="text-align:center;padding:3px"><input type="number" class="perf-quality" placeholder="—" value="${md.quality||''}" min="0" max="100" step="0.1" style="width:50px;${inp}" oninput="savePerfField('${name}','quality',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:13px;font-weight:800" id="eomPerf_score_${nid}">—</td>
+    </tr>`;
+  });
+  el.innerHTML=html;
+}
+
+function savePerfField(name,field,value,month){
+  const mk=month+'_'+name;
+  if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+  const v=parseFloat(value);
+  EOM_MANUAL[mk][field]=isNaN(v)?value:v;
+  try{localStorage.setItem('eom_manual',JSON.stringify(EOM_MANUAL));}catch(e){}
+  if(field==='csat'||field==='quality') calcEOM();
+}
+
+function renderEOMFeedbackTable(agentNames, month){
+  const fbEl=document.getElementById('eomFbBody');
+  if(!fbEl)return;
+  let html='';
+  agentNames.forEach((name,i)=>{
+    const mk=month+'_fb_'+name;
+    const fd=EOM_MANUAL[mk]||{};
+    const ans=fd.ans||''; const tr=fd.tr||''; const ev=fd.ev||''; const sat=fd.sat||''; const dis=fd.dis||'';
+    const ct=ans&&tr?Math.round(tr/ans*100)+'%':'—';
+    const ce=tr&&ev?Math.round(ev/tr*100)+'%':'—';
+    const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
+    const dp=ev&&dis?Math.round(dis/ev*100)+'%':'—';
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
+    html+=`<tr data-fb-agent="${name}">
+      <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ce_${i}">${ce}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-dis" type="number" min="0" placeholder="—" value="${dis}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#A32D2D;font-size:11px;padding:3px 6px" id="fb_dp_${i}">${dp}</td>
+    </tr>`;
+  });
+  // Total row
+  html+=`<tr style="background:#e8f5ee;font-weight:700" id="fb_total_row">
+    <td style="font-weight:700;font-size:12px;color:var(--muted)">Total</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ans">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_tr">—</td>
+    <td style="text-align:center;font-weight:700;color:var(--teal);font-size:12px" id="fb_tot_ct">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ev">—</td>
+    <td style="text-align:center;font-weight:700;color:var(--teal);font-size:12px" id="fb_tot_ce">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_sat">—</td>
+    <td style="text-align:center;font-weight:700;color:#2e7d32;font-size:12px" id="fb_tot_sp">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_dis">—</td>
+    <td style="text-align:center;font-weight:700;color:#A32D2D;font-size:12px" id="fb_tot_dp">—</td>
+  </tr>`;
+  fbEl.innerHTML=html;
+  updateFBTotals();
+}
+
+function updateFBRow(inp, agentName){
+  const month=document.getElementById('eomMonthSel').value;
+  const mk=month+'_fb_'+agentName;
+  if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+  const row=inp.closest('tr');
+  const ans=parseFloat(row.querySelector('.fb-ans').value)||0;
+  const tr =parseFloat(row.querySelector('.fb-tr').value)||0;
+  const ev =parseFloat(row.querySelector('.fb-ev').value)||0;
+  const sat=parseFloat(row.querySelector('.fb-sat').value)||0;
+  const dis=parseFloat(row.querySelector('.fb-dis').value)||0;
+  EOM_MANUAL[mk]={ans,tr,ev,sat,dis};
+  // Update CSAT for this agent
+  const csatVal=ev>0?sat/ev*100:null;
+  const amk=month+'_'+agentName;
+  if(!EOM_MANUAL[amk])EOM_MANUAL[amk]={};
+  EOM_MANUAL[amk].csat=csatVal;
+  // Update auto-calc cells
+  const rows=[...document.querySelectorAll('#eomFbBody tr[data-fb-agent]')];
+  const idx=rows.findIndex(r=>r.dataset.fbAgent===agentName);
+  if(idx>=0){
+    document.getElementById('fb_ct_'+idx).textContent=ans>0?Math.round(tr/ans*100)+'%':'—';
+    document.getElementById('fb_ce_'+idx).textContent=tr>0?Math.round(ev/tr*100)+'%':'—';
+    document.getElementById('fb_sp_'+idx).textContent=ev>0?Math.round(sat/ev*100)+'%':'—';
+    document.getElementById('fb_dp_'+idx).textContent=ev>0?Math.round(dis/ev*100)+'%':'—';
+  }
+  updateFBTotals();
+}
+
+function updateFBTotals(){
+  let tAns=0,tTr=0,tEv=0,tSat=0,tDis=0;
+  document.querySelectorAll('#eomFbBody tr[data-fb-agent]').forEach(row=>{
+    tAns+=parseFloat(row.querySelector('.fb-ans').value)||0;
+    tTr +=parseFloat(row.querySelector('.fb-tr').value)||0;
+    tEv +=parseFloat(row.querySelector('.fb-ev').value)||0;
+    tSat+=parseFloat(row.querySelector('.fb-sat').value)||0;
+    tDis+=parseFloat(row.querySelector('.fb-dis').value)||0;
+  });
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('fb_tot_ans',tAns||'—'); set('fb_tot_tr',tTr||'—');
+  set('fb_tot_ev',tEv||'—');   set('fb_tot_sat',tSat||'—');
+  set('fb_tot_dis',tDis||'—');
+  set('fb_tot_ct',tAns>0?Math.round(tTr/tAns*100)+'%':'—');
+  set('fb_tot_ce',tTr>0?Math.round(tEv/tTr*100)+'%':'—');
+  set('fb_tot_sp',tEv>0?Math.round(tSat/tEv*100)+'%':'—');
+  set('fb_tot_dp',tEv>0?Math.round(tDis/tEv*100)+'%':'—');
+}
+
+function renderEOMQualityGrid(agentNames, month){
+  const el=document.getElementById('eomQualityGrid');
+  if(!el)return;
+  let html='';
+  agentNames.forEach(name=>{
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const qV=md.quality??'';
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-manual-row" data-agent="${name}" style="grid-template-columns:1fr 110px;padding:7px 10px">
+      <span style="font-size:12px;font-weight:600">${name}</span>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px">⭐ Quality %</div>
+        <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="97.5" value="${qV}" oninput="liveCalcEOM()" style="padding:4px 8px;font-size:12px">
+      </div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function liveCalcEOM(){
+  // update quality values live without saving
+  const month=document.getElementById('eomMonthSel').value;
+  document.querySelectorAll('#eomQualityGrid .eom-manual-row').forEach(row=>{
+    const agent=row.dataset.agent;
+    const mk=month+'_'+agent;
+    if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+    const qv=parseFloat(row.querySelector('.q-inp').value);
+    if(!isNaN(qv))EOM_MANUAL[mk].quality=qv;
+  });
+  calcEOM();
+}
+
+function saveEOMAll(){
+  const month=document.getElementById('eomMonthSel').value;
+  document.querySelectorAll('#eomFbBody tr[data-fb-agent]').forEach(row=>{
+    updateFBRow(row.querySelector('.fb-ans'), row.dataset.fbAgent);
+  });
+  document.querySelectorAll('#eomPerfBody tr[data-perf-agent]').forEach(row=>{
+    const name=row.dataset.perfAgent;
+    const mk=month+'_'+name;
+    if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+    const get=(cls)=>{const el=row.querySelector('.'+cls);return el?el.value:'';};
+    const badge=get('perf-badge'); const wa=get('perf-wa');
+    const tocsat=get('perf-tocsat'); const csat=get('perf-csat'); const quality=get('perf-quality');
+    if(badge) EOM_MANUAL[mk].badge=badge;
+    if(wa)    EOM_MANUAL[mk].wa=parseFloat(wa);
+    if(tocsat)EOM_MANUAL[mk].tocsat=parseFloat(tocsat);
+    if(csat)  EOM_MANUAL[mk].csat=parseFloat(csat);
+    if(quality)EOM_MANUAL[mk].quality=parseFloat(quality);
+  });
+  try{localStorage.setItem('eom_manual',JSON.stringify(EOM_MANUAL));}catch(e){}
+  const st=document.getElementById('eomSaveStatus');
+  if(st){st.textContent='✅ تم الحفظ!';st.style.color='#2e7d32';setTimeout(()=>{st.textContent='البيانات محفوظة تلقائياً';st.style.color='';},2000);}
+  calcEOM();
+}
+
+function renderEOMPodium(results){
+  if(!results.length){document.getElementById('eomPodium').innerHTML='<div style="color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const top=results.slice(0,3);
+  const order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
+  const cls=['eom-p2','eom-p1','eom-p3'];
+  const medals=['🥈','🥇','🥉'];
+  const cols=['#9e9e9e','#DAA520','#cd7f32'];
+  let html='<div class="eom-podium">';
+  order.forEach((a,i)=>{
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-p-item ${cls[i]}">
+      <div class="eom-p-av">${init}</div>
+      <div class="eom-p-name">${a.name}</div>
+      <div class="eom-p-score" style="color:${cols[i]}">${a.final.toFixed(1)}</div>
+      <div class="eom-p-block">${medals[i]}</div>
+    </div>`;
+  });
+  html+='</div>';
+  if(top[0]){
+    html+=`<div style="background:linear-gradient(135deg,#fff8e1,#fff3cd);border-radius:10px;padding:12px 18px;display:inline-flex;align-items:center;gap:12px;border:2px solid #DAA520;margin-top:4px">
+      <span style="font-size:28px">🏆</span>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em">موظفة الشهر</div>
+        <div style="font-size:17px;font-weight:800;color:var(--text)">${top[0].name}</div>
+        <div style="font-size:12px;color:#DAA520;font-weight:700">النقاط: ${top[0].final.toFixed(2)} / 100</div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('eomPodium').innerHTML=html;
+}
+
+function renderEOMScores(results){
+  if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const em=['🥇','🥈','🥉'];
+  let html=`<div style="overflow-x:auto"><table class="tbl">
+    <thead><tr>
+      <th>#</th><th>Agent</th>
+      <th style="text-align:center">Calls<br><span style="color:#bbb;font-weight:400">25%</span></th>
+      <th style="text-align:center">Quality<br><span style="color:#bbb;font-weight:400">25%</span></th>
+      <th style="text-align:center">CSAT<br><span style="color:#bbb;font-weight:400">20%</span></th>
+      <th style="text-align:center">AHT<br><span style="color:#bbb;font-weight:400">15%</span></th>
+      <th style="text-align:center">Tickets%<br><span style="color:#bbb;font-weight:400">15%</span></th>
+      <th style="text-align:center">Score</th>
+    </tr></thead><tbody>`;
+  results.forEach((a,i)=>{
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const rank=i<3?`<span style="font-size:14px">${em[i]}</span>`:`<span style="color:#ccc;font-size:11px">${i+1}</span>`;
+    const ahtD=a.avgAHT>0?`${Math.floor(a.avgAHT/60)}:${String(Math.round(a.avgAHT%60)).padStart(2,'0')}`:'—';
+    const qD=a.quality!==null?a.quality.toFixed(1)+'%':'<span class="eom-na">—</span>';
+    const cD=a.csat!==null?a.csat.toFixed(1)+'%':'<span class="eom-na">—</span>';
+    const qCls=a.quality!==null?(a.quality>=95?'eom-meet':'eom-miss'):'';
+    const cCls=a.csat!==null?(a.csat>=95?'eom-meet':'eom-miss'):'';
+    const aCls=a.ahtMin>=3?'eom-meet':'eom-miss';
+    const tCls=a.tktPct>=95?'eom-meet':'eom-miss';
+    const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
+    html+=`<tr>
+      <td style="text-align:center">${rank}</td>
+      <td style="padding:6px 8px;font-size:12px;font-weight:600">${a.name}</td>
+      <td style="text-align:center;font-weight:700">${a.total}</td>
+      <td style="text-align:center" class="${qCls}">${qD}</td>
+      <td style="text-align:center" class="${cCls}">${cD}</td>
+      <td style="text-align:center" class="${aCls}">${ahtD}</td>
+      <td style="text-align:center" class="${tCls}">${a.tktPct.toFixed(0)}%</td>
+      <td style="text-align:center;font-size:15px;font-weight:800;color:${scoreCol}">${a.final.toFixed(1)}</td>
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('eomScoresTable').innerHTML=html;
+}
+
+function renderEOMManual(results,month){}
+
+function saveEOMManual(){saveEOMAll();}
+
+// ══ QUALITY ASSESSMENT ══════════════════════════════════════════════════════
+const QA_COLS = [
+  {key:'welcome',    label:'Welcome',                                                              short:'Welcome',         max:10},
+  {key:'question',   label:'Question or Inquiry from the customer / or informing him the purpose of call', short:'Question / Inquiry', max:10},
+  {key:'understand', label:'Understanding the customers problem',                                  short:'Understanding',   max:10},
+  {key:'answering',  label:'Answering the Customers question or problem',                          short:'Answering',       max:10},
+  {key:'howlong',    label:'How long it took to answer',                                           short:'How long',        max:5},
+  {key:'attitude',   label:'Attitude & Language',                                                  short:'Attitude',        max:5},
+  {key:'enthusiasm', label:'Personal Enthusiasm',                                                  short:'Enthusiasm',      max:5},
+  {key:'hold',       label:'Hold time / mute',                                                     short:'Hold time',       max:5},
+  {key:'closer',     label:'Closer of call',                                                       short:'Closer',          max:10},
+  {key:'ticket',     label:'Ticket Quality / System input',                                        short:'Ticket QA',       max:30},
+];
+const QA_TOTAL_MAX = 100;
+
+const QA_AGENT_COMPANIES = {
+  'Asmaa Bawayan':      ['NI','ST','PE'],
+  'Bayan Jazzar':          ['NI','ST','PE'],
+  'Ghadeer Motadares':     ['NI','ST','PE'],
+  'Ghofran Hussain Rafie': ['Foton','NI','NI'],
+  'Hanin Yajizi':          ['NI','ST','PE'],
+  'Hibah Almuwallad':      ['ST','ST','ST'],
+  'Manar Alshehri':        ['NI','ST','PE'],
+  'Mashael Alshehri':      ['NI','ST','PE'],
+  'Mawadah Essam':         ['NI','ST','PE'],
+  'Nedaa Shorbaji':        ['NI','ST','PE'],
+  'Nesreen Mansoor':       ['NI','ST','PE'],
+  'Sara Sami':             ['NI','ST','PE'],
+  'Shatha Bawayan':        ['Foton','PE','PE'],
+  'Walaa Meezi':           ['NI','ST','PE'],
+  'Wejdan Mustafa':        ['NI','ST','PE'],
+  'Yosra Alsalami':        ['NI','ST','PE'],
+};
+
+const QA_MONTHS = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06',
+                   '2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+let QA_DATA = {};
+let QA_ACTIVE_MONTH = '2026-' + String(new Date().getMonth()+1).padStart(2,'0');
+
+try{ QA_DATA = JSON.parse(localStorage.getItem('qa_data')||'{}'); }catch(e){}
+
+function saveQAData(){ try{localStorage.setItem('qa_data',JSON.stringify(QA_DATA));}catch(e){} }
+
+function fmtMonthQA(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderQA(){
+  const el=document.getElementById('tab-qa');
+  if(!el)return;
+
+  const selHTML=QA_MONTHS.map(m=>`<option value="${m}"${m===QA_ACTIVE_MONTH?' selected':''}>${fmtMonthQA(m)}</option>`).join('');
+
+  // Build rows
+  const rows=[];
+  Object.entries(QA_AGENT_COMPANIES).forEach(([agent,companies])=>{
+    companies.forEach(co=>{
+      rows.push({agent,co});
+    });
+  });
+
+  // Build table headers - full description in 2 lines, compact
+  const QA_COL_HEADERS = [
+    {t:'Welcome',                                                  max:10},
+    {t:'Question or Inquiry<br>/ purpose of call',                 max:10},
+    {t:'Understanding<br>the customers problem',                   max:10},
+    {t:'Answering the Customers<br>question or problem',           max:10},
+    {t:'How long it took<br>to answer',                            max:5},
+    {t:'Attitude &<br>Language',                                   max:5},
+    {t:'Personal<br>Enthusiasm',                                   max:5},
+    {t:'Hold time<br>/ mute',                                      max:5},
+    {t:'Closer<br>of call',                                        max:10},
+    {t:'Ticket Quality<br>/ System input',                         max:30},
+  ];
+
+  let html=`
+  <div class="sec-label">⭐ Quality Assessment — Calls Evaluation</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select onchange="QA_ACTIVE_MONTH=this.value;renderQA()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveQAData();showQASaveMsg()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">💾 Save</button>
+      <span id="qaSaveMsg" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+      <button onclick="exportQA()" style="padding:7px 14px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Copy Summary</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="overflow-x:auto;max-height:70vh;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead style="position:sticky;top:0;z-index:2">
+          <!-- Group row -->
+          <tr>
+            <th colspan="4" style="padding:6px 10px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2);position:sticky;left:0;z-index:3">Info</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">تقييم العميل |20</th>
+            <th colspan="6" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">خدمة العملاء |50</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">جودة التكت |30</th>
+            <th colspan="3" style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Result</th>
+            <th style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500">Comments</th>
+          </tr>
+          <!-- Column headers -->
+          <tr style="background:#f4faf7;border-bottom:2px solid #9FE1CB">
+            <th style="padding:5px 10px;text-align:left;font-size:9px;font-weight:500;color:#085041;min-width:110px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:42px">Company</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:76px">Date</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:88px;border-right:1px solid #9FE1CB">Customer number</th>
+            ${QA_COL_HEADERS.map(c=>`<th title="${c.t.replace(/<br>/g,' ')}" style="padding:4px 3px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:${c.max===30?62:c.max<=5?48:52}px;line-height:1.4;cursor:help">${c.t}<br><span style="color:#0F6E56;font-weight:700">|${c.max}</span></th>`).join('')}
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">Total<br>|100</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:42px">Target</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:38px;border-right:1px solid #9FE1CB">%</th>
+            <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:130px">Other comments</th>
+          </tr>
+        </thead>
+        <tbody id="qaTbody">
+          ${buildQARows(rows)}
+        </tbody>
+        <tfoot>
+          <tr style="background:#e8f5ee;font-weight:700;border-top:2px solid #9FE1CB">
+            <td colspan="4" style="padding:8px 10px;font-size:11px;color:var(--teal);font-weight:600">Total</td>
+            ${QA_COLS.map((_,i)=>`<td id="qa_ft_${i}" style="text-align:center;font-size:11px;color:var(--teal)">—</td>`).join('')}
+            <td id="qa_ft_total" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td style="text-align:center;font-size:11px;color:var(--muted)">100</td>
+            <td id="qa_ft_pct" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>`;
+
+  el.innerHTML=html;
+  updateQATotals();
+}
+
+function buildQARows(rows){
+  const CO_STYLE={
+    NI:   'background:#fde8e8;color:#c0272d',
+    ST:   'background:#e3edf8;color:#1565c0',
+    PE:   'background:#e8f5ee;color:#2e7d32',
+    Foton:'background:#eceff1;color:#546e7a',
+    NO:   'background:#f5f0e8;color:#6a5818',
+  };
+  const inp=`border:0.5px solid var(--border);border-radius:4px;background:#fff;font-size:10px;padding:2px 3px;text-align:center`;
+
+  // Group rows by agent
+  const agents={};
+  rows.forEach(r=>{
+    if(!agents[r.agent]) agents[r.agent]=[];
+    agents[r.agent].push(r);
+  });
+
+  let html='';let agentIdx=0;
+  Object.entries(agents).forEach(([agent,agentRows])=>{
+    const rowspan=agentRows.length;
+    const displayName=agent.replace(' M. ',' ');
+    const initials=displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const rowBg=agentIdx%2===0?'background:#ffffff':'background:#f0faf5';
+    const stickyBg=agentIdx%2===0?'#ffffff':'#f0faf5';
+
+    agentRows.forEach((r,ri)=>{
+      const key=QA_ACTIVE_MONTH+'_'+agent+'_'+r.co;
+      const d=QA_DATA[key]||{};
+      const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+      const pct=Math.round(total/QA_TOTAL_MAX*100);
+      const pctCol=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
+      const borderBottom=ri===rowspan-1?'border-bottom:2px solid #c8e6c9':'border-bottom:0.5px solid #ddd';
+      const coSt=CO_STYLE[r.co]||'background:#f5f5f5;color:#555';
+      const colInputs=QA_COLS.map(c=>{
+        const v=d[c.key]||'';
+        const vn=parseFloat(v);const over=!isNaN(vn)&&vn>c.max;
+        return`<td style="text-align:center;padding:1px 2px"><input type="number" min="0" max="${c.max}" value="${v}" placeholder="—"
+          style="width:${c.max===30?'40px':'34px'};${inp};border-color:${over?'#c0272d':'var(--border)'};background:${over?'#fde':'#fff'}"
+          oninput="setQA('${key}','${c.key}',this.value,${c.max},this)" title="${c.label} (max ${c.max})"></td>`;
+      }).join('');
+
+      html+=`<tr style="${rowBg};${borderBottom}" data-qa-key="${key}">`;
+      if(ri===0){
+        html+=`<td rowspan="${rowspan}" style="padding:4px 8px;font-size:10px;font-weight:600;text-align:center;vertical-align:middle;position:sticky;left:0;background:${stickyBg};border-right:0.5px solid var(--border)">
+            ${displayName}
+          </td>`;
+      }
+      html+=`<td style="text-align:center;padding:2px 3px">
+        <span style="${coSt};padding:1px 6px;border-radius:8px;font-size:9px;font-weight:600">${r.co}</span>
+      </td>
+      <td style="padding:2px 3px"><input type="date" value="${d.date||''}"
+        style="font-size:9px;padding:2px 3px;${inp};width:88px"
+        oninput="setQA('${key}','date',this.value,null,null)"></td>
+      <td style="padding:2px 3px"><input type="text" value="${d.cusnum||''}" placeholder="—"
+        style="width:76px;font-size:9px;${inp}"
+        oninput="setQA('${key}','cusnum',this.value,null,null)"></td>
+      ${colInputs}
+      <td style="text-align:center;font-weight:600;font-size:11px;color:var(--text)" id="qa_tot_${key.replace(/[^a-z0-9]/gi,'_')}">${total||0}</td>
+      <td style="text-align:center;font-size:10px;color:var(--muted)">100</td>
+      <td style="text-align:center;font-weight:600;font-size:11px;color:${pctCol}" id="qa_pct_${key.replace(/[^a-z0-9]/gi,'_')}">${pct}%</td>
+      <td style="padding:2px 4px"><input type="text" value="${d.comments||''}" placeholder="—"
+        style="width:120px;font-size:9px;${inp}"
+        oninput="setQA('${key}','comments',this.value,null,null)"></td>
+      </tr>`;
+      if(ri===rowspan-1) agentIdx++;
+    });
+  });
+  return html;
+}
+
+function setQA(key, field, value, max, el){
+  if(!QA_DATA[key])QA_DATA[key]={};
+  QA_DATA[key][field]=value;
+  if(el&&max!==null){
+    const v=parseFloat(value);
+    const over=!isNaN(v)&&v>max;
+    el.style.border=over?'1px solid #c0272d':'1px solid var(--border)';
+    el.style.background=over?'#fde':'#fff';
+  }
+  saveQAData();
+  updateQARow(key);
+  updateQATotals();
+}
+
+function updateQARow(key){
+  const d=QA_DATA[key]||{};
+  const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+  const pct=Math.round(total/QA_TOTAL_MAX*100);
+  const nid=key.replace(/[^a-z0-9]/gi,'_');
+  const totEl=document.getElementById('qa_tot_'+nid);
+  const pctEl=document.getElementById('qa_pct_'+nid);
+  if(totEl)totEl.textContent=total||0;
+  if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+}
+
+function updateQATotals(){
+  const colSums=QA_COLS.map(()=>0);
+  let grandTotal=0,rowCount=0;
+  document.querySelectorAll('#qaTbody tr[data-qa-key]').forEach(row=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    let rowTotal=0;
+    QA_COLS.forEach((c,ci)=>{const v=parseFloat(d[c.key]||0)||0;colSums[ci]+=v;rowTotal+=v;});
+    if(rowTotal>0){grandTotal+=rowTotal;rowCount++;}
+    const nid=k.replace(/[^a-z0-9]/gi,'_');
+    const totEl=document.getElementById('qa_tot_'+nid);
+    const pctEl=document.getElementById('qa_pct_'+nid);
+    if(totEl)totEl.textContent=rowTotal||0;
+    if(pctEl){const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+  });
+  QA_COLS.forEach((_,i)=>{const el=document.getElementById('qa_ft_'+i);if(el)el.textContent=colSums[i]||'—';});
+  const totEl=document.getElementById('qa_ft_total');
+  const pctEl=document.getElementById('qa_ft_pct');
+  if(totEl)totEl.textContent=grandTotal||'—';
+  if(pctEl&&rowCount>0){const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);pctEl.textContent=avg+'%';pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';}
+}
+
+
+function showQASaveMsg(){
+  const el=document.getElementById('qaSaveMsg');
+  if(!el)return;
+  el.textContent='✅ تم الحفظ!';el.style.color='#2e7d32';
+  setTimeout(()=>{el.textContent='البيانات محفوظة تلقائياً';el.style.color='var(--muted)';},2000);
+}
+
+function exportQA(){
+  const rows=document.querySelectorAll('#qaTbody tr');
+  let text=`Quality Assessment — ${fmtMonthQA(QA_ACTIVE_MONTH)}\n\n`;
+  text+='Name\tCompany\t'+QA_COLS.map(c=>c.label).join('\t')+'\tTotal\t%\tComments\n';
+  rows.forEach(row=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    const [,agent,co]=k.split('_');
+    const vals=QA_COLS.map(c=>d[c.key]||'0').join('\t');
+    const total=QA_COLS.reduce((s,c)=>s+(parseFloat(d[c.key]||0)||0),0);
+    text+=`${agent}\t${co}\t${vals}\t${total}\t${Math.round(total)}%\t${d.comments||''}\n`;
+  });
+  navigator.clipboard.writeText(text).then(()=>alert('✅ Copied to clipboard!'));
+}
+
+// ══ TRAINING LOG ══════════════════════════════════════════════════════════
+let TL_DATA = {};
+try{ TL_DATA=JSON.parse(localStorage.getItem('tl_data')||'{}'); }catch(e){}
+function saveTL(){ try{localStorage.setItem('tl_data',JSON.stringify(TL_DATA));}catch(e){} }
+
+const TL_STEPS = [
+  // Day 1
+  {id:'s1', week:'اليوم الأول', title:'التعرف على الموظفة وتعريفها بالفريق', desc:'جولة في القسم · التعريف بالزميلات · مكان العمل'},
+  {id:'s2', week:'اليوم الأول', title:'شرح عام عن الشغل واستطلاع خبراتها', desc:'آلية العمل · خبرتها السابقة · توقعات الدور'},
+  {id:'s3', week:'اليوم الأول', title:'أوقات الدوام والإجازات والشفتات', desc:'جدول الشفتات · الإجازات · سياسة الغياب'},
+  // Week 1
+  {id:'s4', week:'الأسبوع الأول', title:'شرح الأقسام عبر الداشبورد', desc:'الفروع · المعارض · الصيانة · بترومين · نيسان · ستلانتس'},
+  {id:'s5', week:'الأسبوع الأول', title:'طريقة الكولات وإكمال التكتات', desc:'استقبال المكالمات · تسجيل التكت · التصنيفات'},
+  {id:'s6', week:'الأسبوع الأول', title:'نظام الشكاوى والتصعيد', desc:'كيفية التصعيد · متى تتصل بالمشرفة · التعامل مع العميل الغاضب'},
+  {id:'s7', week:'الأسبوع الأول', title:'مجموعات الواتساب الداخلية', desc:'المجموعات الرسمية · آداب الاستخدام · التواصل الداخلي'},
+  {id:'s8', week:'الأسبوع الأول', title:'الاستماع لمكالمات الزميلات', desc:'استفسار · شكوى · حجز موعد · نقاش بعد كل مكالمة'},
+  // Week 2
+  {id:'s9', week:'الأسبوع الثاني', title:'حجز المواعيد وربط بيانات العميل', desc:'البحث في النظام · ربط البيانات · تأكيد الموعد'},
+  {id:'s10', week:'الأسبوع الثاني', title:'تطبيق عملي على التكتات التجريبية', desc:'إكمال تكتات · مراجعة مع المشرفة · التصحيح'},
+  {id:'s11', week:'الأسبوع الثاني', title:'أنواع الاستفسارات والتعامل معها', desc:'صيانة · حجز · شكوى · استفسار عام · طلب التحدث مع المشرفة'},
+  {id:'s12', week:'الأسبوع الثاني', title:'جدول الشغل اليومي', desc:'الروتين اليومي · الأولويات · المهام الصباحية والمسائية'},
+  // Week 3
+  {id:'s13', week:'الأسبوع الثالث', title:'العمل على الواتساب مع دعم زميلة', desc:'التدريب الميداني على الواتساب بإشراف الفريق'},
+  {id:'s14', week:'الأسبوع الثالث', title:'تجربة حجز مواعيد حقيقية', desc:'حجز فعلي بإشراف المشرفة · مراجعة وتقييم'},
+  {id:'s15', week:'الأسبوع الثالث', title:'مراجعة أول أسبوع مكالمات', desc:'نقاش الأخطاء · نقاط القوة · خطة التحسين'},
+  // General
+  {id:'s16', week:'عام', title:'سياسة الخصوصية وحماية بيانات العميل', desc:'ما يُشارك وما لا يُشارك · سرية المعلومات'},
+  {id:'s17', week:'عام', title:'التعامل مع المكالمات باللغة الإنجليزية', desc:'عبارات أساسية · كيفية الرد · التحويل عند الحاجة'},
+  {id:'s18', week:'عام', title:'كيفية كتابة التقرير اليومي', desc:'عناصر التقرير · التوقيت · إرساله للمشرفة'},
+];
+
+const TL_RATINGS = ['ممتاز','جيد','يحتاج دعم'];
+
+function renderTrainingLog(){
+  const el=document.getElementById('tab-training');
+  if(!el) return;
+  const d=TL_DATA;
+  const joinDate=d.joinDate||'';
+  const daysIn=joinDate?Math.floor((new Date()-new Date(joinDate))/86400000):0;
+  const done=TL_STEPS.filter(s=>d['done_'+s.id]).length;
+  const pct=Math.round(done/TL_STEPS.length*100);
+  const week3Started=TL_STEPS.filter(s=>s.week==='الأسبوع الثالث').some(s=>d['done_'+s.id]);
+  const nearEnd=daysIn>=14&&done>=12&&!week3Started;
+
+  // Group by week
+  const weeks={};
+  TL_STEPS.forEach(s=>{ if(!weeks[s.week]) weeks[s.week]=[]; weeks[s.week].push(s); });
+
+  let stepsHTML='';
+  Object.entries(weeks).forEach(([week,steps])=>{
+    stepsHTML+=`<div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${week}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">`;
+    steps.forEach(s=>{
+      const isDone=!!d['done_'+s.id];
+      const rating=d['rating_'+s.id]||'';
+      const doneDate=d['date_'+s.id]||'';
+      stepsHTML+=`<div style="background:var(--surface);border:1px solid ${isDone?'var(--border)':'var(--border)'};border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;${isDone?'opacity:.75':''}">
+        <div onclick="toggleTL('${s.id}')" style="width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;${isDone?'background:var(--teal);border:2px solid var(--teal)':'background:#fff;border:2px solid var(--border-strong)'}">
+          ${isDone?'<svg width="10" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${s.title}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${s.desc}</div>
+          ${isDone?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <select onchange="setTLRating('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--teal);font-family:inherit">
+              <option value="">تقييم...</option>
+              ${TL_RATINGS.map(r=>`<option value="${r}"${rating===r?' selected':''}>${r}</option>`).join('')}
+            </select>
+            <input type="date" value="${doneDate}" onchange="setTLDate('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;font-family:inherit">
+          </div>`:''}
+        </div>
+      </div>`;
+    });
+    stepsHTML+='</div></div>';
+  });
+
+  el.innerHTML=`
+  <div class="sec-label">📋 Training Log — موظفة جديدة</div>
+
+  ${nearEnd?`<div style="background:#fff3e0;border:1px solid #FFB300;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">⏰</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#E65100">اقتربت نهاية التدريب!</div>
+      <div style="font-size:11px;color:#BF360C;margin-top:2px">مضى ${daysIn} يوم — هل الموظفة جاهزة لاستقبال المكالمات؟</div>
+    </div>
+  </div>`:''}
+
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">اسم الموظفة</div>
+        <input id="tl_name" type="text" placeholder="الاسم الكامل..." value="${d.name||''}" oninput="TL_DATA.name=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">رقم الموظف / Badge</div>
+        <input id="tl_badge" type="text" placeholder="مثال: EMP-1234" value="${d.badge||''}" oninput="TL_DATA.badge=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">تاريخ الانضمام</div>
+        <input id="tl_join" type="date" value="${joinDate}" oninput="TL_DATA.joinDate=this.value;saveTL();renderTrainingLog()" style="font-size:12px;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">المشرفة</div>
+        <input type="text" placeholder="اسم المشرفة..." value="${d.supervisor||''}" oninput="TL_DATA.supervisor=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+    </div>
+    ${joinDate?`<div style="font-size:11px;color:var(--teal);background:var(--teal-light);padding:6px 12px;border-radius:8px;display:inline-block">📅 مضى ${daysIn} يوم على الانضمام</div>`:''}
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--teal)"></span>التقدم</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="flex:1;height:8px;background:var(--gray);border-radius:4px;overflow:hidden">
+        <div style="height:100%;background:var(--teal);border-radius:4px;width:${pct}%;transition:width .4s"></div>
+      </div>
+      <span style="font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap">${done} / ${TL_STEPS.length}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted)">${pct}% مكتمل</div>
+  </div>
+
+  ${stepsHTML}
+
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+    <button onclick="resetTL()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer">↺ إعادة تعيين</button>
+  </div>`;
+}
+
+function toggleTL(id){
+  TL_DATA['done_'+id]=!TL_DATA['done_'+id];
+  if(TL_DATA['done_'+id] && !TL_DATA['date_'+id]) TL_DATA['date_'+id]=new Date().toISOString().slice(0,10);
+  saveTL(); renderTrainingLog();
+}
+function setTLRating(id,val){ TL_DATA['rating_'+id]=val; saveTL(); }
+function setTLDate(id,val){ TL_DATA['date_'+id]=val; saveTL(); }
+function resetTL(){ if(confirm('إعادة تعيين كل شيء؟')){ TL_DATA={}; saveTL(); renderTrainingLog(); } }
 
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
