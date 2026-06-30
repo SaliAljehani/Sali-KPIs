@@ -179,7 +179,7 @@
   </div>
   <div style="display:flex;align-items:center;gap:7px">
     <span class="date-chip" id="todayDate">—</span>
-    <button class="ref-btn" onclick="loadAll()">↻ Refresh</button>
+    <button class="ref-btn" id="refreshBtn" onclick="handleRefreshClick()">↻ Refresh</button>
   </div>
 </div>
 
@@ -294,17 +294,17 @@ const GID_TO_NAME = {
   '371798932':  'Escalations 2026'
 };
 
-function fetchCSV(gid){
+function fetchCSVOnce(gid){
   const sheetName = GID_TO_NAME[String(gid)];
   if(!sheetName) return Promise.reject(new Error('Unknown GID: '+gid));
   return new Promise(function(resolve, reject){
-    const cbName = 'jscb_' + Math.random().toString(36).slice(2);
+    const cbName = 'jscb_' + Math.random().toString(36).slice(2) + Date.now();
     const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
     const script = document.createElement('script');
     const timer = setTimeout(function(){
       cleanup();
       reject(new Error('Timeout: ' + sheetName));
-    }, 20000);
+    }, 12000);
     function cleanup(){
       if(window[cbName]) delete window[cbName];
       if(script.parentNode) script.parentNode.removeChild(script);
@@ -315,12 +315,10 @@ function fetchCSV(gid){
       if(!data){ reject(new Error('No data: '+sheetName)); return; }
       if(!Array.isArray(data) && data.error){ reject(new Error(data.error)); return; }
       if(!data.length){ resolve([]); return; }
-      // Raw 2D array from updated proxy
       if(Array.isArray(data[0])){
         resolve(data.map(function(row){ return row.map(function(c){ return String(c||''); }); }));
         return;
       }
-      // Fallback: old object format
       const headers=Object.keys(data[0]);
       const rows=[headers].concat(data.map(function(obj){
         return headers.map(function(h){ return String(obj[h]||''); });
@@ -334,6 +332,46 @@ function fetchCSV(gid){
     };
     document.body.appendChild(script);
   });
+}
+
+// fetchCSV with localStorage cache + auto-retry (up to 2 retries)
+function fetchCSV(gid, opts){
+  opts = opts || {};
+  const cacheKey = 'cache_sheet_' + gid;
+  const useCache = opts.useCache !== false;
+
+  async function attempt(retriesLeft){
+    try{
+      const data = await fetchCSVOnce(gid);
+      try{ localStorage.setItem(cacheKey, JSON.stringify({data, ts: Date.now()})); }catch(e){}
+      return data;
+    }catch(err){
+      if(retriesLeft > 0){
+        await new Promise(r=>setTimeout(r, 600));
+        return attempt(retriesLeft - 1);
+      }
+      throw err;
+    }
+  }
+
+  return attempt(2).catch(err=>{
+    // On final failure, fall back to cached data if available
+    if(useCache){
+      try{
+        const cached = JSON.parse(localStorage.getItem(cacheKey)||'null');
+        if(cached && cached.data) return cached.data;
+      }catch(e){}
+    }
+    throw err;
+  });
+}
+
+// Get cached data instantly (sync) for fast initial paint
+function getCachedSheet(gid){
+  try{
+    const cached = JSON.parse(localStorage.getItem('cache_sheet_'+gid)||'null');
+    return cached ? cached.data : null;
+  }catch(e){ return null; }
 }
 
 // ══ MONTHLY PERFORMANCE — Static reference data ══
@@ -505,10 +543,49 @@ function renderReports(rows){
   document.getElementById('tab-reports').innerHTML=html;
 }
 
+async function handleRefreshClick(){
+  const btn=document.getElementById('refreshBtn');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Refreshing...'; }
+  try{
+    await loadAll();
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='↻ Refresh'; }
+  }
+}
+
 async function loadAll(){
-  ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap','monthly','reports'].forEach(id=>{
-    document.getElementById('tab-'+id).innerHTML='<div class="loading">⏳ Loading...</div>';
+  const TAB_IDS=['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap','monthly','reports'];
+
+  // 1) Show cached data instantly if available (fast paint)
+  const cachedInb = getCachedSheet(GID.inbound);
+  if(cachedInb){
+    renderInbound(cachedInb);
+    renderWorkDone(cachedInb);
+  }
+  const cachedAtt = getCachedSheet(GID.attendance);
+  if(cachedAtt) renderAttendance(cachedAtt);
+  const cachedKpi = getCachedSheet(GID.kpis);
+  if(cachedKpi) renderKPIs(cachedKpi);
+  const cachedCl = getCachedSheet(GID.checklist);
+  if(cachedCl) renderChecklist(cachedCl);
+  const cachedCoach = getCachedSheet(GID.coaching);
+  if(cachedCoach) renderCoaching(cachedCoach);
+  const cachedImp = getCachedSheet(GID.improvement);
+  if(cachedImp) renderImprovement(cachedImp);
+  const cachedGap = getCachedSheet(GID.perfgap);
+  if(cachedGap) renderPerfGap(cachedGap);
+  const cachedEsc = getCachedSheet(GID.escalations);
+  if(cachedEsc) renderEscalations(cachedEsc);
+
+  // Show loading indicator only for tabs without cache
+  TAB_IDS.forEach(id=>{
+    const el=document.getElementById('tab-'+id);
+    if(el && (!el.innerHTML || el.innerHTML.includes('⏳'))){
+      el.innerHTML='<div class="loading">⏳ Loading...</div>';
+    }
   });
+
+  // 2) Fetch fresh data in background and update when ready
   try{
     const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows,escRows]=await Promise.all([
       fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
@@ -527,9 +604,13 @@ async function loadAll(){
     renderReports(reportsRows);
     renderEscalations(escRows);
   }catch(e){
-    ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
-      document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
-    });
+    // If we already showed cached data, don't overwrite with an error
+    const hasCachedFallback = cachedInb || cachedAtt || cachedKpi;
+    if(!hasCachedFallback){
+      ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
+        document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+      });
+    }
     // Monthly and Reports use static fallback even on error
     renderMonthly([]);
     renderReports([]);
