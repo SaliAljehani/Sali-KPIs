@@ -690,6 +690,17 @@ function renderEscalations(rawRows){
   const getModBy=r=>r['Modified By']||'';
   const getModDate=r=>r['Modified Date']||r['Modified']||'';
   const getCaseId=r=>r['Case ID']||r['Title']||'';
+  const getEscDate=r=>r['Escalation Date']||r['Escalation date']||r['EscalationDate']||r['Escalation Date ']||r['Date']||'';
+  const fmtEscDate=v=>{
+    if(!v)return'<span style="color:#ccc">—</span>';
+    const s=String(v).trim();
+    let iso='';
+    if(s.match(/^\d{4}-\d{2}-\d{2}/)) iso=s.slice(0,10);
+    else if(s.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){const p=s.split('/');iso=p[2]+'-'+p[0].padStart(2,'0')+'-'+p[1].padStart(2,'0');}
+    else return s.slice(0,10);
+    const d=new Date(iso);
+    return isNaN(d)?iso:d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  };
 
   const statusBadge=s=>{
     if(!s)return'<span style="color:#aaa">—</span>';
@@ -792,6 +803,7 @@ function renderEscalations(rawRows){
               <tr style="background:var(--teal-light)">
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">#</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Case ID</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Escalation Date</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Status</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Department</th>
                 <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Assigned to</th>
@@ -810,6 +822,7 @@ function renderEscalations(rawRows){
               return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'" onclick="openEscEdit(${i})">
                 <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
                 <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
+                <td style="padding:8px 10px;color:var(--muted);font-size:11px;white-space:nowrap">${fmtEscDate(getEscDate(r))}</td>
                 <td style="padding:8px 10px">${statusBadge(status)}</td>
                 <td style="padding:8px 10px">${deptBadge(dept)}</td>
                 <td style="padding:8px 10px;color:var(--text);font-size:11px">${assigned}</td>
