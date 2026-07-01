@@ -115,7 +115,7 @@
   .tbl td{padding:4px 5px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
   .tbl tr:hover td{background:#f8fdf9}
-  tr.row-sel>td{background:#F2FBF8 !important}
+  tr.row-sel>td{background:#C7EDE0 !important}
   tr.row-sel>td:first-child{box-shadow:inset 3px 0 0 #1D9E75 !important}
 
   /* ── KPI SUB TABS ── */
@@ -1599,18 +1599,18 @@ function renderEOMTab(){
     </div>
     <div id="eomFbSection">
       <div style="overflow-x:auto">
-        <table class="tbl" style="min-width:750px;table-layout:fixed;width:100%">
+        <table class="tbl" style="min-width:750px">
           <thead><tr>
-            <th style="width:140px">Agent</th>
-            <th style="text-align:center;width:90px">Customers<br>Answered</th>
-            <th style="text-align:center;width:90px">Customers<br>Transferred</th>
-            <th style="text-align:center;width:70px;color:var(--teal)">CT%</th>
-            <th style="text-align:center;width:90px">Customers<br>Evaluated</th>
-            <th style="text-align:center;width:70px;color:var(--teal)">CE%</th>
-            <th style="text-align:center;width:90px">Satisfied</th>
-            <th style="text-align:center;width:80px;color:#2e7d32">Satisfied%</th>
-            <th style="text-align:center;width:90px">Dissatisfied</th>
-            <th style="text-align:center;width:90px;color:#A32D2D">Dissatisfied%</th>
+            <th>Agent</th>
+            <th style="text-align:center">Customers<br>Answered</th>
+            <th style="text-align:center">Customers<br>Transferred</th>
+            <th style="text-align:center;color:var(--teal)">CT%</th>
+            <th style="text-align:center">Customers<br>Evaluated</th>
+            <th style="text-align:center;color:var(--teal)">CE%</th>
+            <th style="text-align:center">Satisfied</th>
+            <th style="text-align:center;color:#2e7d32">Satisfied%</th>
+            <th style="text-align:center">Dissatisfied</th>
+            <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
           </tr></thead>
           <tbody id="eomFbBody"></tbody>
         </table>
@@ -1810,7 +1810,7 @@ function renderEOMPerfTable(agentNames, agents, month){
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:9.5px" id="eomPerf_no_${nid}">—</td>
       <td style="padding:4px 10px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
-      <td style="text-align:center;padding:2px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:52px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:2px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
       <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
       <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
       <td style="text-align:center;font-size:9.5px;${avgCallOff>0?(callOffOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgCallOff)}</td>
@@ -1823,7 +1823,7 @@ function renderEOMPerfTable(agentNames, agents, month){
       <td style="text-align:center;font-size:9.5px;font-weight:700">${total}</td>
       <td style="text-align:center;font-size:9.5px">${a.whatsapp}</td>
       <td style="text-align:center;font-size:9.5px;font-weight:700">${totalAll}</td>
-      <td style="text-align:center;padding:2px"><input type="number" class="perf-wafb" placeholder="—" value="${md.wafb||''}" min="0" max="100" style="width:52px;${inp}" oninput="savePerfField('${name}','wafb',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:2px"><input type="number" class="perf-wafb" placeholder="—" value="${md.wafb||''}" min="0" max="100" style="width:40px;${inp}" oninput="savePerfField('${name}','wafb',this.value,'${month}')"></td>
       <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:34px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
       <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:34px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
       <td style="text-align:center;font-size:9.5px">${a.tickets}</td>
@@ -1857,7 +1857,7 @@ function renderEOMFeedbackTable(agentNames, month){
     const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
     const dp=ev&&dis?Math.round(dis/ev*100)+'%':'—';
     const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const inp_style=`width:52px;text-align:center;font-size:10px;padding:3px 2px;border:1px solid var(--border);border-radius:5px;outline:none`;
+    const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
     html+=`<tr data-fb-agent="${name}">
       <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
