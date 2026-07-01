@@ -2390,7 +2390,47 @@ function exportQA(){
 // ══ TRAINING LOG ══════════════════════════════════════════════════════════
 let TL_DATA = {};
 try{ TL_DATA=JSON.parse(localStorage.getItem('tl_data')||'{}'); }catch(e){}
+// Migrate old single-employee structure → multi-employee (keeps existing data)
+(function(){
+  if(!TL_DATA || typeof TL_DATA!=='object') TL_DATA={};
+  if(!TL_DATA.employees){
+    const old=TL_DATA;
+    const hasOld = old.name||old.badge||Object.keys(old).some(k=>k.indexOf('done_')===0);
+    TL_DATA={employees:{}, activeId:''};
+    if(hasOld){ TL_DATA.employees['emp_1']=old; TL_DATA.activeId='emp_1'; }
+  }
+  if(!TL_DATA.employees) TL_DATA.employees={};
+  if(!TL_DATA.activeId || !TL_DATA.employees[TL_DATA.activeId]){
+    TL_DATA.activeId = Object.keys(TL_DATA.employees)[0]||'';
+  }
+})();
 function saveTL(){ try{localStorage.setItem('tl_data',JSON.stringify(TL_DATA));}catch(e){} }
+function curEmp(){
+  if(!TL_DATA.activeId || !TL_DATA.employees[TL_DATA.activeId]){
+    const id='emp_'+Date.now();
+    TL_DATA.employees[id]={name:'',badge:'',joinDate:'',supervisor:''};
+    TL_DATA.activeId=id;
+  }
+  return TL_DATA.employees[TL_DATA.activeId];
+}
+function addTLEmployee(){
+  const id='emp_'+Date.now();
+  TL_DATA.employees[id]={name:'',badge:'',joinDate:'',supervisor:''};
+  TL_DATA.activeId=id;
+  saveTL(); renderTrainingLog();
+}
+function switchTLEmployee(id){ if(TL_DATA.employees[id]){ TL_DATA.activeId=id; saveTL(); renderTrainingLog(); } }
+function deleteTLEmployee(id){
+  if(!TL_DATA.employees[id]) return;
+  const nm=TL_DATA.employees[id].name||'هذه الموظفة';
+  if(!confirm('حذف سجل تدريب '+nm+'؟')) return;
+  delete TL_DATA.employees[id];
+  TL_DATA.activeId=Object.keys(TL_DATA.employees)[0]||'';
+  saveTL(); renderTrainingLog();
+}
+function setTLField(f,v){ curEmp()[f]=v; saveTL(); }
+let TL_OPEN={}; // week -> collapse state (default open)
+function toggleTLWeek(week){ TL_OPEN[week] = (TL_OPEN[week]===false) ? true : false; renderTrainingLog(); }
 
 const TL_STEPS = [
   // Day 1
@@ -2423,7 +2463,7 @@ const TL_RATINGS = ['ممتاز','جيد','يحتاج دعم'];
 function renderTrainingLog(){
   const el=document.getElementById('tab-training');
   if(!el) return;
-  const d=TL_DATA;
+  const d=curEmp();
   const joinDate=d.joinDate||'';
   const daysIn=joinDate?Math.floor((new Date()-new Date(joinDate))/86400000):0;
   const done=TL_STEPS.filter(s=>d['done_'+s.id]).length;
@@ -2431,22 +2471,45 @@ function renderTrainingLog(){
   const week3Started=TL_STEPS.filter(s=>s.week==='الأسبوع الثالث').some(s=>d['done_'+s.id]);
   const nearEnd=daysIn>=14&&done>=12&&!week3Started;
 
+  // Employee tabs
+  const empIds=Object.keys(TL_DATA.employees);
+  let tabsHTML=empIds.map((id,i)=>{
+    const emp=TL_DATA.employees[id];
+    const active=id===TL_DATA.activeId;
+    const nm=emp.name||('موظفة '+(i+1));
+    const empDone=TL_STEPS.filter(s=>emp['done_'+s.id]).length;
+    return `<div onclick="switchTLEmployee('${id}')" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;border:1.5px solid ${active?'var(--teal)':'var(--border)'};background:${active?'var(--teal-light)':'#fff'};color:${active?'var(--teal)':'var(--muted)'}">
+      <span>${nm}</span>
+      <span style="font-size:9px;background:${active?'#fff':'var(--gray)'};color:var(--muted);padding:1px 6px;border-radius:8px">${empDone}/${TL_STEPS.length}</span>
+      ${active&&empIds.length>1?`<span onclick="event.stopPropagation();deleteTLEmployee('${id}')" style="font-size:13px;color:#C0392B;margin-right:-2px" title="حذف">×</span>`:''}
+    </div>`;
+  }).join('');
+  tabsHTML+=`<div onclick="addTLEmployee()" style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;border:1.5px dashed var(--teal);background:#fff;color:var(--teal)">+ موظفة جديدة</div>`;
+
   // Group by week
   const weeks={};
   TL_STEPS.forEach(s=>{ if(!weeks[s.week]) weeks[s.week]=[]; weeks[s.week].push(s); });
 
   let stepsHTML='';
   Object.entries(weeks).forEach(([week,steps])=>{
-    stepsHTML+=`<div style="margin-bottom:12px">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${week}</div>
-      <div style="display:flex;flex-direction:column;gap:6px">`;
+    const wDone=steps.filter(s=>d['done_'+s.id]).length;
+    const open=TL_OPEN[week]!==false;
+    stepsHTML+=`<div style="margin-bottom:10px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface)">
+      <div onclick="toggleTLWeek('${week}')" style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;cursor:pointer;background:${open?'var(--teal-light)':'#fff'}">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:700;color:var(--teal)">${week}</span>
+          <span style="font-size:10px;color:var(--muted);background:#fff;padding:1px 8px;border-radius:8px">${wDone}/${steps.length}</span>
+        </div>
+        <span style="font-size:11px;color:var(--muted);transform:rotate(${open?'0':'-90'}deg);transition:transform .2s">▼</span>
+      </div>
+      <div style="display:${open?'flex':'none'};flex-direction:column;gap:6px;padding:${open?'10px 12px':'0'}">`;
     steps.forEach(s=>{
       const isDone=!!d['done_'+s.id];
       const rating=d['rating_'+s.id]||'';
       const doneDate=d['date_'+s.id]||'';
-      stepsHTML+=`<div style="background:var(--surface);border:1px solid ${isDone?'var(--border)':'var(--border)'};border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;${isDone?'opacity:.75':''}">
-        <div onclick="toggleTL('${s.id}')" style="width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;${isDone?'background:var(--teal);border:2px solid var(--teal)':'background:#fff;border:2px solid var(--border-strong)'}">
-          ${isDone?'<svg width="10" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+      stepsHTML+=`<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;${isDone?'opacity:.8':''}">
+        <div onclick="toggleTL('${s.id}')" style="width:22px;height:22px;border-radius:6px;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;${isDone?'background:var(--teal);border:2px solid var(--teal)':'background:#fff;border:2px solid var(--border-strong)'}">
+          ${isDone?'<svg width="11" height="9" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;font-weight:600;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${s.title}</div>
@@ -2465,7 +2528,9 @@ function renderTrainingLog(){
   });
 
   el.innerHTML=`
-  <div class="sec-label">📋 Training Log — موظفة جديدة</div>
+  <div class="sec-label">📋 Training Log — سجل تدريب الموظفات</div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px">${tabsHTML}</div>
 
   ${nearEnd?`<div style="background:#fff3e0;border:1px solid #FFB300;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
     <span style="font-size:20px">⏰</span>
@@ -2479,19 +2544,19 @@ function renderTrainingLog(){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">اسم الموظفة</div>
-        <input id="tl_name" type="text" placeholder="الاسم الكامل..." value="${d.name||''}" oninput="TL_DATA.name=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+        <input type="text" placeholder="الاسم الكامل..." value="${d.name||''}" oninput="setTLField('name',this.value)" onchange="renderTrainingLog()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
       </div>
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">رقم الموظف / Badge</div>
-        <input id="tl_badge" type="text" placeholder="مثال: EMP-1234" value="${d.badge||''}" oninput="TL_DATA.badge=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+        <input type="text" placeholder="مثال: EMP-1234" value="${d.badge||''}" oninput="setTLField('badge',this.value)" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
       </div>
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">تاريخ الانضمام</div>
-        <input id="tl_join" type="date" value="${joinDate}" oninput="TL_DATA.joinDate=this.value;saveTL();renderTrainingLog()" style="font-size:12px;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+        <input type="date" value="${joinDate}" oninput="setTLField('joinDate',this.value);renderTrainingLog()" style="font-size:12px;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
       </div>
       <div>
         <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">المشرفة</div>
-        <input type="text" placeholder="اسم المشرفة..." value="${d.supervisor||''}" oninput="TL_DATA.supervisor=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+        <input type="text" placeholder="اسم المشرفة..." value="${d.supervisor||''}" oninput="setTLField('supervisor',this.value)" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
       </div>
     </div>
     ${joinDate?`<div style="font-size:11px;color:var(--teal);background:var(--teal-light);padding:6px 12px;border-radius:8px;display:inline-block">📅 مضى ${daysIn} يوم على الانضمام</div>`:''}
@@ -2511,18 +2576,19 @@ function renderTrainingLog(){
   ${stepsHTML}
 
   <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
-    <button onclick="resetTL()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer">↺ إعادة تعيين</button>
+    <button onclick="resetTL()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border:1px solid var(--border);background:#fff">↺ إعادة تعيين هذه الموظفة</button>
   </div>`;
 }
 
 function toggleTL(id){
-  TL_DATA['done_'+id]=!TL_DATA['done_'+id];
-  if(TL_DATA['done_'+id] && !TL_DATA['date_'+id]) TL_DATA['date_'+id]=new Date().toISOString().slice(0,10);
+  const e=curEmp();
+  e['done_'+id]=!e['done_'+id];
+  if(e['done_'+id] && !e['date_'+id]) e['date_'+id]=new Date().toISOString().slice(0,10);
   saveTL(); renderTrainingLog();
 }
-function setTLRating(id,val){ TL_DATA['rating_'+id]=val; saveTL(); }
-function setTLDate(id,val){ TL_DATA['date_'+id]=val; saveTL(); }
-function resetTL(){ if(confirm('إعادة تعيين كل شيء؟')){ TL_DATA={}; saveTL(); renderTrainingLog(); } }
+function setTLRating(id,val){ curEmp()['rating_'+id]=val; saveTL(); }
+function setTLDate(id,val){ curEmp()['date_'+id]=val; saveTL(); }
+function resetTL(){ if(confirm('إعادة تعيين سجل هذه الموظفة فقط؟')){ const id=TL_DATA.activeId; TL_DATA.employees[id]={name:'',badge:'',joinDate:'',supervisor:''}; saveTL(); renderTrainingLog(); } }
 
 document.addEventListener('DOMContentLoaded', loadAll);
 </script>
