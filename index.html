@@ -1207,11 +1207,17 @@ function renderAttendance(rows){
   rows.slice(1).forEach(r=>{
     const d=(r[0]||'').trim(),s=(r[1]||'').trim();
     if(!d)return;
-    const p=d.split('/');
-    if(p.length===3){
-      const key=p[0].padStart(2,'0')+'/'+p[1].padStart(2,'0')+'/'+p[2];
-      _attMap[key]=normSt(s);
-    }
+    let mm,dd,yyyy;
+    if(/^\d{4}-\d{1,2}-\d{1,2}/.test(d)){        // YYYY-MM-DD (new)
+      const p=d.slice(0,10).split('-');
+      yyyy=p[0]; mm=p[1]; dd=p[2];
+    } else if(d.indexOf('/')>-1){                // M/D/YYYY (old)
+      const p=d.split('/');
+      if(p.length!==3) return;
+      mm=p[0]; dd=p[1]; yyyy=p[2];
+    } else return;
+    const key=String(mm).padStart(2,'0')+'/'+String(dd).padStart(2,'0')+'/'+yyyy;
+    _attMap[key]=normSt(s);
   });
   renderCal();
 }
