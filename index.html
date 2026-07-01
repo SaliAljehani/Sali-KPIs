@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sali KPIs Dashboard</title>
+<style>
+  :root{
+    --bg:#F4FAF7;--surface:#FFFFFF;--border:#D8EDE5;
+    --text:#1A1A1A;--muted:#6B6B6B;
+    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;--teal-border:#9FE1CB;
+    --amber:#BA7517;--amber-light:#FAEEDA;
+    --red:#A32D2D;--red-light:#FCEBEB;
+    --purple:#534AB7;--purple-light:#EEEDFE;
+    --gray:#F1EFE8;--gray-border:#D3D1C7;
+    --sidebar-w:200px;--radius:12px;--radius-sm:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;display:flex;flex-direction:column}
+
+  /* ── HEADER ── */
+  .header{background:#fff;border-bottom:1px solid var(--border);padding:16px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;flex-shrink:0}
+  .av{width:50px;height:50px;border-radius:50%;background:var(--teal-light);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--teal);flex-shrink:0}
+  .h-name{font-size:17px;font-weight:700;color:var(--text)}
+  .h-role{font-size:12px;color:var(--muted);margin-top:2px}
+  .h-pills{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
+  .pill a{color:#085041;text-decoration:none}
+  .date-chip{font-size:11px;color:var(--muted);background:var(--gray);padding:4px 13px;border-radius:20px;border:0.5px solid var(--gray-border)}
+  .ref-btn{font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
+  .ref-btn:hover{background:#c5eadf}
+
+  /* ── LAYOUT ── */
+  .body-wrap{display:flex;flex:1;min-height:0}
+
+  /* ── SIDEBAR ── */
+  .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
+  .sb-section:first-child{margin-top:0}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#3d5a4e;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(15,110,86,.14);color:#085041}
+  .nav-item.active{background:#b2ddd0;color:#054035;font-weight:700}
+  .nav-item .ico{font-size:15px;flex-shrink:0}
+  .nav-divider{height:1px;background:var(--border);margin:8px 4px}
+
+  /* ── CONTENT ── */
+  .content{flex:1;padding:20px 24px;overflow-y:auto;min-width:0}
+
+  /* ── CARDS ── */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
+  .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px;text-transform:none;letter-spacing:normal}
+  .card-title-collapsible{font-size:12px;font-weight:700;color:var(--text);margin-bottom:0;display:flex;align-items:center;gap:7px;cursor:pointer;justify-content:space-between}
+  .card-title-collapsible .ctitle-left{display:flex;align-items:center;gap:7px;flex:1}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
+  .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
+  .stat-num{font-size:24px;font-weight:700;line-height:1}
+  .stat-lbl{font-size:10px;color:var(--muted);margin-top:4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+
+  /* ── CHECK ITEMS ── */
+  .check-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+  .check-item:last-child{border-bottom:none}
+  .check-icon{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .check-icon.done{background:var(--teal-mid);border-color:var(--teal-mid)}
+  .check-icon.done::after{content:'✓';color:#fff;font-size:10px;font-weight:700}
+  .freq{font-size:10px;color:var(--muted);margin-left:auto;background:var(--gray);padding:2px 7px;border-radius:10px}
+
+  /* ── WORK TAGS ── */
+  .tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
+  .work-tag{background:var(--teal-light);color:var(--teal);border-radius:8px;padding:5px 13px;font-size:11px;font-weight:500;border-left:3px solid var(--teal-mid)}
+
+  /* ── BADGE ── */
+  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600}
+  .b-green{background:#EAF3DE;color:#3B6D11}
+  .b-amber{background:var(--amber-light);color:var(--amber)}
+  .b-teal{background:var(--teal-light);color:var(--teal)}
+  .b-gray{background:var(--gray);color:#5F5E5A}
+  .b-red{background:var(--red-light);color:var(--red)}
+
+  /* ── KPI ROWS ── */
+  .kpi-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);gap:10px}
+  .kpi-row:last-child{border-bottom:none}
+  .kpi-name{font-size:12px;font-weight:600}
+  .kpi-measure{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+  /* ── CALENDAR ── */
+  .cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+  .cal-day-name{font-size:9px;color:var(--muted);text-align:center;padding:3px 0;font-weight:600}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+  .cal-empty{background:transparent}
+  .cal-office{background:var(--teal-light);color:#085041}
+  .cal-off{background:var(--gray);color:#999}
+  .cal-vacation{background:var(--amber-light);color:var(--amber)}
+  .cal-workvac{background:#FFF9C4;color:#856400}
+  .cal-sick{background:var(--red-light);color:var(--red)}
+  .cal-remote{background:var(--purple-light);color:var(--purple)}
+  .cal-future{background:#f4faf7;color:#ccc;border:1px dashed #d0ede8}
+  .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
+  .month-nav button:hover{background:#e0ddd6}
+  .month-label{font-size:14px;font-weight:700;min-width:140px;text-align:center}
+  .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:7px;margin-bottom:14px}
+  .att-stat{padding:9px 11px;border-radius:var(--radius-sm);text-align:center}
+  .att-stat .num{font-size:20px;font-weight:700}
+  .att-stat .lbl{font-size:9px;margin-top:2px;font-weight:600}
+  .att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .att-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+  .att-dot{width:9px;height:9px;border-radius:2px}
+
+  /* ── TABLES ── */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th{background:#f4faf7;padding:5px 5px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:4px 5px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tr:hover td{background:#f8fdf9}
+  #eomPerfBody tr:hover td,
+  #eomFbBody tr:hover td,
+  #eomScoresTable tbody tr:hover td,
+  #qaTbody tr:hover td{background:#C7EDE0 !important}
+  #eomPerfBody tr:hover td:first-child,
+  #eomFbBody tr:hover td:first-child,
+  #eomScoresTable tbody tr:hover td:first-child,
+  #qaTbody tr:hover td:first-child{box-shadow:inset 3px 0 0 #1D9E75 !important}
+
+  /* ── KPI SUB TABS ── */
+  .ksub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .ksub-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
+  .ksub-btn.active{background:var(--teal-light);color:#085041;border-color:var(--teal-border)}
+
+  .loading{text-align:center;padding:50px;color:var(--muted);font-size:13px}
+  .err{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:2px}
+  .sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px;margin-top:2px}
+
+  .brand-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
+  .brand-nissan{background:#fef2f2;color:#c0272d}
+  .brand-stellantis{background:#e3f2fd;color:#1565c0}
+  .brand-pe{background:#FAEEDA;color:#BA7517}
+  .brand-nos{background:#e8f5e9;color:#2e7d32}
+  .brand-foton{background:#eceff1;color:#546e7a}
+  .brand-electromin{background:#ede7f6;color:#4527a0}
+
+  /* ── EOM ── */
+  .eom-podium{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:20px 0}
+  .eom-p-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .eom-p-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+  .eom-p-name{font-size:11px;font-weight:700;color:var(--text);text-align:center;max-width:90px}
+  .eom-p-score{font-size:15px;font-weight:800}
+  .eom-p-block{border-radius:8px 8px 0 0;width:88px;display:flex;align-items:center;justify-content:center;font-size:24px}
+  .eom-p1 .eom-p-block{background:linear-gradient(135deg,#DAA520,#b8860b);height:90px}
+  .eom-p2 .eom-p-block{background:linear-gradient(135deg,#9e9e9e,#757575);height:68px}
+  .eom-p3 .eom-p-block{background:linear-gradient(135deg,#cd7f32,#a0522d);height:50px}
+  .eom-p1 .eom-p-score{color:#DAA520}
+  .eom-p2 .eom-p-score{color:#9e9e9e}
+  .eom-p3 .eom-p-score{color:#cd7f32}
+  .eom-p1 .eom-p-av{background:linear-gradient(135deg,#DAA520,#b8860b)}
+  .eom-p2 .eom-p-av{background:linear-gradient(135deg,#9e9e9e,#757575)}
+  .eom-p3 .eom-p-av{background:linear-gradient(135deg,#cd7f32,#a0522d)}
+  .eom-manual-row{display:grid;grid-template-columns:180px 1fr 1fr;gap:10px;align-items:center;padding:9px 12px;background:var(--gray);border-radius:8px;margin-bottom:6px}
+  .eom-input{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;outline:none;width:100%;background:#fff;color:var(--text)}
+  .eom-input:focus{border-color:var(--teal-mid)}
+  .eom-meet{color:#2e7d32;font-weight:700}
+  .eom-miss{color:#A32D2D;font-weight:700}
+  .eom-na{color:#bbb}
+
+  @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;align-items:center;gap:11px">
+    <div class="av">SA</div>
+    <div>
+      <div class="h-name">Sali Aljehani</div>
+      <div class="h-role">Team Lead · Inbound Contact Center · Petromin Group</div>
+      <div class="h-pills">
+        <span class="pill">🪪 22952</span>
+        <span class="pill">📱 552705577</span>
+        <span class="pill"><a href="mailto:sali.aljehani@petromin.com">📧 sali.aljehani@petromin.com</a></span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px">
+    <span class="date-chip" id="todayDate">—</span>
+    <button class="ref-btn" id="refreshBtn" onclick="handleRefreshClick()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-section">Main</div>
+    <div class="nav-item active" id="nav-inbound" onclick="showTab('inbound')"><span class="ico">📋</span> Inbound Work</div>
+    <div class="nav-item" id="nav-workdone" onclick="showTab('workdone')"><span class="ico">✅</span> Work Done</div>
+    <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
+    <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Check List</div>
+    <div class="nav-item" id="nav-escalations" onclick="showTab('escalations')"><span class="ico">🚨</span> Escalations 2026</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">KPIs</div>
+    <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
+    <div class="nav-item" id="nav-coaching" onclick="showTab('coaching')"><span class="ico">💬</span> Coaching</div>
+    <div class="nav-item" id="nav-improvement" onclick="showTab('improvement')"><span class="ico">📈</span> Improvement</div>
+    <div class="nav-item" id="nav-perfgap" onclick="showTab('perfgap')"><span class="ico">🔍</span> Perf. Gap</div>
+    <div class="nav-divider"></div>
+    <div class="sb-section">Reports</div>
+    <div class="nav-item" id="nav-reports" onclick="showTab('reports')"><span class="ico">📄</span> Reports Guide</div>
+    <div class="nav-item" id="nav-monthly" onclick="showTab('monthly')"><span class="ico">📊</span> Monthly Perf.</div>
+    <div class="nav-item" id="nav-eom" onclick="showTab('eom')"><span class="ico">🏆</span> EOM Calculator</div>
+    <div class="nav-item" id="nav-qa" onclick="showTab('qa')"><span class="ico">⭐</span> Quality Assessment</div>
+    <div class="nav-item" id="nav-training" onclick="showTab('training')"><span class="ico">📋</span> Training Log</div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div id="tab-inbound"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-workdone" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-kpis" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-attendance" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-checklist" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-coaching" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-improvement" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-perfgap" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
+    <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
+    <div id="tab-qa" style="display:none"></div>
+    <div id="tab-training" style="display:none"></div>
+  </main>
+</div>
+
+<script>
+const SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const GID = {
+  inbound:'0', attendance:'209241740', kpis:'72593736',
+  checklist:'1272140156', coaching:'144857263',
+  improvement:'115510114', perfgap:'1669804764',
+  monthly:'413119919',
+  reports:'2136858309',
+  escalations:'371798932'
+};
+const AGENTS=[
+  'Ahdab Shalabi',
+  'Asmaa Bawayan',
+  'Bayan Jazzar',
+  'Ghadeer Motadares',
+  'Ghofran Hussain Rafie',
+  'Hanin Yajizi',
+  'Hibah Almuwallad',
+  'Manar Alshehri',
+  'Mashael Alshehri',
+  'Mawadah Essam',
+  'Nedaa Shorbaji',
+  'Nesreen Mansoor',
+  'Reham Hakami',
+  'Sara Sami',
+  'Shatha Bawayan',
+  'Walaa Meezi',
+  'Wejdan Mustafa',
+  'Yosra Alsalami'
+];
+
+let calMonth=new Date().getMonth(), calYear=new Date().getFullYear();
+const today=new Date();
+let _attMap={}, _currentTab='inbound';
+
+document.getElementById('todayDate').textContent=
+  today.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+
+// ── NAV ──
+function showTab(name){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  document.querySelectorAll('.content > div').forEach(el=>el.style.display='none');
+  document.getElementById('tab-'+name).style.display='block';
+  _currentTab=name;
+  if(name==='eom' && !EOM_LOADED) loadEOM();
+  if(name==='qa') renderQA();
+  if(name==='training') renderTrainingLog();
+}
+
+// ── FETCH via JSONP Proxy ──
+const PROXY = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
+
+const GID_TO_NAME = {
+  '0':          'Inbound Work',
+  '209241740':  'Sali Attendance',
+  '72593736':   'Sali KPIs',
+  '1272140156': 'Check List',
+  '144857263':  'Coaching Sessions',
+  '115510114':  'Improvement Plans',
+  '1669804764': 'Performance Gap',
+  '413119919':  'Monthly Performance',
+  '2136858309': 'Reports',
+  '371798932':  'Escalations 2026'
+};
+
+function fetchCSVOnce(gid){
+  const sheetName = GID_TO_NAME[String(gid)];
+  if(!sheetName) return Promise.reject(new Error('Unknown GID: '+gid));
+  return new Promise(function(resolve, reject){
+    const cbName = 'jscb_' + Math.random().toString(36).slice(2) + Date.now();
+    const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+    const script = document.createElement('script');
+    const timer = setTimeout(function(){
+      cleanup();
+      reject(new Error('Timeout: ' + sheetName));
+    }, 12000);
+    function cleanup(){
+      if(window[cbName]) delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timer);
+    }
+    window[cbName] = function(data){
+      cleanup();
+      if(!data){ reject(new Error('No data: '+sheetName)); return; }
+      if(!Array.isArray(data) && data.error){ reject(new Error(data.error)); return; }
+      if(!data.length){ resolve([]); return; }
+      if(Array.isArray(data[0])){
+        resolve(data.map(function(row){ return row.map(function(c){ return String(c||''); }); }));
+        return;
+      }
+      const headers=Object.keys(data[0]);
+      const rows=[headers].concat(data.map(function(obj){
+        return headers.map(function(h){ return String(obj[h]||''); });
+      }));
+      resolve(rows);
+    };
+    script.src = url;
+    script.onerror = function(){
+      cleanup();
+      reject(new Error('Script load error: ' + sheetName));
+    };
+    document.body.appendChild(script);
+  });
+}
+
+// fetchCSV with localStorage cache + auto-retry (up to 2 retries)
+function fetchCSV(gid, opts){
+  opts = opts || {};
+  const cacheKey = 'cache_sheet_' + gid;
+  const useCache = opts.useCache !== false;
+
+  async function attempt(retriesLeft){
+    try{
+      const data = await fetchCSVOnce(gid);
+      try{ localStorage.setItem(cacheKey, JSON.stringify({data, ts: Date.now()})); }catch(e){}
+      return data;
+    }catch(err){
+      if(retriesLeft > 0){
+        await new Promise(r=>setTimeout(r, 600));
+        return attempt(retriesLeft - 1);
+      }
+      throw err;
+    }
+  }
+
+  return attempt(2).catch(err=>{
+    // On final failure, fall back to cached data if available
+    if(useCache){
+      try{
+        const cached = JSON.parse(localStorage.getItem(cacheKey)||'null');
+        if(cached && cached.data) return cached.data;
+      }catch(e){}
+    }
+    throw err;
+  });
+}
+
+// Get cached data instantly (sync) for fast initial paint
+function getCachedSheet(gid){
+  try{
+    const cached = JSON.parse(localStorage.getItem('cache_sheet_'+gid)||'null');
+    return cached ? cached.data : null;
+  }catch(e){ return null; }
+}
+
+// ══ MONTHLY PERFORMANCE — Static reference data ══
+function renderMonthly(rows){
+  // Try dynamic first, fallback to static
+  const perfMetrics=[], eomSlide=[], callsQA=[], inboundCC=[];
+  let section='';
+  (rows||[]).forEach(r=>{
+    const a=String(r[0]||'').trim(), b=String(r[1]||'').trim(), c=String(r[2]||'').trim(), d=String(r[3]||'').trim();
+    if(a==='Monthly Agents Performance'){section='perf';return;}
+    if(a==='EOM SLIDE Inbound'){section='eom';return;}
+    if(a.includes('Inbound CC')){section='cc';return;}
+    if(a.includes('Calls Quality Assurance')){section='qa';return;}
+    if(!a)return;
+    if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
+    if(section==='eom'&&b) eomSlide.push({field:a,source:b});
+    if(section==='cc'&&b&&a!=='Points') inboundCC.push({point:a,desc:b,weight:c,actual:d});
+    if(section==='qa'){const p=a.split('|');callsQA.push({item:p[0].trim(),score:p[1]||'',ar:b});}
+  });
+
+  // Static fallback data
+  const PERF = perfMetrics.length ? perfMetrics : [
+    {metric:'Customers Answered',desc:'Manual Dials + Connected Inbound'},
+    {metric:'Customers Transferred',desc:'Grand Total من ريبورت فيد باك'},
+    {metric:'CT%',desc:'Customers Transferred / Customers Answered'},
+    {metric:'Customers Evaluated',desc:'1+2 توتل التقييم كامل من العملاء'},
+    {metric:'CE%',desc:'Customers Evaluated / Customers Transferred'},
+    {metric:'Satisfied',desc:'Score 1'},
+    {metric:'Satisfied%',desc:'Satisfied / Customers Evaluated'},
+    {metric:'Dissatisfied',desc:'Score 2'},
+    {metric:'Dissatisfied%',desc:'Dissatisfied / Customers Evaluated'},
+    {metric:'Transferred to CSAT',desc:'CE%'},
+    {metric:'CSAT',desc:'Satisfied% — نفس الناتج'},
+    {metric:'WhatsApp Feedback Average',desc:'Feedback Section'}
+  ];
+  const EOM = eomSlide.length ? eomSlide : [
+    {field:'Final Login Time Score',source:'Login Time'},
+    {field:'Final Quality Score',source:'Quality'},
+    {field:'Final CSAT Score',source:'Transferred to CSAT'},
+    {field:'Average Handling Time',source:'Handling Time'},
+    {field:'Number of Interactions',source:'Total'},
+    {field:'Total Tickets',source:'Total Tickets'},
+    {field:'Tickets%',source:'Tickets%'}
+  ];
+  const INBOUND_CC = inboundCC.length ? inboundCC : [
+    {point:'Number of calls Received',desc:'The total number of calls (inbound & outbound)',weight:'25%',actual:'highest'},
+    {point:'Final Quality Score',desc:'Quality score (Quality of Calls - Attitude - Ticketing - Appointments - Teamwork and problem-solving skills - escalation of the complaints)',weight:'25%',actual:'Highest not less 95%'},
+    {point:'Final CSAT Score',desc:'Customer satisfaction rate with employee',weight:'20%',actual:'Highest not less 95%'},
+    {point:'Average Handling Time',desc:'AHT should be > 3 min',weight:'15%',actual:'4Min'},
+    {point:'Total Tickets VS number of calls',desc:'Percentage ticket numbers based on the number of calls received',weight:'15%',actual:'95%'}
+  ];
+  const QA = callsQA.length ? callsQA : [
+    {item:'Welcome',score:'10',ar:'المقدمة'},
+    {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
+    {item:'Understanding the customer problem',score:'10',ar:'فهم العميل'},
+    {item:'Answering the customer question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
+    {item:'How long it took to answer',score:'5',ar:'كم استغرق الرد'},
+    {item:'Attitude & Language',score:'5',ar:'السلوك واللغة'},
+    {item:'Personal Enthusiasm',score:'5',ar:'الحماس الشخصي'},
+    {item:'Hold time / Mute',score:'—',ar:'زمن الانتظار / كتم الصوت'},
+    {item:'Closure of call',score:'10',ar:'إغلاق المكالمة'},
+    {item:'Ticket Quality / System input',score:'30',ar:'جودة التذاكر / إدخال النظام'}
+  ];
+  const total=QA.reduce((s,r)=>{const n=parseInt(r.score)||0;return s+n;},0);
+
+  const html=`
+  <div class="sec-label">📊 Monthly Agents Performance &amp; EOM Slide Inbound</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:start">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Monthly Agents Performance</div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr><th style="width:42%">Metric</th><th>Description</th></tr></thead>
+        <tbody>${PERF.map(m=>`<tr><td style="font-weight:600;color:var(--text)">${m.metric}</td><td style="color:var(--muted)">${m.desc}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>EOM Slide Inbound</div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr><th style="width:55%">Field</th><th>Source</th></tr></thead>
+        <tbody>${EOM.map(r=>`<tr><td style="font-weight:600;color:var(--text)">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="sec-label">📋 Inbound CC — Agent Performance</div>
+  <div class="card" style="margin-bottom:18px">
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr>
+        <th style="width:24%">Points</th>
+        <th>Description</th>
+        <th style="text-align:center;width:13%">Weightage</th>
+        <th style="text-align:center;width:20%">Actual Metric</th>
+      </tr></thead>
+      <tbody>${INBOUND_CC.map(r=>`<tr>
+        <td style="font-weight:600;color:var(--text)">${r.point}</td>
+        <td style="color:var(--muted)">${r.desc}</td>
+        <td style="text-align:center;font-weight:700;color:var(--teal)">${r.weight||'—'}</td>
+        <td style="text-align:center;color:var(--muted)">${r.actual||'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>
+  <div class="sec-label">✅ Calls Quality Assurance — Total: ${total} pts</div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th style="direction:rtl;text-align:right">Arabic</th></tr></thead>
+      <tbody>${QA.map(r=>`<tr>
+        <td style="font-weight:500">${r.item}</td>
+        <td style="text-align:center"><span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r.score}</span></td>
+        <td style="color:var(--muted);direction:rtl;text-align:right">${r.ar}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+  </div>`;
+  document.getElementById('tab-monthly').innerHTML=html;
+}
+
+// ══ REPORTS GUIDE ══
+function renderReports(rows){
+  const allRows = (rows||[]).filter(r=>r.some(v=>v&&String(v).trim()));
+  const sections=[];
+  let cur=null;
+
+  allRows.forEach(r=>{
+    const a=String(r[0]||'').trim();
+    const b=String(r[1]||'').trim();
+    const c=String(r[2]||'').trim();
+    if(!a) return;
+    // Detect section headers — full row is a header if col A has value and cols B,C empty OR it's a known header
+    const isHeader = (a.toLowerCase().includes('ameyo') || a.includes('CRM-MASTERDECK') || a==='WhatsApp') && !b;
+    if(isHeader){
+      cur={title:a,items:[]}; sections.push(cur); return;
+    }
+    // Also detect merged header rows (B and C empty, A has section name)
+    if(!b && !c && (a.includes('Ameyo') || a.includes('CRM') || a==='WhatsApp')){
+      cur={title:a,items:[]}; sections.push(cur); return;
+    }
+    if(cur) cur.items.push({name:a, desc:b, note:c});
+  });
+
+  if(!sections.length || sections.every(s=>!s.items.length)){
+    // Static fallback
+    sections.push({title:"Ameyo Reports",items:[
+      {name:'ACD Call Details',desc:'المفقود + اختيار الموظفة للاتصال (Disposition)',note:''},
+      {name:'AGENT Productivity Interval Summary',desc:'تقرير الموظفة كامل لفترة الدوام',note:'Staffed Duration · First Login Time · Avg Handling Time'},
+      {name:'Agent Session Details',desc:'وقت تسجيل الدخول والخروج',note:''},
+      {name:'Call Details',desc:'تقرير المفقود خارج ساعات الدوام',note:''},
+      {name:'Feedback IVR Report',desc:'تقييم العملاء للمكالمات',note:'اختار من رقم الوظيفي للبنات — Grand Total'},
+      {name:'Updated Petromin Interaction',desc:'للتيكيتات — نحط Campaign كامل',note:'يتمسح Incoming Email Queue'},
+      {name:'WhatsApp Ni/ST',desc:'Chats · Speed of answer (First response)',note:'من الـ Dashboard'}
+    ]});
+    sections.push({title:'CRM-MASTERDECK- Ghada',items:[
+      {name:'Calls Volume',desc:'عدد المكالمات الأسبوعي كامل',note:''},
+      {name:'SL%',desc:'من ACD Call Details Report',note:'Total calls + calls ≤30s Wait Time at ACD'},
+      {name:'AHT',desc:'AGENT Productivity Interval Summary',note:'User Talk Time + ACW Duration'},
+      {name:'Avg. ACW',desc:'AGENT Productivity Interval Summary',note:'Report'},
+      {name:'Avg. Staffed',desc:'AGENT Productivity Interval Summary',note:'اشيل عدد الساعات القليل — البنات من تيم ثاني'},
+      {name:'Speed of Answer',desc:'من ACD Call Details Report',note:'Only Answered = Total Wait Time at ACD'},
+      {name:'WhatsApp Volume',desc:'Total Chats',note:'Download WhatsApp'},
+      {name:'Avg. First RT',desc:'First Response',note:'Download WhatsApp'},
+      {name:'Avg. RT',desc:'Avg. Response Time',note:'Download WhatsApp'}
+    ]});
+    sections.push({title:'WhatsApp',items:[
+      {name:'Dashboard',desc:'عدد المكالمات - وقت الدخول',note:''},
+      {name:'Feedback Section',desc:'تقييم العملاء',note:'محادثة التقييم من الأرشيف برقم العميل'},
+      {name:'Chat Statistics',desc:'حالة المحادثة (الإغلاق)',note:''},
+      {name:'Archive',desc:'سجل المحادثات',note:''},
+      {name:'Permission',desc:'الخصائص',note:''},
+      {name:'User List',desc:'معلومات الموظفات',note:''},
+      {name:'Canned Response',desc:'هاشتاق',note:''},
+      {name:'Supervise & Tip Off',desc:'نفس الداش بورد حق الكيو',note:''},
+      {name:'Download Center',desc:'ملف التقارير',note:''},
+      {name:'User Logging',desc:'وقت دخول الموظفات',note:''},
+      {name:'Offline Queries',desc:'محادثات العملاء خارج أوقات الدوام',note:''},
+      {name:'Missed Chats',desc:'مفقود',note:''},
+      {name:'Agent Performance',desc:'أداء الموظفات',note:''},
+      {name:'Customer List',desc:'Push',note:''}
+    ]});
+  }
+
+  const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
+  const SECTION_BG=['#E1F5EE','#EEEDFE','#E6F1FB'];
+
+  let html='<div class="sec-label">📄 Reports Reference Guide</div>';
+  sections.forEach((sec,si)=>{
+    if(!sec.items.length) return;
+    const col=SECTION_COLORS[si%SECTION_COLORS.length];
+    const bg=SECTION_BG[si%SECTION_BG.length];
+    html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
+      <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+      ${sec.items.map((item,i)=>`
+        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center">
+          <div style="font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="font-size:11px;color:var(--muted);text-align:center">${item.desc}</div>
+          <div style="font-size:11px;color:${col};text-align:right;direction:rtl">${item.note||'—'}</div>
+        </div>`).join('')}
+    </div>`;
+  });
+  document.getElementById('tab-reports').innerHTML=html;
+}
+
+async function handleRefreshClick(){
+  const btn=document.getElementById('refreshBtn');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Refreshing...'; }
+  try{
+    await loadAll();
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='↻ Refresh'; }
+  }
+}
+
+async function loadAll(){
+  const TAB_IDS=['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap','monthly','reports'];
+
+  // 1) Show cached data instantly if available (fast paint)
+  const cachedInb = getCachedSheet(GID.inbound);
+  if(cachedInb){
+    renderInbound(cachedInb);
+    renderWorkDone(cachedInb);
+  }
+  const cachedAtt = getCachedSheet(GID.attendance);
+  if(cachedAtt) renderAttendance(cachedAtt);
+  const cachedKpi = getCachedSheet(GID.kpis);
+  if(cachedKpi) renderKPIs(cachedKpi);
+  const cachedCl = getCachedSheet(GID.checklist);
+  if(cachedCl) renderChecklist(cachedCl);
+  const cachedCoach = getCachedSheet(GID.coaching);
+  if(cachedCoach) renderCoaching(cachedCoach);
+  const cachedImp = getCachedSheet(GID.improvement);
+  if(cachedImp) renderImprovement(cachedImp);
+  const cachedGap = getCachedSheet(GID.perfgap);
+  if(cachedGap) renderPerfGap(cachedGap);
+  const cachedEsc = getCachedSheet(GID.escalations);
+  if(cachedEsc) renderEscalations(cachedEsc);
+
+  // Show loading indicator only for tabs without cache
+  TAB_IDS.forEach(id=>{
+    const el=document.getElementById('tab-'+id);
+    if(el && (!el.innerHTML || el.innerHTML.includes('⏳'))){
+      el.innerHTML='<div class="loading">⏳ Loading...</div>';
+    }
+  });
+
+  // 2) Fetch fresh data in background and update when ready
+  try{
+    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows,escRows]=await Promise.all([
+      fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
+      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap),
+      fetchCSV(GID.monthly),fetchCSV(GID.reports),fetchCSV(GID.escalations)
+    ]);
+    renderInbound(inbRows);
+    renderWorkDone(inbRows);
+    renderKPIs(kpiRows);
+    renderAttendance(attRows);
+    renderChecklist(clRows);
+    renderCoaching(coachRows);
+    renderImprovement(impRows);
+    renderPerfGap(gapRows);
+    renderMonthly(monthlyRows);
+    renderReports(reportsRows);
+    renderEscalations(escRows);
+  }catch(e){
+    // If we already showed cached data, don't overwrite with an error
+    const hasCachedFallback = cachedInb || cachedAtt || cachedKpi;
+    if(!hasCachedFallback){
+      ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
+        document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+      });
+    }
+    // Monthly and Reports use static fallback even on error
+    renderMonthly([]);
+    renderReports([]);
+  }
+}
+
+// ── ESCALATIONS ──
+function renderEscalations(rawRows){
+  const el=document.getElementById('tab-escalations');
+  if(!el)return;
+
+  // Convert 2D array to objects using first row as headers
+  let rows=[];
+  if(rawRows&&rawRows.length>0){
+    if(Array.isArray(rawRows[0])){
+      const headers=rawRows[0];
+      rows=rawRows.slice(1).map(r=>{
+        const obj={};
+        headers.forEach((h,i)=>obj[h]=r[i]||'');
+        return obj;
+      }).filter(r=>Object.values(r).some(v=>v));
+    } else {
+      rows=rawRows.filter(r=>Object.values(r).some(v=>v));
+    }
+  }
+
+  const STATUS_COLORS={
+    'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8',
+    'Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8',
+    'Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2',
+    'Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8',
+    'Closed':'#EAF3DE','Resolved':'#EAF3DE'
+  };
+  const DEPT_COLORS={
+    'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2',
+    'PE':'#EBF4F2','Bodyshop':'#F0E8FE','Foton':'#F1EFE8'
+  };
+
+  const getStatus=r=>r['Status']||r['Status Value']||'';
+  const getDept=r=>r['Department']||r['Department Value']||'';
+  const getModBy=r=>r['Modified By']||'';
+  const getModDate=r=>r['Modified Date']||r['Modified']||'';
+  const getCaseId=r=>r['Case ID']||r['Title']||'';
+
+  const statusBadge=s=>{
+    if(!s)return'<span style="color:#aaa">—</span>';
+    const bg=STATUS_COLORS[s]||'#F1EFE8';
+    const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';
+    return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;
+  };
+  const deptBadge=d=>{
+    if(!d)return'<span style="color:#aaa">—</span>';
+    const bg=DEPT_COLORS[d]||'#F1EFE8';
+    return`<span style="background:${bg};color:#444;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600">${d}</span>`;
+  };
+
+  const total=rows.length;
+  const pending=rows.filter(r=>getStatus(r).toLowerCase().includes('pending')).length;
+  const closed=rows.filter(r=>{const s=getStatus(r);return s==='Closed'||s==='Resolved';}).length;
+
+  const todayStr=new Date().toISOString().slice(0,10);
+  const parseEscDate=d=>{
+    if(!d)return'';
+    const s=String(d).trim();
+    if(s.match(/^\d{4}-\d{2}-\d{2}/))return s.slice(0,10);
+    if(s.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){const p=s.split('/');return p[2]+'-'+p[0].padStart(2,'0')+'-'+p[1].padStart(2,'0');}
+    return s.slice(0,10);
+  };
+  const todayCount=rows.filter(r=>{
+    const d=parseEscDate(getModDate(r));const mb=getModBy(r);
+    return d===todayStr&&mb.toLowerCase().includes('sali');
+  }).length;
+
+  el.innerHTML=`
+  <div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <div class="card" style="margin:0;display:flex;align-items:center;gap:14px">
+        <div style="font-size:40px;font-weight:700;color:var(--teal);line-height:1">${todayCount}</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">Today's cases</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:5px">${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+          <div style="font-size:11px;color:#085041;background:var(--teal-light);padding:2px 9px;border-radius:6px;display:inline-block;font-weight:600">Sali Aljehani</div>
+        </div>
+      </div>
+      <div class="card" style="margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Total</div>
+          <div id="esc-stat-total" style="font-size:22px;font-weight:700;color:var(--text)">${total}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Pending</div>
+          <div id="esc-stat-pending" style="font-size:22px;font-weight:700;color:#A32D2D">${pending}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:10px;color:var(--muted)">Closed</div>
+          <div id="esc-stat-closed" style="font-size:22px;font-weight:700;color:#3B6D11">${closed}</div>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border)"></div>
+        <div style="flex:1;min-width:120px">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Check any date</div>
+          <input type="date" id="esc-date-picker" style="width:100%;padding:5px 8px;border-radius:6px;border:1px solid var(--border);font-size:11px" oninput="calcEscDate(this.value)">
+          <div id="esc-date-count" style="font-size:12px;margin-top:5px;color:var(--muted)">— select a date</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:0">
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+        <input id="esc-search" type="text" placeholder="🔍 ابحث بـ Case ID أو الاسم..."
+          style="flex:1;min-width:180px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
+          oninput="filterEsc()">
+        <select id="esc-sf" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Status</option>
+          <option>Pending</option><option>Pending Refund</option><option>Pending MCI</option>
+          <option>Pending with Sales</option><option>Pending Compensation</option>
+          <option>Pending Customer contact</option><option>Pending for parts</option>
+          <option>Duplicate</option><option>Raise a new complaint</option><option>Closed</option>
+        </select>
+        <select id="esc-df" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Departments</option>
+          <option>PAC</option><option>Nissan</option><option>Stellantis</option>
+          <option>PE</option><option>Bodyshop</option><option>Foton</option>
+        </select>
+        <select id="esc-af" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Assigned to</option>
+          ${[...new Set(rows.map(r=>r['Assigned to']||'').filter(Boolean))].sort().map(a=>`<option>${a}</option>`).join('')}
+        </select>
+        <select id="esc-mf" onchange="filterEsc()"
+          style="padding:7px 10px;border-radius:8px;border:1px solid var(--border);font-size:11px;background:#fff;color:var(--text)">
+          <option value="">All Modified by</option>
+          <option>Sali Aljehani</option><option>Shahad Ammar</option>
+        </select>
+        <button onclick="document.getElementById('esc-search').value='';document.getElementById('esc-sf').value='';document.getElementById('esc-df').value='';document.getElementById('esc-af').value='';document.getElementById('esc-mf').value='';filterEsc()" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;cursor:pointer">↺ Reset</button>
+      </div>
+        <div style="overflow-x:auto;max-height:520px;overflow-y:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead style="position:sticky;top:0;z-index:1">
+              <tr style="background:var(--teal-light)">
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">#</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Case ID</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Status</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Department</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Assigned to</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Modified by</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Comments</th>
+              </tr>
+            </thead>
+            <tbody id="esc-tbody">${rows.map((r,i)=>{
+              const caseId=getCaseId(r);
+              const status=getStatus(r);
+              const dept=getDept(r);
+              const assigned=r['Assigned to']||'';
+              const modby=getModBy(r);
+              const comments=r['Comments']||'';
+              const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'" onclick="openEscEdit(${i})">
+                <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
+                <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
+                <td style="padding:8px 10px">${statusBadge(status)}</td>
+                <td style="padding:8px 10px">${deptBadge(dept)}</td>
+                <td style="padding:8px 10px;color:var(--text);font-size:11px">${assigned}</td>
+                <td style="padding:8px 10px;font-size:11px;color:${modby.toLowerCase().includes('sali')?'var(--teal)':'var(--muted)'};font-weight:${modby.toLowerCase().includes('sali')?'600':'400'}">${modby}</td>
+                <td style="padding:8px 10px;color:var(--muted);font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${comments}</td>
+              </tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+        <div id="esc-count" style="margin-top:8px;font-size:11px;color:var(--muted)">Showing ${total} cases</div>
+      </div>
+    </div>
+  </div>`;
+
+  window._escRows=rows;
+}
+
+function openEscEdit(idx){
+  const rows=window._escRows||[];
+  const r=rows[idx];
+  if(!r)return;
+  const caseId=r['Case ID']||r['Title']||'';
+  const status=r['Status']||r['Status Value']||'';
+  const dept=r['Department']||r['Department Value']||'';
+  const assigned=r['Assigned to']||'';
+  const comments=r['Comments']||'';
+
+  const overlay=document.createElement('div');
+  overlay.id='esc-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999;display:flex;align-items:center;justify-content:center';
+  overlay.innerHTML=`
+    <div style="background:#fff;border-radius:14px;padding:24px;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <div style="font-size:14px;font-weight:700;color:#1A1A1A">Edit Case</div>
+        <button onclick="document.getElementById('esc-overlay').remove()" style="border:none;background:none;font-size:18px;cursor:pointer;color:#888">✕</button>
+      </div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px;background:#F4FAF7;padding:8px 12px;border-radius:8px;font-weight:600">${caseId}</div>
+
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Status</label>
+        <select id="edit-status" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;background:#fff">
+          <option value="">— Select —</option>
+          ${['Pending','Pending Refund','Pending MCI','Pending with Sales','Pending Compensation','Pending Customer contact','Pending for parts','Duplicate','Raise a new complaint','Closed'].map(s=>`<option value="${s}"${s===status?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Department</label>
+        <select id="edit-dept" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;background:#fff">
+          <option value="">— Select —</option>
+          ${['PAC','Nissan','Stellantis','PE','Bodyshop','Foton'].map(d=>`<option value="${d}"${d===dept?' selected':''}>${d}</option>`).join('')}
+        </select>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Assigned to</label>
+        <input id="edit-assigned" type="text" value="${assigned}" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px">
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Comments</label>
+        <textarea id="edit-comments" rows="4" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;resize:vertical">${comments}</textarea>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <button onclick="saveEscEdit(${idx})" style="flex:1;padding:10px;border-radius:8px;border:none;background:#0F6E56;color:#fff;font-size:13px;font-weight:700;cursor:pointer">💾 Save</button>
+        <button onclick="document.getElementById('esc-overlay').remove()" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#666;font-size:13px;cursor:pointer">Cancel</button>
+      </div>
+      <div id="edit-msg" style="margin-top:10px;text-align:center;font-size:12px"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});
+}
+
+function saveEscEdit(idx){
+  const rows=window._escRows||[];
+  const r=rows[idx];
+  if(!r)return;
+  const msg=document.getElementById('edit-msg');
+  if(msg){msg.style.color='#888';msg.textContent='Saving...';}
+
+  const updates={
+    'Status':document.getElementById('edit-status').value,
+    'Department':document.getElementById('edit-dept').value,
+    'Assigned to':document.getElementById('edit-assigned').value,
+    'Comments':document.getElementById('edit-comments').value,
+    'Modified By':'Sali Aljehani',
+    'Modified Date':new Date().toISOString()
+  };
+
+  fetch(PROXY,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({sheetName:'Escalations 2026',rowIndex:idx+1,updates})
+  }).then(res=>res.json()).then(data=>{
+    if(data.success){
+      Object.assign(rows[idx],updates);
+      window._escRows=rows;
+      if(msg){msg.style.color='#0F6E56';msg.textContent='✓ Saved!';}
+      setTimeout(()=>{
+        document.getElementById('esc-overlay')?.remove();
+        renderEscalations(rows);
+      },800);
+    } else {
+      if(msg){msg.style.color='#A32D2D';msg.textContent='Error: '+JSON.stringify(data.error);}
+    }
+  }).catch(err=>{
+    if(msg){msg.style.color='#A32D2D';msg.textContent='Error: '+err.message;}
+  });
+}
+
+function calcEscDate(dateStr){
+  const rows=window._escRows||[];
+  const parseEscDate=d=>{
+    if(!d)return'';
+    const s=String(d).trim();
+    if(s.match(/^\d{4}-\d{2}-\d{2}/))return s.slice(0,10);
+    if(s.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)){const p=s.split('/');return p[2]+'-'+p[0].padStart(2,'0')+'-'+p[1].padStart(2,'0');}
+    return s.slice(0,10);
+  };
+
+  if(!dateStr){
+    const total=rows.length;
+    const pending=rows.filter(r=>(r['Status']||'').toLowerCase().includes('pending')).length;
+    const closed=rows.filter(r=>{const s=r['Status']||'';return s==='Closed'||s==='Resolved';}).length;
+    const t=document.getElementById('esc-stat-total');const p=document.getElementById('esc-stat-pending');const c=document.getElementById('esc-stat-closed');
+    if(t)t.textContent=total;if(p)p.textContent=pending;if(c)c.textContent=closed;
+    const el=document.getElementById('esc-date-count');if(el)el.innerHTML='— select a date';
+    return;
+  }
+
+  const dateRows=rows.filter(r=>parseEscDate(String(r['Modified Date']||r['Modified']||''))===dateStr);
+  const total=dateRows.length;
+  const pending=dateRows.filter(r=>(r['Status']||'').toLowerCase().includes('pending')).length;
+  const closed=dateRows.filter(r=>{const s=r['Status']||'';return s==='Closed'||s==='Resolved';}).length;
+  const saliCount=dateRows.filter(r=>String(r['Modified By']||'').toLowerCase().includes('sali')).length;
+  const shahadCount=dateRows.filter(r=>String(r['Modified By']||'').toLowerCase().includes('shahad')).length;
+
+  const t=document.getElementById('esc-stat-total');const p=document.getElementById('esc-stat-pending');const c=document.getElementById('esc-stat-closed');
+  if(t)t.textContent=total;if(p)p.textContent=pending;if(c)c.textContent=closed;
+
+  const el=document.getElementById('esc-date-count');
+  if(el)el.innerHTML=`
+    <div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:15px;font-weight:700;color:#0F6E56">${saliCount}</span>
+        <span style="font-size:10px;color:#085041;background:#E1F5EE;padding:1px 7px;border-radius:6px;font-weight:600">Sali Aljehani</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:15px;font-weight:700;color:#888">${shahadCount}</span>
+        <span style="font-size:10px;color:#555;background:#F1EFE8;padding:1px 7px;border-radius:6px;font-weight:600">Shahad Ammar</span>
+      </div>
+    </div>`;
+}
+
+function filterEsc(){
+  const rows=window._escRows||[];
+  const q=(document.getElementById('esc-search')?.value||'').toLowerCase();
+  const sf=document.getElementById('esc-sf')?.value||'';
+  const df=document.getElementById('esc-df')?.value||'';
+  const af=document.getElementById('esc-af')?.value||'';
+  const mf=document.getElementById('esc-mf')?.value||'';
+
+  const STATUS_COLORS={'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8','Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8','Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2','Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8','Closed':'#EAF3DE','Resolved':'#EAF3DE'};
+  const DEPT_COLORS={'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2','PE':'#EBF4F2','Bodyshop':'#F0E8FE','Foton':'#F1EFE8'};
+  const sb=s=>{if(!s)return'<span style="color:#aaa">—</span>';const bg=STATUS_COLORS[s]||'#F1EFE8';const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;};
+  const db=d=>{if(!d)return'<span style="color:#aaa">—</span>';const bg=DEPT_COLORS[d]||'#F1EFE8';return`<span style="background:${bg};color:#444;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600">${d}</span>`;};
+
+  const filtered=rows.filter(r=>{
+    const caseId=String(r['Case ID']||r['Title']||'').toLowerCase();
+    const status=String(r['Status']||r['Status Value']||'');
+    const dept=String(r['Department']||r['Department Value']||'');
+    const assigned=String(r['Assigned to']||'');
+    const modby=String(r['Modified By']||'');
+    const comments=String(r['Comments']||'').toLowerCase();
+    return(!q||(caseId+status.toLowerCase()+assigned.toLowerCase()+comments).includes(q))
+      &&(!sf||status===sf)&&(!df||dept===df)
+      &&(!af||assigned===af)
+      &&(!mf||modby.toLowerCase().includes(mf.toLowerCase()));
+  });
+
+  const tbody=document.getElementById('esc-tbody');
+  if(tbody){
+    tbody.innerHTML=filtered.map((r,i)=>{
+      const caseId=r['Case ID']||r['Title']||'';
+      const status=r['Status']||r['Status Value']||'';
+      const dept=r['Department']||r['Department Value']||'';
+      const assigned=r['Assigned to']||'';
+      const modby=r['Modified By']||'';
+      const comments=r['Comments']||'';
+      const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'">
+        <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
+        <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
+        <td style="padding:8px 10px">${sb(status)}</td>
+        <td style="padding:8px 10px">${db(dept)}</td>
+        <td style="padding:8px 10px;color:var(--text);font-size:11px">${assigned}</td>
+        <td style="padding:8px 10px;font-size:11px;color:${modby.toLowerCase().includes('sali')?'var(--teal)':'var(--muted)'};font-weight:${modby.toLowerCase().includes('sali')?'600':'400'}">${modby}</td>
+        <td style="padding:8px 10px;color:var(--muted);font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${comments}</td>
+      </tr>`;
+    }).join('');
+    const cnt=document.getElementById('esc-count');
+    if(cnt)cnt.textContent=`Showing ${filtered.length} of ${rows.length} cases`;
+  }
+}
+
+// ── AVATAR COLORS ──
+const AV_COLORS=[
+  {bg:'#F0DEDE',text:'#9B4A4A'},{bg:'#E3E1DC',text:'#6B6862'},
+  {bg:'#DCE6E0',text:'#516B5C'},{bg:'#E8E2D8',text:'#8A7456'},
+  {bg:'#E1E2E8',text:'#5C6178'},{bg:'#E6DEE3',text:'#7C5C6B'}
+];
+function avColor(i){return AV_COLORS[i%AV_COLORS.length];}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+// ══ INBOUND ══
+function renderInbound(rows){
+  const daily=[],weekly=[],other=[];
+  let inTasks=false;
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim();
+    if(a.includes('Daily Inbound Work')){inTasks=true;return;}
+    if(a==='Work Done'){inTasks=false;return;}
+    if(!inTasks||!a)return;
+    if(b==='Daily')daily.push(a);
+    else if(b==='Weekly')weekly.push(a);
+    else other.push({name:a,freq:b||'—'});
+  });
+  const dk='inbound_done_'+today.toLocaleDateString('en-US');
+  let done=new Set(JSON.parse(localStorage.getItem(dk)||'[]'));
+  const pct=daily.length?Math.round(done.size/daily.length*100):0;
+  const pctColor=pct===100?'var(--teal-mid)':pct>=50?'var(--amber)':'var(--red)';
+
+  let html=`<div class="stat-grid">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done.size}<span style="font-size:13px;color:var(--muted)">/${daily.length}</span></div>
+      <div class="stat-lbl">Done today</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pctColor}"></div></div></div>
+    <div class="stat"><div class="stat-num" style="color:${pctColor}">${pct}%</div><div class="stat-lbl">Progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${weekly.length}</div><div class="stat-lbl">Weekly tasks</div></div>
+    <div class="stat"><div class="stat-num">${other.length}</div><div class="stat-lbl">Other tasks</div></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Daily — ${today.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})} <span class="badge b-teal" style="margin-left:auto">${done.size}/${daily.length}</span></div>`;
+
+  daily.forEach(t=>{
+    const isDone=done.has(t);
+    const safe=encodeURIComponent(t);
+    html+=`<div class="check-item" onclick="toggleTask('${safe}','${dk}')">
+      <div class="check-icon ${isDone?'done':''}"></div>
+      <span style="${isDone?'text-decoration:line-through;color:var(--muted)':''}">${t}</span>
+      <span class="freq">Daily</span></div>`;
+  });
+  html+=`</div><div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Weekly</div>`;
+  weekly.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t}</span><span class="freq">Weekly</span></div>`;});
+  html+=`</div><div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Other</div>`;
+  other.forEach(t=>{html+=`<div class="check-item"><div class="check-icon"></div><span>${t.name}</span><span class="freq">${t.freq}</span></div>`;});
+  html+=`</div></div></div>`;
+  document.getElementById('tab-inbound').innerHTML=html;
+  window.toggleTask=function(safe,key){
+    const task=decodeURIComponent(safe);
+    const ds=new Set(JSON.parse(localStorage.getItem(key)||'[]'));
+    if(ds.has(task))ds.delete(task);else ds.add(task);
+    localStorage.setItem(key,JSON.stringify([...ds]));
+    renderInbound(rows);
+  };
+}
+
+// ══ WORK DONE ══
+function renderWorkDone(rows){
+  const items=[];let inS=false;
+  rows.forEach(r=>{const a=(r[0]||'').trim();if(a==='Work Done'){inS=true;return;}if(!inS||!a)return;items.push(a);});
+  function getCat(item){
+    const t=item.toLowerCase();
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
+    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
+    return{label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+  }
+  document.getElementById('tab-workdone').innerHTML=`
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Months (Jan–Jun)</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-lbl">Start</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-lbl">Current</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px">
+      ${items.map((item,i)=>{
+        const cat=getCat(item);
+        return`<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;border-left:4px solid ${cat.dot}">
+          <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px">${item}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
+            <span style="font-size:10px;color:#ccc;font-weight:600">#${i+1}</span>
+          </div></div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ══ KPIs ══
+function renderKPIs(rows){
+  const inboundPerf=[],supervisorKPIs=[];
+  let phase='';
+  // rows[0] from proxy = header row (column names from sheet row 1)
+  // actual data starts from rows[1]
+  // But Sali KPIs sheet has merged/complex structure so we scan all rows
+  const allRows = rows.length && rows[0][0]==='Inbound Performance' ? rows : rows.slice(1);
+  (allRows.length ? allRows : rows).forEach(r=>{
+    const a=(r[0]||'').trim(),b=(r[1]||'').trim(),c=(r[2]||'').trim();
+    if(a==='Inbound Performance'){phase='inbound_header';return;}
+    if(a==='Category'&&(b==='KPIs Covered'||b.includes('KPI'))){phase='inbound';return;}
+    if(a==='Category'&&(b==='Measurement'||b==='KPIs Covered')){phase='supervisor';return;}
+    if(a==='Final Total'||!a)return;
+    // Detect supervisor section by weight column having %
+    if(phase===''&&c&&c.includes('%')&&b&&!b.includes('KPI')){phase='supervisor';}
+    if(phase==='inbound'&&b)inboundPerf.push({cat:a,kpis:b,weight:c});
+    if(phase==='supervisor'&&b&&c)supervisorKPIs.push({cat:a,measure:b,weight:c,note:r[3]||''});
+  });
+  const STATUS={
+    'Team KPI Achievement':{cls:'b-green',txt:'✓ On track'},
+    'QA Monitoring':{cls:'b-green',txt:'✓ On track'},
+    'Inbound Booking Accuracy':{cls:'b-green',txt:'✓ On track'},
+    'Escalation Resolution':{cls:'b-amber',txt:'In progress'},
+    'Coaching Sessions':{cls:'b-amber',txt:'In progress'},
+    'Improvement Plans':{cls:'b-amber',txt:'In progress'},
+    'Process Enhancement':{cls:'b-green',txt:'✓ Done (Inbound Dashboard)'},
+    'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
+  };
+  let html=`<div class="sec-label">Supervisor KPIs</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>`;
+  supervisorKPIs.forEach(k=>{
+    const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${k.measure}</div>
+        ${k.note?`<div style="font-size:10px;color:var(--teal);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+        <span class="badge ${s.cls}">${s.txt}</span>
+        <span style="font-size:11px;font-weight:700;color:var(--teal)">${k.weight}</span>
+      </div></div>`;
+  });
+  html+=`</div><div class="sec-label">Inbound Performance KPIs</div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>`;
+  inboundPerf.forEach(k=>{
+    const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
+    html+=`<div class="kpi-row">
+      <div style="flex:1">
+        <div class="kpi-name">${k.cat}</div>
+        <div class="kpi-measure">${bullets.map(b=>'• '+b).join('<br>')}</div>
+      </div>
+      <span class="badge b-teal" style="flex-shrink:0">${k.weight}</span>
+    </div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('tab-kpis').innerHTML=html;
+}
+
+// ══ ATTENDANCE ══
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function normSt(s){
+  if(!s)return'';const v=s.toLowerCase().trim();
+  if(v==='office')return'office';if(v==='off')return'off';
+  if(v.includes('work vac')||v.includes('work v'))return'workvac';
+  if(v.includes('vacation'))return'vacation';
+  if(v.includes('sick'))return'sick';
+  if(v.includes('work r')||v==='remote')return'remote';
+  return'off';
+}
+function stLabel(s){return{office:'Office',off:'Off',vacation:'Vacation',workvac:'Work Vacation',sick:'Sick Leave',remote:'Remote'}[s]||'—';}
+function renderAttendance(rows){
+  _attMap={};
+  rows.slice(1).forEach(r=>{
+    const d=(r[0]||'').trim(),s=(r[1]||'').trim();
+    if(!d)return;
+    const p=d.split('/');
+    if(p.length===3){
+      const key=p[0].padStart(2,'0')+'/'+p[1].padStart(2,'0')+'/'+p[2];
+      _attMap[key]=normSt(s);
+    }
+  });
+  renderCal();
+}
+function renderCal(){
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const counts={office:0,off:0,vacation:0,workvac:0,sick:0,remote:0};
+  for(let d=1;d<=dim;d++){
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key];if(s&&counts[s]!==undefined)counts[s]++;
+  }
+  let html=`<div class="month-nav">
+    <button onclick="changeMonth(-1)">‹</button>
+    <div class="month-label">${MONTHS[calMonth]} ${calYear}</div>
+    <button onclick="changeMonth(1)">›</button>
+  </div>
+  <div class="att-stats">
+    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${counts.office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
+    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${counts.remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
+    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${counts.vacation}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
+    <div class="att-stat" style="background:#FFF9C4"><div class="num" style="color:#856400">${counts.workvac}</div><div class="lbl" style="color:#856400">Work Vac</div></div>
+    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${counts.sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
+    <div class="att-stat" style="background:var(--gray)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
+  </div>
+  <div class="card">
+    <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
+    <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
+  for(let d=1;d<=dim;d++){
+    const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    const s=_attMap[key]||'';
+    const isToday=d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear();
+    const isFuture=new Date(calYear,calMonth,d)>today&&!s;
+    html+=`<div class="cal-cell ${isFuture?'cal-future':s?'cal-'+s:'cal-future'}" style="${isToday?'outline:2px solid var(--teal);outline-offset:2px;font-weight:700':''}" title="${stLabel(s)||'—'}">${d}</div>`;
+  }
+  html+=`</div>
+  <div class="att-legend">
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray)"></div>Off</div>
+  </div></div>`;
+  document.getElementById('tab-attendance').innerHTML=html;
+  window.changeMonth=function(dir){
+    calMonth+=dir;
+    if(calMonth<0){calMonth=11;calYear--;}
+    if(calMonth>11){calMonth=0;calYear++;}
+    renderCal();
+  };
+}
+
+// ══ CHECK LIST ══
+function renderChecklist(rows){
+  if(!rows.length)return;
+  const headers=rows[0],brands=headers.slice(2);
+  const brandCls=['brand-nissan','brand-stellantis','brand-pe','brand-nos','brand-foton','brand-electromin'];
+  const agents=rows.slice(1).filter(r=>r[0]);
+  document.getElementById('tab-checklist').innerHTML=`
+    <div class="stat-grid" style="margin-bottom:14px">
+      <div class="stat"><div class="stat-num" style="color:var(--teal)">${agents.length}</div><div class="stat-lbl">Total agents</div></div>
+      <div class="stat"><div class="stat-num">${brands.length}</div><div class="stat-lbl">Brands</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Agent Brand Assignment</div>
+      <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>#</th><th>Agent</th><th>Badge</th>
+          ${brands.map((b,i)=>`<th><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
+        </tr></thead><tbody>
+        ${agents.map((r,i)=>`<tr>
+          <td style="color:#ccc;font-size:10px">${i+1}</td>
+          <td style="font-weight:600">${r[0]||''}</td>
+          <td style="color:var(--muted)">${r[1]||''}</td>
+          ${brands.map((_,bi)=>{
+            const val=(r[bi+2]||'').toUpperCase();
+            const yes=val==='TRUE'||val==='✓'||val==='YES';
+            return`<td style="text-align:center">${yes?'<span style="color:var(--teal);font-size:15px;font-weight:700">✓</span>':'<span style="color:#ddd">—</span>'}</td>`;
+          }).join('')}
+        </tr>`).join('')}
+        </tbody></table></div></div>`;
+}
+
+// ══ COACHING ══
+function renderCoaching(rows){
+  const sessionMap={};
+  rows.slice(1).forEach(r=>{
+    const name=(r[0]||'').trim();if(!name)return;
+    if(!sessionMap[name])sessionMap[name]=[];
+    sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
+  });
+  const done=Object.keys(sessionMap).length;
+  const total=rows.slice(1).filter(r=>r[0]).length;
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${total}</div><div class="stat-lbl">Total sessions</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Agents coached</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${AGENTS.length-done}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat"><div class="stat-num">${AGENTS.length}</div><div class="stat-lbl">Total agents</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Coaching Sessions Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">1 session / agent / month</span></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+      <th>#</th><th>Agent</th><th style="text-align:center">Sessions</th>
+      <th style="text-align:center">Last Date</th><th>Notes</th>
+      <th style="text-align:center">Next</th><th style="text-align:center">Status</th>
+    </tr></thead><tbody>`;
+  AGENTS.forEach((agent,i)=>{
+    const sessions=sessionMap[agent]||[];
+    const last=sessions[sessions.length-1]||null;
+    const c=avColor(i);
+    html+=`<tr>
+      <td style="color:#ccc;font-size:10px">${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${initials(agent)}</div>
+        <span style="font-weight:600;font-size:12px">${agent}</span></div></td>
+      <td style="text-align:center"><span style="background:${sessions.length?'var(--teal-light)':'var(--gray)'};color:${sessions.length?'var(--teal)':'#999'};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${sessions.length}</span></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last?last.date:'—'}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${last?last.notes:'—'}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last&&last.next?last.next:'—'}</td>
+      <td style="text-align:center">${sessions.length
+        ?'<span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">✓ Done</span>'
+        :'<span style="background:var(--amber-light);color:var(--amber);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">Pending</span>'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
+  document.getElementById('tab-coaching').innerHTML=html;
+}
+
+// ══ IMPROVEMENT ══
+function renderImprovement(rows){
+  const plans=rows.slice(1).filter(r=>r[0]);
+  const active=plans.filter(r=>(r[3]||'').toLowerCase().includes('progress')).length;
+  const done=plans.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('complet')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    if(v.includes('done')||v.includes('complet'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Done'};
+    return{bg:'var(--gray)',color:'var(--muted)',label:s||'Pending'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-lbl">Total plans</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-lbl">In progress</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Completed</div></div>
+  </div>`;
+  if(!plans.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:13px;font-weight:600">No improvement plans yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Improvement Plans</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--amber)"></span>Improvement Plans</div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th>Agent</th><th>Reason</th><th style="text-align:center">Start Date</th><th style="text-align:center">Status</th><th>Notes</th>
+      </tr></thead><tbody>
+      ${plans.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="font-weight:600">${r[0]||'—'}</td>
+        <td>${r[1]||'—'}</td>
+        <td style="text-align:center;color:var(--muted);font-size:11px">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+        <td style="color:var(--muted)">${r[4]||'—'}</td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-improvement').innerHTML=html;
+}
+
+// ══ PERF GAP ══
+function renderPerfGap(rows){
+  const gaps=rows.slice(1).filter(r=>r[0]);
+  const open=gaps.filter(r=>!(r[3]||'').toLowerCase().includes('done')&&!(r[3]||'').toLowerCase().includes('resolved')).length;
+  const resolved=gaps.filter(r=>(r[3]||'').toLowerCase().includes('done')||(r[3]||'').toLowerCase().includes('resolved')).length;
+  function stStyle(s){
+    const v=(s||'').toLowerCase();
+    if(v.includes('done')||v.includes('resolved'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Resolved'};
+    if(v.includes('progress'))return{bg:'var(--amber-light)',color:'var(--amber)',label:'In Progress'};
+    return{bg:'var(--red-light)',color:'var(--red)',label:'Open'};
+  }
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${gaps.length}</div><div class="stat-lbl">Total gaps</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-lbl">Open</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-lbl">Resolved</div></div>
+  </div>`;
+  if(!gaps.length){
+    html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:13px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Performance Gap</div></div>';
+  } else {
+    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Performance Gap Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">Min. 1 gap / week</span></div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+        <th>#</th><th style="text-align:center">Week</th><th>Gap Identified</th><th>Action Plan</th><th style="text-align:center">Status</th>
+      </tr></thead><tbody>
+      ${gaps.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
+        <td style="color:#ccc;font-size:10px">${i+1}</td>
+        <td style="text-align:center"><span style="background:var(--purple-light);color:var(--purple);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r[0]||'—'}</span></td>
+        <td style="font-weight:500">${r[1]||'—'}</td>
+        <td style="color:var(--muted)">${r[2]||'—'}</td>
+        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
+      </tr>`;}).join('')}
+      </tbody></table></div></div>`;
+  }
+  document.getElementById('tab-perfgap').innerHTML=html;
+}
+
+// ══ EOM CALCULATOR ══
+const EOM_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
+const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
+const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
+const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
+let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
+
+try{ EOM_MANUAL=JSON.parse(localStorage.getItem('eom_manual')||'{}'); }catch(e){}
+
+// ── Persist manual inputs to BOTH browser (backup) and Google Sheet (ManualStore tab) ──
+function persistEOMManual(){
+  try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
+  saveEOMManualToSheet();
+}
+let _eomSheetSaveTimer=null;
+function saveEOMManualToSheet(){
+  clearTimeout(_eomSheetSaveTimer);
+  _eomSheetSaveTimer=setTimeout(function(){
+    const st=document.getElementById('eomSaveStatus');
+    if(st){ st.style.color='var(--muted)'; st.textContent='⏳ جاري الحفظ في قوقل شيت...'; }
+    fetch(PROXY,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({id:EOM_SHEET_ID, sheetName:'ManualStore', data:JSON.stringify(EOM_MANUAL)})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(st){
+        if(d&&d.success){ st.style.color='#0F6E56'; st.textContent='✓ محفوظ في قوقل شيت'; }
+        else{ st.style.color='#A32D2D'; st.textContent='⚠️ محفوظ بالمتصفح فقط (تحققي من Apps Script)'; }
+      }
+    }).catch(function(){
+      if(st){ st.style.color='#A32D2D'; st.textContent='⚠️ محفوظ بالمتصفح فقط'; }
+    });
+  }, 1200);
+}
+async function loadEOMManualFromSheet(){
+  try{
+    const rows=await fetchEOMSheet(EOM_SHEET_ID,'ManualStore');
+    let sheetManual=null;
+    (rows||[]).forEach(function(row){
+      if(sheetManual)return;
+      let cand=(row&&typeof row==='object'&&!Array.isArray(row))?(row.data||Object.values(row)[0]):(Array.isArray(row)?row[0]:row);
+      if(typeof cand==='string' && cand.trim().charAt(0)==='{'){
+        try{ sheetManual=JSON.parse(cand); }catch(_){}
+      }
+    });
+    if(sheetManual && typeof sheetManual==='object'){
+      EOM_MANUAL=Object.assign({}, EOM_MANUAL, sheetManual);
+      try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
+    }
+  }catch(e){ /* tab not ready — keep browser data */ }
+}
+
+async function fetchEOMSheet(id, sheet){
+  const url=`${GAS_EOM}?id=${id}&sheetName=${encodeURIComponent(sheet)}`;
+  const res=await fetch(url);
+  const data=await res.json();
+  return Array.isArray(data)?data:(data.rows||[]);
+}
+
+function parseTimeEOM(v){
+  if(!v)return 0;
+  const s=String(v).trim();
+  const p=s.split(':').map(Number);
+  if(p.length===3)return p[0]*3600+p[1]*60+p[2];
+  if(p.length===2)return p[0]*60+p[1];
+  return 0;
+}
+
+async function loadEOM(){
+  document.getElementById('tab-eom').innerHTML='<div class="loading">⏳ Loading EOM data...</div>';
+  try{
+    const [agentRows, eomRows]=await Promise.all([
+      fetchEOMSheet(AGENT_PERF_SHEET_ID,'Agent Performance'),
+      fetchEOMSheet(EOM_SHEET_ID,'EOM Data').catch(()=>[])
+    ]);
+    EOM_RAW=agentRows;
+    EOM_SHEET_DATA=eomRows;
+    // Build months
+    const mSet=new Set();
+    EOM_RAW.forEach(r=>{
+      const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim().slice(0,7);
+      if(/^\d{4}-\d{2}$/.test(d)) mSet.add(d);
+    });
+    EOM_MONTHS=[...mSet].sort().reverse();
+    EOM_LOADED=true;
+    await loadEOMManualFromSheet();
+    renderEOMTab();
+  }catch(e){
+    document.getElementById('tab-eom').innerHTML=`<div class="err">⚠️ ${e.message}</div>`;
+  }
+}
+
+function fmtMonthEOM(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderEOMTab(){
+  const month=EOM_MONTHS[0]||'';
+  const selHTML=EOM_MONTHS.map(m=>`<option value="${m}">${fmtMonthEOM(m)}</option>`).join('');
+  const html=`
+  <div class="sec-label">🏆 Employee of the Month Calculator</div>
+
+  <!-- CONTROLS -->
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select id="eomMonthSel" onchange="calcEOM()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveEOMAll()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">⚡ Save & Calculate</button>
+      <span id="eomSaveStatus" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--teal-light);color:var(--teal)">📞 Calls 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#fff3e0;color:#e65100">⭐ Quality 25%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--purple-light);color:var(--purple)">😊 CSAT 20%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber-light);color:var(--amber)">⏱ AHT 15%</span>
+      <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--gray);color:var(--muted)">🎫 Tickets% 15%</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: PERFORMANCE TABLE -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPerfSection','eomPerfArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
+        Agent Performance
+        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
+        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
+      </div>
+      <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomPerfSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:1320px;font-size:9.5px">
+          <thead>
+            <tr>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
+              <th colspan="7" style="text-align:center;font-size:8px;font-weight:600;color:#085041;background:#d1f0e4;border-bottom:2px solid #9FE1CB">Time ●</th>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#185FA5;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#854F0B;background:#faeeda;border-bottom:2px solid #FAC775">WA ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#3B6D11;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total ●</th>
+              <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#993C1D;background:#fde8e0;border-bottom:2px solid #F5C4B3">CSAT ✏️</th>
+              <th colspan="2" style="text-align:center;font-size:8px;font-weight:600;color:#534AB7;background:#eeedfe;border-bottom:2px solid #CECBF6">Tickets ●</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#993556;background:#fbeaf0;border-bottom:2px solid #F4C0D1">Quality ✏️</th>
+              <th style="text-align:center;font-size:8px;font-weight:600;color:#444441;background:#e8e8e4;border-bottom:2px solid #D3D1C7">Score</th>
+            </tr>
+          <tr>
+            <th style="text-align:center;font-size:9px;width:20px">#</th>
+            <th style="font-size:10px;white-space:nowrap;width:150px">User Name</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;width:55px">Badge #</th>
+            <th style="text-align:center;font-size:9px;width:64px">Final Login<br>Time Score</th>
+            <th style="text-align:center;font-size:9px;width:64px">Total Ready<br>Duration</th>
+            <th style="text-align:center;font-size:9px;width:64px">Auto Call-Off<br>Duration</th>
+            <th style="text-align:center;font-size:9px;width:64px">Total Break<br>Duration</th>
+            <th style="text-align:center;font-size:9px;width:56px">Avg. Talk<br>Time</th>
+            <th style="text-align:center;font-size:9px;width:56px">Avg. ACW<br>Duration</th>
+            <th style="text-align:center;font-size:9px;width:60px">Avg. Handling<br>Time</th>
+            <th style="text-align:center;font-size:9px;width:54px">Manual<br>Dials</th>
+            <th style="text-align:center;font-size:9px;width:60px">Connected<br>Inbound</th>
+            <th style="text-align:center;font-size:9px;width:66px">Manual Dials<br>+Connected</th>
+            <th style="text-align:center;font-size:9px;color:var(--teal);width:56px">Whatsapp</th>
+            <th style="text-align:center;font-size:9px;width:54px">Total All</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;width:64px">Whatsapp<br>Feedback Avg</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;width:60px">Transferred<br>to CSAT</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;width:54px">CSAT</th>
+            <th style="text-align:center;font-size:9px;width:50px">Tickets</th>
+            <th style="text-align:center;font-size:9px;width:42px">%</th>
+            <th style="text-align:center;font-size:9px;color:#e65100;width:54px">Quality</th>
+            <th style="text-align:center;font-size:9px;color:var(--purple);width:54px">Score</th>
+          </tr>
+          <tr style="background:#e6f1fb">
+            <td colspan="3" style="padding:3px 8px;font-size:9px;color:var(--muted);font-weight:600">Target</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">9:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">8:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:30:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">1:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:04:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:00:30</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:04:00</td>
+            <td colspan="8"></td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">95%</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">90%</td>
+            <td></td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">90%</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody id="eomPerfBody"></tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: FEEDBACK -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomFbSection','eomFbArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+        Feedback
+      </div>
+      <span id="eomFbArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomFbSection">
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:750px">
+          <thead><tr>
+            <th>Agent</th>
+            <th style="text-align:center">Customers<br>Answered</th>
+            <th style="text-align:center">Customers<br>Transferred</th>
+            <th style="text-align:center;color:var(--teal)">CT%</th>
+            <th style="text-align:center">Customers<br>Evaluated</th>
+            <th style="text-align:center;color:var(--teal)">CE%</th>
+            <th style="text-align:center">Satisfied</th>
+            <th style="text-align:center;color:#2e7d32">Satisfied%</th>
+            <th style="text-align:center">Dissatisfied</th>
+            <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
+          </tr></thead>
+          <tbody id="eomFbBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: PODIUM -->
+  <div class="card" style="text-align:center;margin-bottom:12px">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomPodiumBody','eomPodiumArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:#DAA520;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">3</div>
+        <span>🏆 <span id="eomPodiumTitle">${fmtMonthEOM(month)}</span></span>
+        <span style="font-size:11px;color:var(--muted);font-weight:400">Employee of the Month</span>
+      </div>
+      <span id="eomPodiumArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomPodiumBody">
+      <div id="eomPodium"><div style="color:var(--muted);padding:30px;font-size:13px">أدخلي البيانات واضغطي Save & Calculate</div></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: KPI RANKING TABLE -->
+  <div class="card">
+    <div class="card-title-collapsible" onclick="toggleEOMSection('eomScoresBody','eomScoresArrow')">
+      <div class="ctitle-left">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">4</div>
+        Agent KPI Performance Ranking
+      </div>
+      <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
+    </div>
+    <div id="eomScoresBody">
+      <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">أدخلي البيانات واضغطي Save & Calculate</div></div>
+    </div>
+  </div>`;
+  document.getElementById('tab-eom').innerHTML=html;
+  calcEOM();
+}
+
+function toggleEOMSection(bodyId, arrowId){
+  const body=document.getElementById(bodyId);
+  const arrow=document.getElementById(arrowId);
+  if(!body)return;
+  const open=body.style.display!=='none'&&body.style.display!=='';
+  body.style.display=open?'none':'block';
+  if(arrow)arrow.textContent=open?'▼':'▲';
+}
+
+function calcEOM(){
+  if(!EOM_LOADED)return;
+  const month=document.getElementById('eomMonthSel')?document.getElementById('eomMonthSel').value:EOM_MONTHS[0];
+  if(!month)return;
+  document.getElementById('eomPodiumTitle').textContent='🏆 '+fmtMonthEOM(month);
+
+  // Filter rows for selected month
+  const rows=EOM_RAW.filter(r=>{
+    const d=String(r['Date']||r['date']||Object.values(r)[0]||'').trim();
+    return d.startsWith(month);
+  });
+
+  // Group by agent — sum monthly totals
+  const agents={};
+  rows.forEach(r=>{
+    const name=String(r['Employee']||r['Agent']||r['Name']||Object.values(r)[1]||'').trim();
+    if(!name)return;
+    if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,whatsapp:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,loginSum:0,loginCount:0,readySum:0,readyCount:0,callOffSum:0,callOffCount:0,breakSum:0,breakCount:0,days:0};
+    const a=agents[name];
+    a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
+    a.manual +=parseInt(r['Manual Dials']||0)||0;
+    a.tickets+=parseInt(r['Tickets']||0)||0;
+    a.whatsapp+=parseInt(r['Whatsapp']||r['WhatsApp']||0)||0;
+    const aht=parseTimeEOM(r['Avg. Handling Time']||r['Avg Handling Time']||'');
+    const talk=parseTimeEOM(r['Avg. Talk Time']||r['Avg Talk Time']||'');
+    const acw=parseTimeEOM(r['Avg.ACW Duration']||r['Avg ACW Duration']||r['Avg. ACW']||'');
+    const login=parseTimeEOM(r['Login Time']||r['Login']||'');
+    const ready=parseTimeEOM(r['Total Ready Duration']||r['Ready']||'');
+    const callOff=parseTimeEOM(r['Auto Call-Off']||r['Auto Call-Off Duration']||'');
+    const brk=parseTimeEOM(r['Total Break']||r['Total Break Duration']||r['Break']||'');
+    if(aht>0){a.ahtSum+=aht;a.ahtCount++;}
+    if(talk>0){a.talkSum+=talk;a.talkCount++;}
+    if(acw>0){a.acwSum+=acw;a.acwCount++;}
+    if(login>0){a.loginSum+=login;a.loginCount++;}
+    if(ready>0){a.readySum+=ready;a.readyCount++;}
+    if(callOff>0){a.callOffSum+=callOff;a.callOffCount++;}
+    if(brk>0){a.breakSum+=brk;a.breakCount++;}
+    a.days++;
+  });
+
+  const agentNames=Object.keys(agents).sort();
+
+  // Build feedback table rows
+  renderEOMFeedbackTable(agentNames, month);
+  // Build perf table
+  renderEOMPerfTable(agentNames, agents, month);
+
+  // Calculate scores
+  const maxCalls=Math.max(...Object.values(agents).map(a=>a.calls+a.manual),1);
+  const results=agentNames.map(name=>{
+    const a=agents[name];
+    const total=a.calls+a.manual;
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
+    const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const avgLogin=a.loginCount?a.loginSum/a.loginCount:0;
+    const avgReady=a.readyCount?a.readySum/a.readyCount:0;
+    const avgCallOff=a.callOffCount?a.callOffSum/a.callOffCount:0;
+    const avgBreak=a.breakCount?a.breakSum/a.breakCount:0;
+    const tktPct=total?(a.tickets/total)*100:0;
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const numOrNull=x=>{const n=parseFloat(x);return isNaN(n)?null:n;};
+    const quality=numOrNull(md.quality);
+    const csat=numOrNull(md.csat);
+    const wa=numOrNull(md.wafb); // WA Feedback % — manual rating, not a count
+    const s_calls=(total/maxCalls)*100;
+    const s_quality=quality!==null?Math.min(quality,100):null;
+    const s_csat=csat!==null?Math.min(csat,100):null;
+    const ahtMin=avgAHT/60;
+    const s_aht=ahtMin>=3?100:(ahtMin/3)*100;
+    const s_tickets=Math.min((tktPct/95)*100,100);
+    let score=0,wUsed=0;
+    score+=s_calls*W_EOM.calls; wUsed+=W_EOM.calls;
+    if(s_quality!==null){score+=s_quality*W_EOM.quality;wUsed+=W_EOM.quality;}
+    if(s_csat!==null){score+=s_csat*W_EOM.csat;wUsed+=W_EOM.csat;}
+    score+=s_aht*W_EOM.aht; wUsed+=W_EOM.aht;
+    score+=s_tickets*W_EOM.tickets; wUsed+=W_EOM.tickets;
+    const final=wUsed>0?score/wUsed*100:0;
+
+    // 11 KPI checks (login≤09:00, ready≥8h, callOff≤30m, break≤1h, talk≤3m, acw≤30s, handling≤4m, wa≥5%, csat≥95%, tickets≥90%, quality≥90%)
+    const kpis={
+      login:    avgLogin>0 ? avgLogin<=9*3600 : null,
+      ready:    avgReady>0 ? avgReady>=8*3600 : null,
+      callOff:  avgCallOff>0 ? avgCallOff<=30*60 : null,
+      brk:      avgBreak>0 ? avgBreak<=3600 : null,
+      talk:     avgTalk>0 ? avgTalk<=180 : null,
+      acw:      avgACW>0 ? avgACW<=30 : null,
+      handling: avgAHT>0 ? avgAHT<=240 : null,
+      wa:       wa!==null ? wa>=5 : null,
+      csat:     csat!==null ? csat>=95 : null,
+      tickets:  total>0 ? tktPct>=90 : null,
+      quality:  quality!==null ? quality>=90 : null,
+    };
+    const kpiVals=Object.values(kpis);
+    const kpiPassed=kpiVals.filter(v=>v===true).length;
+    const kpiTotal=11;
+    const kpiPct=Math.round(kpiPassed/kpiTotal*100);
+
+    return{name,total,avgAHT,avgTalk,avgACW,avgLogin,avgReady,avgCallOff,avgBreak,ahtMin,tktPct,quality,csat,wa,
+           s_calls,s_aht,s_tickets,final,days:a.days,kpis,kpiPassed,kpiTotal,kpiPct};
+  });
+  results.sort((a,b)=>b.kpiPassed-a.kpiPassed || b.final-a.final);
+
+  // Update rank & score in perf table
+  const em=['🥇','🥈','🥉'];
+  const scCols=['#DAA520','#9e9e9e','#cd7f32'];
+  results.forEach((r,rank)=>{
+    const nid=r.name.replace(/\s/g,'_');
+    const sc=document.getElementById('eomPerf_score_'+nid);
+    const no=document.getElementById('eomPerf_no_'+nid);
+    if(sc){sc.textContent=r.final.toFixed(1);sc.style.color=rank<3?scCols[rank]:'var(--text)';sc.style.fontWeight='800';}
+    if(no){no.textContent=rank<3?em[rank]:String(rank+1);}
+  });
+
+  renderEOMPodium(results);
+  renderEOMScores(results);
+}
+
+function renderEOMPerfTable(agentNames, agents, month){
+  const el=document.getElementById('eomPerfBody');
+  if(!el)return;
+  const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+  const inp=`border:1.2px solid #c8e6c9;border-radius:4px;background:#fff;font-size:9px;padding:2px 3px;text-align:center`;
+  let html='';
+  agentNames.forEach((name,i)=>{
+    const a=agents[name];
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const total=a.calls+a.manual;
+    const tktPct=total?Math.round(a.tickets/total*100)+'%':'—';
+    const avgAHT=a.ahtCount?a.ahtSum/a.ahtCount:0;
+    const avgTalk=a.talkCount?a.talkSum/a.talkCount:0;
+    const avgACW=a.acwCount?a.acwSum/a.acwCount:0;
+    const avgLogin=a.loginCount?a.loginSum/a.loginCount:0;
+    const avgReady=a.readyCount?a.readySum/a.readyCount:0;
+    const avgCallOff=a.callOffCount?a.callOffSum/a.callOffCount:0;
+    const avgBreak=a.breakCount?a.breakSum/a.breakCount:0;
+    const loginOk=avgLogin>0&&avgLogin<=9*3600;
+    const readyOk=avgReady>0&&avgReady>=8*3600;
+    const callOffOk=avgCallOff>0&&avgCallOff<=30*60;
+    const breakOk=avgBreak>0&&avgBreak<=3600;
+    const ahtOk=avgAHT/60>=3;
+    const tktOk=total&&(a.tickets/total*100)>=95;
+    const totalAll=total+a.whatsapp;
+    const nid=name.replace(/\s/g,'_');
+    const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    html+=`<tr style="${bg}" data-perf-agent="${name}">
+      <td style="text-align:center;font-size:9.5px" id="eomPerf_no_${nid}">—</td>
+      <td style="padding:4px 10px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
+      <td style="text-align:center;padding:2px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
+      <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgCallOff>0?(callOffOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgCallOff)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgBreak>0?(breakOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgBreak)}</td>
+      <td style="text-align:center;font-size:9.5px;color:var(--muted)">${fmtMS(avgTalk)}</td>
+      <td style="text-align:center;font-size:9.5px;color:var(--muted)">${fmtMS(avgACW)}</td>
+      <td style="text-align:center;font-size:9.5px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtMS(avgAHT)}</td>
+      <td style="text-align:center;font-size:9.5px">${a.manual}</td>
+      <td style="text-align:center;font-size:9.5px">${a.calls}</td>
+      <td style="text-align:center;font-size:9.5px;font-weight:700">${total}</td>
+      <td style="text-align:center;font-size:9.5px">${a.whatsapp}</td>
+      <td style="text-align:center;font-size:9.5px;font-weight:700">${totalAll}</td>
+      <td style="text-align:center;padding:2px"><input type="number" class="perf-wafb" placeholder="—" value="${md.wafb||''}" min="0" max="100" style="width:40px;${inp}" oninput="savePerfField('${name}','wafb',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-tocsat" placeholder="—" value="${md.tocsat||''}" style="width:34px;${inp}" oninput="savePerfField('${name}','tocsat',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
+      <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-csat" placeholder="—" value="${md.csat||''}" min="0" max="100" style="width:34px;${inp}" oninput="savePerfField('${name}','csat',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
+      <td style="text-align:center;font-size:9.5px">${a.tickets}</td>
+      <td style="text-align:center;font-size:9.5px;${tktOk?'color:#2e7d32;font-weight:700':'color:var(--muted)'}">${tktPct}</td>
+      <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-quality" placeholder="—" value="${md.quality||''}" min="0" max="100" step="0.1" style="width:34px;${inp}" oninput="savePerfField('${name}','quality',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
+      <td style="text-align:center;font-size:11px;font-weight:800" id="eomPerf_score_${nid}">—</td>
+    </tr>`;
+  });
+  el.innerHTML=html;
+}
+
+function savePerfField(name,field,value,month){
+  const mk=month+'_'+name;
+  if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+  const v=parseFloat(value);
+  EOM_MANUAL[mk][field]=isNaN(v)?value:v;
+  persistEOMManual();
+  if(field==='csat'||field==='quality') calcEOM();
+}
+
+function renderEOMFeedbackTable(agentNames, month){
+  const fbEl=document.getElementById('eomFbBody');
+  if(!fbEl)return;
+  let html='';
+  agentNames.forEach((name,i)=>{
+    const mk=month+'_fb_'+name;
+    const fd=EOM_MANUAL[mk]||{};
+    const ans=fd.ans||''; const tr=fd.tr||''; const ev=fd.ev||''; const sat=fd.sat||''; const dis=fd.dis||'';
+    const ct=ans&&tr?Math.round(tr/ans*100)+'%':'—';
+    const ce=tr&&ev?Math.round(ev/tr*100)+'%':'—';
+    const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
+    const dp=ev&&dis?Math.round(dis/ev*100)+'%':'—';
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
+    html+=`<tr data-fb-agent="${name}">
+      <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ce_${i}">${ce}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-dis" type="number" min="0" placeholder="—" value="${dis}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;font-weight:600;color:#A32D2D;font-size:11px;padding:3px 6px" id="fb_dp_${i}">${dp}</td>
+    </tr>`;
+  });
+  // Total row
+  html+=`<tr style="background:#e8f5ee;font-weight:700" id="fb_total_row">
+    <td style="font-weight:700;font-size:12px;color:var(--muted)">Total</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ans">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_tr">—</td>
+    <td style="text-align:center;font-weight:700;color:var(--teal);font-size:12px" id="fb_tot_ct">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ev">—</td>
+    <td style="text-align:center;font-weight:700;color:var(--teal);font-size:12px" id="fb_tot_ce">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_sat">—</td>
+    <td style="text-align:center;font-weight:700;color:#2e7d32;font-size:12px" id="fb_tot_sp">—</td>
+    <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_dis">—</td>
+    <td style="text-align:center;font-weight:700;color:#A32D2D;font-size:12px" id="fb_tot_dp">—</td>
+  </tr>`;
+  fbEl.innerHTML=html;
+  updateFBTotals();
+}
+
+function updateFBRow(inp, agentName){
+  const month=document.getElementById('eomMonthSel').value;
+  const mk=month+'_fb_'+agentName;
+  if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+  const row=inp.closest('tr');
+  const ans=parseFloat(row.querySelector('.fb-ans').value)||0;
+  const tr =parseFloat(row.querySelector('.fb-tr').value)||0;
+  const ev =parseFloat(row.querySelector('.fb-ev').value)||0;
+  const sat=parseFloat(row.querySelector('.fb-sat').value)||0;
+  const dis=parseFloat(row.querySelector('.fb-dis').value)||0;
+  EOM_MANUAL[mk]={ans,tr,ev,sat,dis};
+  // Update CSAT for this agent
+  const csatVal=ev>0?sat/ev*100:null;
+  const amk=month+'_'+agentName;
+  if(!EOM_MANUAL[amk])EOM_MANUAL[amk]={};
+  EOM_MANUAL[amk].csat=csatVal;
+  // Update auto-calc cells
+  const rows=[...document.querySelectorAll('#eomFbBody tr[data-fb-agent]')];
+  const idx=rows.findIndex(r=>r.dataset.fbAgent===agentName);
+  if(idx>=0){
+    document.getElementById('fb_ct_'+idx).textContent=ans>0?Math.round(tr/ans*100)+'%':'—';
+    document.getElementById('fb_ce_'+idx).textContent=tr>0?Math.round(ev/tr*100)+'%':'—';
+    document.getElementById('fb_sp_'+idx).textContent=ev>0?Math.round(sat/ev*100)+'%':'—';
+    document.getElementById('fb_dp_'+idx).textContent=ev>0?Math.round(dis/ev*100)+'%':'—';
+  }
+  updateFBTotals();
+}
+
+function updateFBTotals(){
+  let tAns=0,tTr=0,tEv=0,tSat=0,tDis=0;
+  document.querySelectorAll('#eomFbBody tr[data-fb-agent]').forEach(row=>{
+    tAns+=parseFloat(row.querySelector('.fb-ans').value)||0;
+    tTr +=parseFloat(row.querySelector('.fb-tr').value)||0;
+    tEv +=parseFloat(row.querySelector('.fb-ev').value)||0;
+    tSat+=parseFloat(row.querySelector('.fb-sat').value)||0;
+    tDis+=parseFloat(row.querySelector('.fb-dis').value)||0;
+  });
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('fb_tot_ans',tAns||'—'); set('fb_tot_tr',tTr||'—');
+  set('fb_tot_ev',tEv||'—');   set('fb_tot_sat',tSat||'—');
+  set('fb_tot_dis',tDis||'—');
+  set('fb_tot_ct',tAns>0?Math.round(tTr/tAns*100)+'%':'—');
+  set('fb_tot_ce',tTr>0?Math.round(tEv/tTr*100)+'%':'—');
+  set('fb_tot_sp',tEv>0?Math.round(tSat/tEv*100)+'%':'—');
+  set('fb_tot_dp',tEv>0?Math.round(tDis/tEv*100)+'%':'—');
+}
+
+function renderEOMQualityGrid(agentNames, month){
+  const el=document.getElementById('eomQualityGrid');
+  if(!el)return;
+  let html='';
+  agentNames.forEach(name=>{
+    const mk=month+'_'+name;
+    const md=EOM_MANUAL[mk]||{};
+    const qV=md.quality??'';
+    const init=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-manual-row" data-agent="${name}" style="grid-template-columns:1fr 110px;padding:7px 10px">
+      <span style="font-size:12px;font-weight:600">${name}</span>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px">⭐ Quality %</div>
+        <input class="eom-input q-inp" type="number" min="0" max="100" step="0.1" placeholder="97.5" value="${qV}" oninput="liveCalcEOM()" style="padding:4px 8px;font-size:12px">
+      </div>
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function liveCalcEOM(){
+  // update quality values live without saving
+  const month=document.getElementById('eomMonthSel').value;
+  document.querySelectorAll('#eomQualityGrid .eom-manual-row').forEach(row=>{
+    const agent=row.dataset.agent;
+    const mk=month+'_'+agent;
+    if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+    const qv=parseFloat(row.querySelector('.q-inp').value);
+    if(!isNaN(qv))EOM_MANUAL[mk].quality=qv;
+  });
+  calcEOM();
+}
+
+function saveEOMAll(){
+  const month=document.getElementById('eomMonthSel').value;
+  document.querySelectorAll('#eomFbBody tr[data-fb-agent]').forEach(row=>{
+    updateFBRow(row.querySelector('.fb-ans'), row.dataset.fbAgent);
+  });
+  document.querySelectorAll('#eomPerfBody tr[data-perf-agent]').forEach(row=>{
+    const name=row.dataset.perfAgent;
+    const mk=month+'_'+name;
+    if(!EOM_MANUAL[mk])EOM_MANUAL[mk]={};
+    const get=(cls)=>{const el=row.querySelector('.'+cls);return el?el.value:'';};
+    const badge=get('perf-badge'); const wa=get('perf-wa');
+    const tocsat=get('perf-tocsat'); const csat=get('perf-csat'); const quality=get('perf-quality');
+    if(badge) EOM_MANUAL[mk].badge=badge;
+    if(wa)    EOM_MANUAL[mk].wa=parseFloat(wa);
+    if(tocsat)EOM_MANUAL[mk].tocsat=parseFloat(tocsat);
+    if(csat)  EOM_MANUAL[mk].csat=parseFloat(csat);
+    if(quality)EOM_MANUAL[mk].quality=parseFloat(quality);
+  });
+  persistEOMManual();
+  const st=document.getElementById('eomSaveStatus');
+  if(st){st.textContent='✅ تم الحفظ!';st.style.color='#2e7d32';setTimeout(()=>{st.textContent='البيانات محفوظة تلقائياً';st.style.color='';},2000);}
+  calcEOM();
+}
+
+function renderEOMPodium(results){
+  if(!results.length){document.getElementById('eomPodium').innerHTML='<div style="color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const top=results.slice(0,3);
+  const order=top.length>=2?[top[1],top[0],top[2]].filter(Boolean):top;
+  const cls=['eom-p2','eom-p1','eom-p3'];
+  const medals=['🥈','🥇','🥉'];
+  const cols=['#9e9e9e','#DAA520','#cd7f32'];
+  let html='<div class="eom-podium">';
+  order.forEach((a,i)=>{
+    const init=a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    html+=`<div class="eom-p-item ${cls[i]}">
+      <div class="eom-p-av">${init}</div>
+      <div class="eom-p-name">${a.name}</div>
+      <div class="eom-p-score" style="color:${cols[i]}">${a.final.toFixed(1)}</div>
+      <div class="eom-p-block">${medals[i]}</div>
+    </div>`;
+  });
+  html+='</div>';
+  if(top[0]){
+    html+=`<div style="background:linear-gradient(135deg,#fff8e1,#fff3cd);border-radius:10px;padding:12px 18px;display:inline-flex;align-items:center;gap:12px;border:2px solid #DAA520;margin-top:4px">
+      <span style="font-size:28px">🏆</span>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em">موظفة الشهر</div>
+        <div style="font-size:17px;font-weight:800;color:var(--text)">${top[0].name}</div>
+        <div style="font-size:12px;color:#DAA520;font-weight:700">النقاط: ${top[0].final.toFixed(2)} / 100</div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('eomPodium').innerHTML=html;
+}
+
+function renderEOMScores(results){
+  if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  const em=['🥇','🥈','🥉'];
+  const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}`:'—';
+  const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
+
+  const KPI_COLS = [
+    {key:'login',    label:'Login Time',          target:'9:00:00', val:r=>fmtT(r.avgLogin)},
+    {key:'ready',    label:'Total Ready Duration',target:'8:00:00', val:r=>fmtT(r.avgReady)},
+    {key:'callOff',  label:'Auto Call-Off',       target:'0:30:00', val:r=>fmtT(r.avgCallOff)},
+    {key:'brk',      label:'Total Break',         target:'1:00:00', val:r=>fmtT(r.avgBreak)},
+    {key:'talk',     label:'Avg. Talk Time',      target:'0:04:00', val:r=>fmtMS(r.avgTalk)},
+    {key:'acw',      label:'Avg. ACW Duration',   target:'0:00:30', val:r=>fmtMS(r.avgACW)},
+    {key:'handling', label:'Avg. Handling Time',  target:'0:04:00', val:r=>fmtMS(r.avgAHT)},
+    {key:'wa',       label:'Whatsapp Feedback Avg',target:'5%',     val:r=>r.wa!==null?r.wa.toFixed(1)+'%':'—'},
+    {key:'csat',     label:'CSAT',                target:'95%',    val:r=>r.csat!==null?r.csat.toFixed(1)+'%':'—'},
+    {key:'tickets',  label:'Tickets %',           target:'90%',    val:r=>r.total>0?r.tktPct.toFixed(0)+'%':'—'},
+    {key:'quality',  label:'Quality',             target:'90%',    val:r=>r.quality!==null?r.quality.toFixed(1)+'%':'—'},
+  ];
+
+  const KPI_COLORS=[
+    '#d1f0e4','#d1f0e4','#d1f0e4','#d1f0e4', // Time: teal
+    '#d1f0e4','#d1f0e4','#d1f0e4',             // Time: teal
+    '#faeeda',                                  // WA: amber
+    '#fde8e0',                                  // CSAT: coral
+    '#eeedfe',                                  // Tickets: purple
+    '#fbeaf0',                                  // Quality: pink
+  ];
+  const KPI_TEXT_COLORS=[
+    '#085041','#085041','#085041','#085041',
+    '#085041','#085041','#085041',
+    '#854F0B','#993C1D','#534AB7','#993556',
+  ];
+
+  let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:950px;font-size:9.5px">
+    <thead><tr>
+      <th style="font-size:9px;width:20px;background:#F1EFE8">#</th>
+      <th style="font-size:10px;white-space:nowrap;width:150px;background:#F1EFE8">Agent</th>
+      <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">KPIs<br>Passed</th>
+      <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">Score</th>
+      ${KPI_COLS.map((c,i)=>`<th style="text-align:center;font-size:9px;width:62px;background:${KPI_COLORS[i]||'#f4faf7'};color:${KPI_TEXT_COLORS[i]||'var(--muted)'};border-bottom:2px solid rgba(0,0,0,.08)">${c.label}</th>`).join('')}
+    </tr>
+    <tr style="background:#e6f1fb">
+      <td colspan="4" style="padding:3px 8px;font-size:9px;color:var(--muted);font-weight:600">Target</td>
+      ${KPI_COLS.map(c=>`<td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">${c.target}</td>`).join('')}
+    </tr>
+    </thead><tbody>`;
+
+  results.forEach((r,i)=>{
+    const rank=i<3?`<span style="font-size:12px">${em[i]}</span>`:`<span style="color:#ccc;font-size:9.5px">${i+1}</span>`;
+    const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
+    const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    const kpiCells=KPI_COLS.map(c=>{
+      const passed=r.kpis[c.key];
+      const display=c.val(r);
+      let icon='—', col='var(--muted)';
+      if(passed===true){icon='✓';col='#2e7d32';}
+      else if(passed===false){icon='✗';col='#A32D2D';}
+      return `<td style="text-align:center;font-size:9px;padding:4px 3px">
+        <div style="font-size:10px;font-weight:600;color:${col};line-height:1.1">${icon}</div>
+        <div style="color:var(--muted);font-size:8.5px;margin-top:1px">${display}</div>
+      </td>`;
+    }).join('');
+    html+=`<tr style="${rowBg}">
+      <td style="text-align:center">${rank}</td>
+      <td style="padding:4px 8px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${r.name}">${r.name}</td>
+      <td style="text-align:center;font-size:9.5px;font-weight:700">${r.kpiPassed}/${r.kpiTotal}</td>
+      <td style="text-align:center;font-size:10.5px;font-weight:800;color:${scoreCol}">${r.kpiPct}%</td>
+      ${kpiCells}
+    </tr>`;
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('eomScoresTable').innerHTML=html;
+}
+
+function renderEOMManual(results,month){}
+
+function saveEOMManual(){saveEOMAll();}
+
+// ══ QUALITY ASSESSMENT ══════════════════════════════════════════════════════
+const QA_COLS = [
+  {key:'welcome',    label:'Welcome',                                                              short:'Welcome',         max:10},
+  {key:'question',   label:'Question or Inquiry from the customer / or informing him the purpose of call', short:'Question / Inquiry', max:10},
+  {key:'understand', label:'Understanding the customers problem',                                  short:'Understanding',   max:10},
+  {key:'answering',  label:'Answering the Customers question or problem',                          short:'Answering',       max:10},
+  {key:'howlong',    label:'How long it took to answer',                                           short:'How long',        max:5},
+  {key:'attitude',   label:'Attitude & Language',                                                  short:'Attitude',        max:5},
+  {key:'enthusiasm', label:'Personal Enthusiasm',                                                  short:'Enthusiasm',      max:5},
+  {key:'hold',       label:'Hold time / mute',                                                     short:'Hold time',       max:5},
+  {key:'closer',     label:'Closer of call',                                                       short:'Closer',          max:10},
+  {key:'ticket',     label:'Ticket Quality / System input',                                        short:'Ticket QA',       max:30},
+];
+const QA_TOTAL_MAX = 100;
+
+const QA_AGENT_COMPANIES = {
+  'Asmaa Bawayan':      ['NI','ST','PE'],
+  'Bayan Jazzar':          ['NI','ST','PE'],
+  'Ghadeer Motadares':     ['NI','ST','PE'],
+  'Ghofran Hussain Rafie': ['Foton','NI','NI'],
+  'Hanin Yajizi':          ['NI','ST','PE'],
+  'Hibah Almuwallad':      ['ST','ST','ST'],
+  'Manar Alshehri':        ['NI','ST','PE'],
+  'Mashael Alshehri':      ['NI','ST','PE'],
+  'Mawadah Essam':         ['NI','ST','PE'],
+  'Nedaa Shorbaji':        ['NI','ST','PE'],
+  'Nesreen Mansoor':       ['NI','ST','PE'],
+  'Sara Sami':             ['NI','ST','PE'],
+  'Shatha Bawayan':        ['Foton','PE','PE'],
+  'Walaa Meezi':           ['NI','ST','PE'],
+  'Wejdan Mustafa':        ['NI','ST','PE'],
+  'Yosra Alsalami':        ['NI','ST','PE'],
+};
+
+const QA_MONTHS = ['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06',
+                   '2026-07','2026-08','2026-09','2026-10','2026-11','2026-12'];
+let QA_DATA = {};
+let QA_ACTIVE_MONTH = '2026-' + String(new Date().getMonth()+1).padStart(2,'0');
+
+try{ QA_DATA = JSON.parse(localStorage.getItem('qa_data')||'{}'); }catch(e){}
+
+function saveQAData(){ try{localStorage.setItem('qa_data',JSON.stringify(QA_DATA));}catch(e){} }
+
+function fmtMonthQA(m){
+  if(!m)return m;
+  const [y,mo]=m.split('-');
+  const n=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+  return (n[parseInt(mo)]||mo)+' '+y;
+}
+
+function renderQA(){
+  const el=document.getElementById('tab-qa');
+  if(!el)return;
+
+  const selHTML=QA_MONTHS.map(m=>`<option value="${m}"${m===QA_ACTIVE_MONTH?' selected':''}>${fmtMonthQA(m)}</option>`).join('');
+
+  // Build rows
+  const rows=[];
+  Object.entries(QA_AGENT_COMPANIES).forEach(([agent,companies])=>{
+    companies.forEach(co=>{
+      rows.push({agent,co});
+    });
+  });
+
+  // Build table headers - full description in 2 lines, compact
+  const QA_COL_HEADERS = [
+    {t:'Welcome',                                                  max:10},
+    {t:'Question or Inquiry<br>/ purpose of call',                 max:10},
+    {t:'Understanding<br>the customers problem',                   max:10},
+    {t:'Answering the Customers<br>question or problem',           max:10},
+    {t:'How long it took<br>to answer',                            max:5},
+    {t:'Attitude &<br>Language',                                   max:5},
+    {t:'Personal<br>Enthusiasm',                                   max:5},
+    {t:'Hold time<br>/ mute',                                      max:5},
+    {t:'Closer<br>of call',                                        max:10},
+    {t:'Ticket Quality<br>/ System input',                         max:30},
+  ];
+
+  let html=`
+  <div class="sec-label">⭐ Quality Assessment — Calls Evaluation</div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
+      <select onchange="QA_ACTIVE_MONTH=this.value;renderQA()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
+      <button onclick="saveQAData();showQASaveMsg()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">💾 Save</button>
+      <span id="qaSaveMsg" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+      <button onclick="exportQA()" style="padding:7px 14px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Copy Summary</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="overflow-x:auto;max-height:70vh;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead style="position:sticky;top:0;z-index:2">
+          <!-- Group row -->
+          <tr>
+            <th colspan="4" style="padding:6px 10px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2);position:sticky;left:0;z-index:3">Info</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">تقييم العميل |20</th>
+            <th colspan="6" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">خدمة العملاء |50</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">جودة التكت |30</th>
+            <th colspan="3" style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Result</th>
+            <th style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500">Comments</th>
+          </tr>
+          <!-- Column headers -->
+          <tr style="background:#f4faf7;border-bottom:2px solid #9FE1CB">
+            <th style="padding:5px 10px;text-align:left;font-size:9px;font-weight:500;color:#085041;min-width:110px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:42px">Company</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:76px">Date</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:88px;border-right:1px solid #9FE1CB">Customer number</th>
+            ${QA_COL_HEADERS.map(c=>`<th title="${c.t.replace(/<br>/g,' ')}" style="padding:4px 3px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:${c.max===30?62:c.max<=5?48:52}px;line-height:1.4;cursor:help">${c.t}<br><span style="color:#0F6E56;font-weight:700">|${c.max}</span></th>`).join('')}
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">Total<br>|100</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:42px">Target</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:38px;border-right:1px solid #9FE1CB">%</th>
+            <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:130px">Other comments</th>
+          </tr>
+        </thead>
+        <tbody id="qaTbody">
+          ${buildQARows(rows)}
+        </tbody>
+        <tfoot>
+          <tr style="background:#e8f5ee;font-weight:700;border-top:2px solid #9FE1CB">
+            <td colspan="4" style="padding:8px 10px;font-size:11px;color:var(--teal);font-weight:600">Total</td>
+            ${QA_COLS.map((_,i)=>`<td id="qa_ft_${i}" style="text-align:center;font-size:11px;color:var(--teal)">—</td>`).join('')}
+            <td id="qa_ft_total" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td style="text-align:center;font-size:11px;color:var(--muted)">100</td>
+            <td id="qa_ft_pct" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>`;
+
+  el.innerHTML=html;
+  updateQATotals();
+}
+
+function buildQARows(rows){
+  const CO_STYLE={
+    NI:   'background:#fde8e8;color:#c0272d',
+    ST:   'background:#e3edf8;color:#1565c0',
+    PE:   'background:#e8f5ee;color:#2e7d32',
+    Foton:'background:#eceff1;color:#546e7a',
+    NO:   'background:#f5f0e8;color:#6a5818',
+  };
+  const inp=`border:0.5px solid var(--border);border-radius:4px;background:#fff;font-size:10px;padding:2px 3px;text-align:center`;
+
+  // Group rows by agent
+  const agents={};
+  rows.forEach(r=>{
+    if(!agents[r.agent]) agents[r.agent]=[];
+    agents[r.agent].push(r);
+  });
+
+  let html='';let agentIdx=0;
+  Object.entries(agents).forEach(([agent,agentRows])=>{
+    const rowspan=agentRows.length;
+    const displayName=agent.replace(' M. ',' ');
+    const initials=displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const rowBg=agentIdx%2===0?'background:#ffffff':'background:#f0faf5';
+    const stickyBg=agentIdx%2===0?'#ffffff':'#f0faf5';
+
+    agentRows.forEach((r,ri)=>{
+      const key=QA_ACTIVE_MONTH+'_'+agent+'_'+r.co;
+      const d=QA_DATA[key]||{};
+      const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+      const pct=Math.round(total/QA_TOTAL_MAX*100);
+      const pctCol=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
+      const borderBottom=ri===rowspan-1?'border-bottom:2px solid #c8e6c9':'border-bottom:0.5px solid #ddd';
+      const coSt=CO_STYLE[r.co]||'background:#f5f5f5;color:#555';
+      const colInputs=QA_COLS.map(c=>{
+        const v=d[c.key]||'';
+        const vn=parseFloat(v);const over=!isNaN(vn)&&vn>c.max;
+        return`<td style="text-align:center;padding:1px 2px"><input type="number" min="0" max="${c.max}" value="${v}" placeholder="—"
+          style="width:${c.max===30?'40px':'34px'};${inp};border-color:${over?'#c0272d':'var(--border)'};background:${over?'#fde':'#fff'}"
+          oninput="setQA('${key}','${c.key}',this.value,${c.max},this)" title="${c.label} (max ${c.max})"></td>`;
+      }).join('');
+
+      html+=`<tr style="${rowBg};${borderBottom}" data-qa-key="${key}">`;
+      if(ri===0){
+        html+=`<td rowspan="${rowspan}" style="padding:4px 8px;font-size:10px;font-weight:600;text-align:center;vertical-align:middle;position:sticky;left:0;background:${stickyBg};border-right:0.5px solid var(--border)">
+            ${displayName}
+          </td>`;
+      }
+      html+=`<td style="text-align:center;padding:2px 3px">
+        <span style="${coSt};padding:1px 6px;border-radius:8px;font-size:9px;font-weight:600">${r.co}</span>
+      </td>
+      <td style="padding:2px 3px"><input type="date" value="${d.date||''}"
+        style="font-size:9px;padding:2px 3px;${inp};width:88px"
+        oninput="setQA('${key}','date',this.value,null,null)"></td>
+      <td style="padding:2px 3px"><input type="text" value="${d.cusnum||''}" placeholder="—"
+        style="width:76px;font-size:9px;${inp}"
+        oninput="setQA('${key}','cusnum',this.value,null,null)"></td>
+      ${colInputs}
+      <td style="text-align:center;font-weight:600;font-size:11px;color:var(--text)" id="qa_tot_${key.replace(/[^a-z0-9]/gi,'_')}">${total||0}</td>
+      <td style="text-align:center;font-size:10px;color:var(--muted)">100</td>
+      <td style="text-align:center;font-weight:600;font-size:11px;color:${pctCol}" id="qa_pct_${key.replace(/[^a-z0-9]/gi,'_')}">${pct}%</td>
+      <td style="padding:2px 4px"><input type="text" value="${d.comments||''}" placeholder="—"
+        style="width:120px;font-size:9px;${inp}"
+        oninput="setQA('${key}','comments',this.value,null,null)"></td>
+      </tr>`;
+      if(ri===rowspan-1) agentIdx++;
+    });
+  });
+  return html;
+}
+
+function setQA(key, field, value, max, el){
+  if(!QA_DATA[key])QA_DATA[key]={};
+  QA_DATA[key][field]=value;
+  if(el&&max!==null){
+    const v=parseFloat(value);
+    const over=!isNaN(v)&&v>max;
+    el.style.border=over?'1px solid #c0272d':'1px solid var(--border)';
+    el.style.background=over?'#fde':'#fff';
+  }
+  saveQAData();
+  updateQARow(key);
+  updateQATotals();
+}
+
+function updateQARow(key){
+  const d=QA_DATA[key]||{};
+  const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
+  const pct=Math.round(total/QA_TOTAL_MAX*100);
+  const nid=key.replace(/[^a-z0-9]/gi,'_');
+  const totEl=document.getElementById('qa_tot_'+nid);
+  const pctEl=document.getElementById('qa_pct_'+nid);
+  if(totEl)totEl.textContent=total||0;
+  if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+}
+
+function updateQATotals(){
+  const colSums=QA_COLS.map(()=>0);
+  let grandTotal=0,rowCount=0;
+  document.querySelectorAll('#qaTbody tr[data-qa-key]').forEach(row=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    let rowTotal=0;
+    QA_COLS.forEach((c,ci)=>{const v=parseFloat(d[c.key]||0)||0;colSums[ci]+=v;rowTotal+=v;});
+    if(rowTotal>0){grandTotal+=rowTotal;rowCount++;}
+    const nid=k.replace(/[^a-z0-9]/gi,'_');
+    const totEl=document.getElementById('qa_tot_'+nid);
+    const pctEl=document.getElementById('qa_pct_'+nid);
+    if(totEl)totEl.textContent=rowTotal||0;
+    if(pctEl){const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+  });
+  QA_COLS.forEach((_,i)=>{const el=document.getElementById('qa_ft_'+i);if(el)el.textContent=colSums[i]||'—';});
+  const totEl=document.getElementById('qa_ft_total');
+  const pctEl=document.getElementById('qa_ft_pct');
+  if(totEl)totEl.textContent=grandTotal||'—';
+  if(pctEl&&rowCount>0){const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);pctEl.textContent=avg+'%';pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';}
+}
+
+
+function showQASaveMsg(){
+  const el=document.getElementById('qaSaveMsg');
+  if(!el)return;
+  el.textContent='✅ تم الحفظ!';el.style.color='#2e7d32';
+  setTimeout(()=>{el.textContent='البيانات محفوظة تلقائياً';el.style.color='var(--muted)';},2000);
+}
+
+function exportQA(){
+  const rows=document.querySelectorAll('#qaTbody tr');
+  let text=`Quality Assessment — ${fmtMonthQA(QA_ACTIVE_MONTH)}\n\n`;
+  text+='Name\tCompany\t'+QA_COLS.map(c=>c.label).join('\t')+'\tTotal\t%\tComments\n';
+  rows.forEach(row=>{
+    const k=row.dataset.qaKey;
+    if(!k)return;
+    const d=QA_DATA[k]||{};
+    const [,agent,co]=k.split('_');
+    const vals=QA_COLS.map(c=>d[c.key]||'0').join('\t');
+    const total=QA_COLS.reduce((s,c)=>s+(parseFloat(d[c.key]||0)||0),0);
+    text+=`${agent}\t${co}\t${vals}\t${total}\t${Math.round(total)}%\t${d.comments||''}\n`;
+  });
+  navigator.clipboard.writeText(text).then(()=>alert('✅ Copied to clipboard!'));
+}
+
+// ══ TRAINING LOG ══════════════════════════════════════════════════════════
+let TL_DATA = {};
+try{ TL_DATA=JSON.parse(localStorage.getItem('tl_data')||'{}'); }catch(e){}
+function saveTL(){ try{localStorage.setItem('tl_data',JSON.stringify(TL_DATA));}catch(e){} }
+
+const TL_STEPS = [
+  // Day 1
+  {id:'s1', week:'اليوم الأول', title:'التعرف على الموظفة وتعريفها بالفريق', desc:'جولة في القسم · التعريف بالزميلات · مكان العمل'},
+  {id:'s2', week:'اليوم الأول', title:'شرح عام عن الشغل واستطلاع خبراتها', desc:'آلية العمل · خبرتها السابقة · توقعات الدور'},
+  {id:'s3', week:'اليوم الأول', title:'أوقات الدوام والإجازات والشفتات', desc:'جدول الشفتات · الإجازات · سياسة الغياب'},
+  // Week 1
+  {id:'s4', week:'الأسبوع الأول', title:'شرح الأقسام عبر الداشبورد', desc:'الفروع · المعارض · الصيانة · بترومين · نيسان · ستلانتس'},
+  {id:'s5', week:'الأسبوع الأول', title:'طريقة الكولات وإكمال التكتات', desc:'استقبال المكالمات · تسجيل التكت · التصنيفات'},
+  {id:'s6', week:'الأسبوع الأول', title:'نظام الشكاوى والتصعيد', desc:'كيفية التصعيد · متى تتصل بالمشرفة · التعامل مع العميل الغاضب'},
+  {id:'s7', week:'الأسبوع الأول', title:'مجموعات الواتساب الداخلية', desc:'المجموعات الرسمية · آداب الاستخدام · التواصل الداخلي'},
+  {id:'s8', week:'الأسبوع الأول', title:'الاستماع لمكالمات الزميلات', desc:'استفسار · شكوى · حجز موعد · نقاش بعد كل مكالمة'},
+  // Week 2
+  {id:'s9', week:'الأسبوع الثاني', title:'حجز المواعيد وربط بيانات العميل', desc:'البحث في النظام · ربط البيانات · تأكيد الموعد'},
+  {id:'s10', week:'الأسبوع الثاني', title:'تطبيق عملي على التكتات التجريبية', desc:'إكمال تكتات · مراجعة مع المشرفة · التصحيح'},
+  {id:'s11', week:'الأسبوع الثاني', title:'أنواع الاستفسارات والتعامل معها', desc:'صيانة · حجز · شكوى · استفسار عام · طلب التحدث مع المشرفة'},
+  {id:'s12', week:'الأسبوع الثاني', title:'جدول الشغل اليومي', desc:'الروتين اليومي · الأولويات · المهام الصباحية والمسائية'},
+  // Week 3
+  {id:'s13', week:'الأسبوع الثالث', title:'العمل على الواتساب مع دعم زميلة', desc:'التدريب الميداني على الواتساب بإشراف الفريق'},
+  {id:'s14', week:'الأسبوع الثالث', title:'تجربة حجز مواعيد حقيقية', desc:'حجز فعلي بإشراف المشرفة · مراجعة وتقييم'},
+  {id:'s15', week:'الأسبوع الثالث', title:'مراجعة أول أسبوع مكالمات', desc:'نقاش الأخطاء · نقاط القوة · خطة التحسين'},
+  // General
+  {id:'s16', week:'عام', title:'سياسة الخصوصية وحماية بيانات العميل', desc:'ما يُشارك وما لا يُشارك · سرية المعلومات'},
+  {id:'s17', week:'عام', title:'التعامل مع المكالمات باللغة الإنجليزية', desc:'عبارات أساسية · كيفية الرد · التحويل عند الحاجة'},
+  {id:'s18', week:'عام', title:'كيفية كتابة التقرير اليومي', desc:'عناصر التقرير · التوقيت · إرساله للمشرفة'},
+];
+
+const TL_RATINGS = ['ممتاز','جيد','يحتاج دعم'];
+
+function renderTrainingLog(){
+  const el=document.getElementById('tab-training');
+  if(!el) return;
+  const d=TL_DATA;
+  const joinDate=d.joinDate||'';
+  const daysIn=joinDate?Math.floor((new Date()-new Date(joinDate))/86400000):0;
+  const done=TL_STEPS.filter(s=>d['done_'+s.id]).length;
+  const pct=Math.round(done/TL_STEPS.length*100);
+  const week3Started=TL_STEPS.filter(s=>s.week==='الأسبوع الثالث').some(s=>d['done_'+s.id]);
+  const nearEnd=daysIn>=14&&done>=12&&!week3Started;
+
+  // Group by week
+  const weeks={};
+  TL_STEPS.forEach(s=>{ if(!weeks[s.week]) weeks[s.week]=[]; weeks[s.week].push(s); });
+
+  let stepsHTML='';
+  Object.entries(weeks).forEach(([week,steps])=>{
+    stepsHTML+=`<div style="margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${week}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">`;
+    steps.forEach(s=>{
+      const isDone=!!d['done_'+s.id];
+      const rating=d['rating_'+s.id]||'';
+      const doneDate=d['date_'+s.id]||'';
+      stepsHTML+=`<div style="background:var(--surface);border:1px solid ${isDone?'var(--border)':'var(--border)'};border-radius:10px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px;${isDone?'opacity:.75':''}">
+        <div onclick="toggleTL('${s.id}')" style="width:20px;height:20px;border-radius:50%;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;${isDone?'background:var(--teal);border:2px solid var(--teal)':'background:#fff;border:2px solid var(--border-strong)'}">
+          ${isDone?'<svg width="10" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;${isDone?'text-decoration:line-through;color:var(--muted)':''}">${s.title}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${s.desc}</div>
+          ${isDone?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">
+            <select onchange="setTLRating('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--teal);font-family:inherit">
+              <option value="">تقييم...</option>
+              ${TL_RATINGS.map(r=>`<option value="${r}"${rating===r?' selected':''}>${r}</option>`).join('')}
+            </select>
+            <input type="date" value="${doneDate}" onchange="setTLDate('${s.id}',this.value)" style="font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:#fff;font-family:inherit">
+          </div>`:''}
+        </div>
+      </div>`;
+    });
+    stepsHTML+='</div></div>';
+  });
+
+  el.innerHTML=`
+  <div class="sec-label">📋 Training Log — موظفة جديدة</div>
+
+  ${nearEnd?`<div style="background:#fff3e0;border:1px solid #FFB300;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">⏰</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:#E65100">اقتربت نهاية التدريب!</div>
+      <div style="font-size:11px;color:#BF360C;margin-top:2px">مضى ${daysIn} يوم — هل الموظفة جاهزة لاستقبال المكالمات؟</div>
+    </div>
+  </div>`:''}
+
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">اسم الموظفة</div>
+        <input id="tl_name" type="text" placeholder="الاسم الكامل..." value="${d.name||''}" oninput="TL_DATA.name=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">رقم الموظف / Badge</div>
+        <input id="tl_badge" type="text" placeholder="مثال: EMP-1234" value="${d.badge||''}" oninput="TL_DATA.badge=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">تاريخ الانضمام</div>
+        <input id="tl_join" type="date" value="${joinDate}" oninput="TL_DATA.joinDate=this.value;saveTL();renderTrainingLog()" style="font-size:12px;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px">المشرفة</div>
+        <input type="text" placeholder="اسم المشرفة..." value="${d.supervisor||''}" oninput="TL_DATA.supervisor=this.value;saveTL()" style="width:100%;font-size:13px;font-weight:600;border:none;border-bottom:2px solid var(--border);padding:4px 0;background:transparent;outline:none;font-family:inherit">
+      </div>
+    </div>
+    ${joinDate?`<div style="font-size:11px;color:var(--teal);background:var(--teal-light);padding:6px 12px;border-radius:8px;display:inline-block">📅 مضى ${daysIn} يوم على الانضمام</div>`:''}
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--teal)"></span>التقدم</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="flex:1;height:8px;background:var(--gray);border-radius:4px;overflow:hidden">
+        <div style="height:100%;background:var(--teal);border-radius:4px;width:${pct}%;transition:width .4s"></div>
+      </div>
+      <span style="font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap">${done} / ${TL_STEPS.length}</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted)">${pct}% مكتمل</div>
+  </div>
+
+  ${stepsHTML}
+
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+    <button onclick="resetTL()" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer">↺ إعادة تعيين</button>
+  </div>`;
+}
+
+function toggleTL(id){
+  TL_DATA['done_'+id]=!TL_DATA['done_'+id];
+  if(TL_DATA['done_'+id] && !TL_DATA['date_'+id]) TL_DATA['date_'+id]=new Date().toISOString().slice(0,10);
+  saveTL(); renderTrainingLog();
+}
+function setTLRating(id,val){ TL_DATA['rating_'+id]=val; saveTL(); }
+function setTLDate(id,val){ TL_DATA['date_'+id]=val; saveTL(); }
+function resetTL(){ if(confirm('إعادة تعيين كل شيء؟')){ TL_DATA={}; saveTL(); renderTrainingLog(); } }
+
+document.addEventListener('DOMContentLoaded', loadAll);
+</script>
+</body>
+</html>
