@@ -2231,7 +2231,7 @@ function renderQA(){
             <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">Total<br>|100</th>
             <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:42px">Target</th>
             <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:38px;border-right:1px solid #9FE1CB">%</th>
-            <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:130px">Other comments</th>
+            <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:280px">Other comments</th>
           </tr>
         </thead>
         <tbody id="qaTbody">
@@ -2307,7 +2307,7 @@ function buildQARows(rows){
       <td style="text-align:center;font-size:10px;color:var(--muted)">100</td>
       <td style="text-align:center;font-weight:600;font-size:11px;color:${pctCol}" id="qa_pct_${key.replace(/[^a-z0-9]/gi,'_')}">${pct}%</td>
       <td style="padding:2px 4px"><input type="text" value="${d.comments||''}" placeholder="—"
-        style="width:120px;font-size:9px;${inp}"
+        style="width:260px;font-size:9px;${inp};text-align:left"
         oninput="setQA('${key}','comments',this.value,null,null)"></td>
       </tr>`;
       if(ri===rowspan-1) agentIdx++;
