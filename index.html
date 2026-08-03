@@ -1289,13 +1289,12 @@ function renderChecklist(rows){
       <div style="overflow-x:auto">
       <table class="tbl">
         <thead><tr>
-          <th>#</th><th>Agent</th><th>Badge</th>
+          <th>#</th><th>Agent</th>
           ${brands.map((b,i)=>`<th><span class="brand-tag ${brandCls[i]}">${b}</span></th>`).join('')}
         </tr></thead><tbody>
         ${agents.map((r,i)=>`<tr>
           <td style="color:#ccc;font-size:10px">${i+1}</td>
-          <td style="font-weight:600">${r[0]||''}</td>
-          <td style="color:var(--muted)">${r[1]||''}</td>
+          <td style="font-weight:600">${r[1]||''}</td>
           ${brands.map((_,bi)=>{
             const raw=(r[bi+2]||'').trim();
             if(!raw) return `<td style="text-align:center"><span style="color:#ddd">—</span></td>`;
@@ -1558,7 +1557,8 @@ function renderEOMTab(){
     </div>
     <div id="eomPerfSection">
       <div style="overflow-x:auto">
-        <table class="tbl" style="min-width:1320px;width:100%;font-size:9.5px">
+        <table class="tbl" style="min-width:1320px;width:100%;table-layout:fixed;font-size:9.5px">
+          <colgroup><col style="width:1.5%"><col style="width:11.4%"><col style="width:4.2%"><col style="width:4.8%"><col style="width:4.8%"><col style="width:4.8%"><col style="width:4.8%"><col style="width:4.2%"><col style="width:4.2%"><col style="width:4.6%"><col style="width:4.1%"><col style="width:4.6%"><col style="width:5.0%"><col style="width:4.2%"><col style="width:4.1%"><col style="width:4.8%"><col style="width:4.6%"><col style="width:4.1%"><col style="width:3.8%"><col style="width:3.2%"><col style="width:4.1%"><col style="width:4.1%"></colgroup>
           <thead>
             <tr>
               <th colspan="3" style="text-align:center;font-size:8px;font-weight:600;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
