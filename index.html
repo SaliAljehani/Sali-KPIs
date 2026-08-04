@@ -1726,7 +1726,7 @@ function calcEOM(){
   const agentNames=Object.keys(agents).sort();
 
   // Build feedback table rows
-  renderEOMFeedbackTable(agentNames, month);
+  renderEOMFeedbackTable(agentNames, month, agents);
   // Build perf table
   renderEOMPerfTable(agentNames, agents, month);
 
@@ -1868,14 +1868,15 @@ function savePerfField(name,field,value,month){
   if(field==='csat'||field==='quality') calcEOM();
 }
 
-function renderEOMFeedbackTable(agentNames, month){
+function renderEOMFeedbackTable(agentNames, month, agents){
   const fbEl=document.getElementById('eomFbBody');
   if(!fbEl)return;
   let html='';
   agentNames.forEach((name,i)=>{
     const mk=month+'_fb_'+name;
     const fd=EOM_MANUAL[mk]||{};
-    const ans=fd.ans||''; const tr=fd.tr||''; const ev=fd.ev||''; const sat=fd.sat||''; const dis=fd.dis||'';
+    const autoAns=(agents&&agents[name])?((agents[name].calls||0)+(agents[name].manual||0)):0;
+    const ans=autoAns>0?autoAns:(fd.ans||''); const tr=fd.tr||''; const ev=fd.ev||''; const sat=fd.sat||''; const dis=fd.dis||'';
     const ct=ans&&tr?Math.round(tr/ans*100)+'%':'—';
     const ce=tr&&ev?Math.round(ev/tr*100)+'%':'—';
     const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
@@ -1884,7 +1885,9 @@ function renderEOMFeedbackTable(agentNames, month){
     const inp_style=`width:58px;text-align:center;font-size:11px;padding:3px 4px;border:1px solid var(--border);border-radius:5px;outline:none`;
     html+=`<tr data-fb-agent="${name}">
       <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
-      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;padding:3px 4px">${autoAns>0
+        ?`<input class="fb-inp fb-ans" type="number" value="${autoAns}" readonly title="من الشيت: Manual Dials + Connected Inbound" style="${inp_style};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
+        :`<input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}">`}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
