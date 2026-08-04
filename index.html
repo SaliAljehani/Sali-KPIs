@@ -1876,7 +1876,8 @@ function renderEOMFeedbackTable(agentNames, month, agents){
     const mk=month+'_fb_'+name;
     const fd=EOM_MANUAL[mk]||{};
     const autoAns=(agents&&agents[name])?((agents[name].calls||0)+(agents[name].manual||0)):0;
-    const ans=autoAns>0?autoAns:(fd.ans||''); const tr=fd.tr||''; const ev=fd.ev||''; const sat=fd.sat||''; const dis=fd.dis||'';
+    const ans=autoAns>0?autoAns:(fd.ans||''); const tr=fd.tr||''; const sat=fd.sat||''; const dis=fd.dis||'';
+    const evN=(parseFloat(sat)||0)+(parseFloat(dis)||0); const ev=evN>0?evN:'';
     const ct=ans&&tr?Math.round(tr/ans*100)+'%':'—';
     const ce=tr&&ev?Math.round(ev/tr*100)+'%':'—';
     const sp=ev&&sat?Math.round(sat/ev*100)+'%':'—';
@@ -1890,7 +1891,7 @@ function renderEOMFeedbackTable(agentNames, month, agents){
         :`<input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}">`}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
-      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" min="0" placeholder="—" value="${ev}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" value="${ev}" readonly title="تلقائي: Satisfied + Dissatisfied" style="${inp_style};background:#e1f5ee;color:#0f6e56;font-weight:700;cursor:default"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ce_${i}">${ce}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
@@ -1922,9 +1923,10 @@ function updateFBRow(inp, agentName){
   const row=inp.closest('tr');
   const ans=parseFloat(row.querySelector('.fb-ans').value)||0;
   const tr =parseFloat(row.querySelector('.fb-tr').value)||0;
-  const ev =parseFloat(row.querySelector('.fb-ev').value)||0;
   const sat=parseFloat(row.querySelector('.fb-sat').value)||0;
   const dis=parseFloat(row.querySelector('.fb-dis').value)||0;
+  const ev =sat+dis;
+  const evInp=row.querySelector('.fb-ev'); if(evInp)evInp.value=ev>0?ev:'';
   EOM_MANUAL[mk]={ans,tr,ev,sat,dis};
   // Update CSAT for this agent
   const csatVal=ev>0?sat/ev*100:null;
