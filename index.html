@@ -1702,6 +1702,12 @@ function calcEOM(){
     if(!name)return;
     if(!agents[name])agents[name]={calls:0,manual:0,tickets:0,whatsapp:0,ahtSum:0,ahtCount:0,talkSum:0,talkCount:0,acwSum:0,acwCount:0,loginSum:0,loginCount:0,readySum:0,readyCount:0,callOffSum:0,callOffCount:0,breakSum:0,breakCount:0,days:0};
     const a=agents[name];
+    if(!a.badge){
+      const keys=Object.keys(r);
+      let bk=keys.find(k=>{const kl=String(k).toLowerCase();return kl.includes('badge')||kl.includes('وظيفي');});
+      if(!bk)bk=keys.find(k=>{const kl=String(k).toLowerCase().trim();return kl==='id'||kl.includes('employee id')||kl.includes('staff id')||kl.includes('user id');});
+      if(bk){const bv=String(r[bk]||'').trim();if(bv)a.badge=bv;}
+    }
     a.calls  +=parseInt(r['Connected Inbound']||r['Inbound']||0)||0;
     a.manual +=parseInt(r['Manual Dials']||0)||0;
     a.tickets+=parseInt(r['Tickets']||0)||0;
@@ -1802,6 +1808,35 @@ function calcEOM(){
   renderEOMScores(results);
 }
 
+const BADGE_MAP={
+  'Asmaa M. Bawayan':'20533',
+  'Bayan Jazzar':'24129',
+  'Ghadeer Motadares':'23929',
+  'Ghofran Hussain Rafie':'21587',
+  'Hanin Yajizi':'24819',
+  'Hibah Almuwallad':'36039',
+  'Jehan Alharbi':'36106',
+  'Manar Alshehri':'25612',
+  'Mashael Alshehri':'25701',
+  'Mawadah Essam':'23138',
+  'Nedaa Shorbaji':'19564',
+  'Nesreen Mansoor':'18713',
+  'Reham Hakami':'36029',
+  'Sara Sami':'23041',
+  'Shatha Bawayan':'19426',
+  'Tahani Alshmmrani':'25254',
+  'Walaa Meezi':'36056',
+  'Wejdan Mustafa':'25033',
+  'Yosra Alsalami':'19528'
+};
+function badgeFor(nm){
+  if(!nm)return '';
+  const norm=s=>String(s).trim().replace(/\s+/g,' ').toLowerCase();
+  const key=norm(nm);
+  for(const k in BADGE_MAP){if(norm(k)===key)return BADGE_MAP[k];}
+  return '';
+}
+
 function renderEOMPerfTable(agentNames, agents, month){
   const el=document.getElementById('eomPerfBody');
   if(!el)return;
@@ -1830,11 +1865,14 @@ function renderEOMPerfTable(agentNames, agents, month){
     const tktOk=total&&(a.tickets/total*100)>=95;
     const totalAll=total+a.whatsapp;
     const nid=name.replace(/\s/g,'_');
+    const badgeVal=badgeFor(name)||a.badge||'';
     const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:9.5px" id="eomPerf_no_${nid}">—</td>
       <td style="padding:4px 10px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
-      <td style="text-align:center;padding:2px"><input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')"></td>
+      <td style="text-align:center;padding:2px">${badgeVal
+        ?`<input type="text" class="perf-badge" value="${badgeVal}" readonly title="رقم الموظفة" style="width:42px;${inp};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
+        :`<input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')">`}</td>
       <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
       <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
       <td style="text-align:center;font-size:9.5px;${avgCallOff>0?(callOffOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgCallOff)}</td>
