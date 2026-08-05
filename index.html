@@ -201,7 +201,6 @@
     <div class="nav-item" id="nav-workdone" onclick="showTab('workdone')"><span class="ico">✅</span> Work Done</div>
     <div class="nav-item" id="nav-attendance" onclick="showTab('attendance')"><span class="ico">📅</span> Attendance</div>
     <div class="nav-item" id="nav-checklist" onclick="showTab('checklist')"><span class="ico">👥</span> Campaign Training</div>
-    <div class="nav-item" id="nav-escalations" onclick="showTab('escalations')"><span class="ico">🚨</span> Escalations 2026</div>
     <div class="nav-divider"></div>
     <div class="sb-section">KPIs</div>
     <div class="nav-item" id="nav-kpis" onclick="showTab('kpis')"><span class="ico">🎯</span> KPI Overview</div>
@@ -228,7 +227,6 @@
     <div id="tab-perfgap" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
-    <div id="tab-escalations" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-eom" style="display:none"><div class="loading">⏳ Loading EOM data...</div></div>
     <div id="tab-qa" style="display:none"></div>
   </main>
@@ -1558,8 +1556,6 @@ function renderEOMTab(){
       <div class="ctitle-left">
         <div style="width:20px;height:20px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0">1</div>
         Agent Performance
-        <span style="background:var(--teal-light);color:var(--teal);padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">● تلقائي</span>
-        <span style="background:#fff3e0;color:#e65100;padding:1px 7px;border-radius:6px;font-size:10px;font-weight:400">✏️ يدوي</span>
       </div>
       <span id="eomPerfArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
@@ -1570,13 +1566,13 @@ function renderEOMTab(){
           <thead>
             <tr>
               <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
-              <th colspan="7" style="text-align:center;font-size:9.5px;font-weight:700;color:#085041;background:#d1f0e4;border-bottom:2px solid #9FE1CB">Time ●</th>
-              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#185FA5;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls ●</th>
-              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#854F0B;background:#faeeda;border-bottom:2px solid #FAC775">WA ●</th>
-              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#3B6D11;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total ●</th>
-              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#993C1D;background:#fde8e0;border-bottom:2px solid #F5C4B3">CSAT ✏️</th>
-              <th colspan="2" style="text-align:center;font-size:9.5px;font-weight:700;color:#534AB7;background:#eeedfe;border-bottom:2px solid #CECBF6">Tickets ●</th>
-              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#993556;background:#fbeaf0;border-bottom:2px solid #F4C0D1">Quality ✏️</th>
+              <th colspan="7" style="text-align:center;font-size:9.5px;font-weight:700;color:#085041;background:#d1f0e4;border-bottom:2px solid #9FE1CB">Time</th>
+              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#185FA5;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls</th>
+              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#854F0B;background:#faeeda;border-bottom:2px solid #FAC775">WA</th>
+              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#3B6D11;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total</th>
+              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#993C1D;background:#fde8e0;border-bottom:2px solid #F5C4B3">CSAT</th>
+              <th colspan="2" style="text-align:center;font-size:9.5px;font-weight:700;color:#534AB7;background:#eeedfe;border-bottom:2px solid #CECBF6">Tickets</th>
+              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#993556;background:#fbeaf0;border-bottom:2px solid #F4C0D1">Quality</th>
               <th style="text-align:center;font-size:9.5px;font-weight:700;color:#444441;background:#e8e8e4;border-bottom:2px solid #D3D1C7">Score</th>
             </tr>
           <tr>
@@ -1796,14 +1792,14 @@ function calcEOM(){
   results.sort((a,b)=>b.kpiPassed-a.kpiPassed || b.final-a.final);
 
   // Update rank & score in perf table
-  const em=['🥇','🥈','🥉'];
+  const em=['🥇','🥈'];
   const scCols=['#DAA520','#9e9e9e','#cd7f32'];
   results.forEach((r,rank)=>{
     const nid=r.name.replace(/\s/g,'_');
     const sc=document.getElementById('eomPerf_score_'+nid);
     const no=document.getElementById('eomPerf_no_'+nid);
-    if(sc){sc.textContent=r.final.toFixed(1);sc.style.color=rank<3?scCols[rank]:'var(--text)';sc.style.fontWeight='800';}
-    if(no){no.textContent=rank<3?em[rank]:String(rank+1);}
+    if(sc){sc.textContent=r.final.toFixed(1);sc.style.color=rank<2?scCols[rank]:'var(--text)';sc.style.fontWeight='800';}
+    if(no){no.textContent=rank<2?em[rank]:String(rank+1);}
   });
 
   renderEOMPodium(results);
@@ -2088,7 +2084,7 @@ function renderEOMPodium(results){
 
 function renderEOMScores(results){
   if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
-  const em=['🥇','🥈','🥉'];
+  const em=['🥇','🥈'];
   const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}`:'—';
   const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
 
@@ -2135,7 +2131,7 @@ function renderEOMScores(results){
     </thead><tbody>`;
 
   results.forEach((r,i)=>{
-    const rank=i<3?`<span style="font-size:12px">${em[i]}</span>`:`<span style="color:#ccc;font-size:9.5px">${i+1}</span>`;
+    const rank=i<2?`<span style="font-size:12px">${em[i]}</span>`:`<span style="color:#ccc;font-size:9.5px">${i+1}</span>`;
     const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
     const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
     const kpiCells=KPI_COLS.map(c=>{
