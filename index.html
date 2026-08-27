@@ -1426,50 +1426,105 @@ const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
 const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
 const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
 let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
+let EOM_SHEET_LOADED=false; // true ONLY after a successful read of ManualStore — gates every write so a failed/blank load can never overwrite the sheet
 
 try{ EOM_MANUAL=JSON.parse(localStorage.getItem('eom_manual')||'{}'); }catch(e){}
 
-// ── Persist manual inputs to BOTH browser (backup) and Google Sheet (ManualStore tab) ──
+// Field-level merge: keeps every key/field from BOTH sides; `extra` (newest local edit) wins per field.
+// This is what makes a save non-destructive — it can never drop months/agents it doesn't currently hold.
+function mergeEOMManual(base, extra){
+  const out=Object.assign({}, base||{});
+  Object.keys(extra||{}).forEach(function(k){
+    const bv=out[k], ev=extra[k];
+    if(bv&&ev&&typeof bv==='object'&&typeof ev==='object'&&!Array.isArray(bv)&&!Array.isArray(ev)){
+      out[k]=Object.assign({}, bv, ev);
+    }else{ out[k]=ev; }
+  });
+  return out;
+}
+
+// Read the live ManualStore blob straight from the sheet (used before every write, and for verify).
+async function fetchManualStoreBlob(){
+  const rows=await fetchEOMSheet(EOM_SHEET_ID,'ManualStore');
+  let blob=null;
+  (rows||[]).forEach(function(row){
+    if(blob)return;
+    let cand=(row&&typeof row==='object'&&!Array.isArray(row))?(row.data||Object.values(row)[0]):(Array.isArray(row)?row[0]:row);
+    if(typeof cand==='string' && cand.trim().charAt(0)==='{'){ try{ blob=JSON.parse(cand); }catch(_){} }
+  });
+  return blob; // null = fetch worked but tab empty;  throw = fetch failed
+}
+
+// ── Persist manual inputs: browser (with rolling backups) + Google Sheet (ManualStore tab) ──
 function persistEOMManual(){
   try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
+  // Rolling local safety net: keep the last 10 snapshots so a bad state is always recoverable on this device.
+  try{
+    localStorage.setItem('eom_manual_bak_'+Date.now(), JSON.stringify(EOM_MANUAL));
+    const baks=Object.keys(localStorage).filter(function(k){return k.indexOf('eom_manual_bak_')===0;}).sort();
+    while(baks.length>10){ localStorage.removeItem(baks.shift()); }
+  }catch(e){}
   saveEOMManualToSheet();
 }
 let _eomSheetSaveTimer=null;
 function saveEOMManualToSheet(){
   clearTimeout(_eomSheetSaveTimer);
-  _eomSheetSaveTimer=setTimeout(function(){
+  _eomSheetSaveTimer=setTimeout(async function(){
     const st=document.getElementById('eomSaveStatus');
-    if(st){ st.style.color='var(--muted)'; st.textContent='⏳ جاري الحفظ في قوقل شيت...'; }
-    fetch(PROXY,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({id:EOM_SHEET_ID, sheetName:'ManualStore', data:JSON.stringify(EOM_MANUAL)})
-    }).then(function(r){return r.json();}).then(function(d){
-      if(st){
-        if(d&&d.success){ st.style.color='#0F6E56'; st.textContent='✓ محفوظ في قوقل شيت'; }
-        else{ st.style.color='#A32D2D'; st.textContent='⚠️ محفوظ بالمتصفح فقط (تحققي من Apps Script)'; }
-      }
-    }).catch(function(){
-      if(st){ st.style.color='#A32D2D'; st.textContent='⚠️ محفوظ بالمتصفح فقط'; }
-    });
+    const setSt=function(c,t){ if(st){ st.style.color=c; st.textContent=t; } };
+
+    // GUARD 1 — never write until we've successfully loaded the sheet once this session.
+    if(!EOM_SHEET_LOADED){ setSt('#A32D2D','⚠️ لم تُحمّل بيانات الشيت بعد — محفوظ بالمتصفح فقط مؤقتاً'); return; }
+    // GUARD 2 — never write an empty object on top of real data.
+    if(!EOM_MANUAL || !Object.keys(EOM_MANUAL).length){ setSt('#A32D2D','⚠️ لا توجد بيانات للحفظ'); return; }
+
+    setSt('var(--muted)','⏳ جاري الحفظ في قوقل شيت...');
+    try{
+      // MERGE-BEFORE-WRITE — re-read the live sheet and layer our edits on top, so we can never erase
+      // months/agents that aren't in memory right now (another device, or a partial local load).
+      let live=null; try{ live=await fetchManualStoreBlob(); }catch(_){ live=null; }
+      const merged=mergeEOMManual(live||{}, EOM_MANUAL);
+      EOM_MANUAL=merged;
+      try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
+
+      // WRITE via the SAME deployment the reader uses (GAS_EOM) — the old code posted to PROXY,
+      // a different Apps Script, which is why saves weren't landing in the sheet.
+      const r=await fetch(GAS_EOM,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({id:EOM_SHEET_ID, sheetName:'ManualStore', data:JSON.stringify(merged)})
+      });
+      let ok=false; try{ const d=await r.json(); ok=!!(d&&d.success); }catch(_){ ok=r.ok; }
+
+      // VERIFY BY READ-BACK — only claim "saved to sheet" if we can actually read our data back.
+      let confirmed=false;
+      try{
+        const back=await fetchManualStoreBlob();
+        const firstKey=Object.keys(merged)[0];
+        confirmed=!!(back && firstKey && Object.prototype.hasOwnProperty.call(back, firstKey));
+      }catch(_){}
+
+      if(confirmed){ setSt('#0F6E56','✓ محفوظ ومؤكَّد في قوقل شيت'); }
+      else if(ok){ setSt('#B8860B','✓ أُرسل للشيت (لم يتأكد الاسترجاع — راجعي Apps Script)'); }
+      else{ setSt('#A32D2D','⚠️ فشل الحفظ في الشيت — محفوظ بالمتصفح فقط'); }
+    }catch(e){
+      setSt('#A32D2D','⚠️ خطأ في الحفظ — محفوظ بالمتصفح فقط');
+    }
   }, 1200);
 }
 async function loadEOMManualFromSheet(){
   try{
-    const rows=await fetchEOMSheet(EOM_SHEET_ID,'ManualStore');
-    let sheetManual=null;
-    (rows||[]).forEach(function(row){
-      if(sheetManual)return;
-      let cand=(row&&typeof row==='object'&&!Array.isArray(row))?(row.data||Object.values(row)[0]):(Array.isArray(row)?row[0]:row);
-      if(typeof cand==='string' && cand.trim().charAt(0)==='{'){
-        try{ sheetManual=JSON.parse(cand); }catch(_){}
-      }
-    });
+    const sheetManual=await fetchManualStoreBlob();
+    // Fetch succeeded (even if the tab is empty) → it is now SAFE to write back.
+    EOM_SHEET_LOADED=true;
     if(sheetManual && typeof sheetManual==='object'){
-      EOM_MANUAL=Object.assign({}, EOM_MANUAL, sheetManual);
+      // Sheet is the base (full history); any un-synced local edit wins at field level.
+      EOM_MANUAL=mergeEOMManual(sheetManual, EOM_MANUAL);
       try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
     }
-  }catch(e){ /* tab not ready — keep browser data */ }
+  }catch(e){
+    EOM_SHEET_LOADED=false; // load failed → keep browser data AND block writes so the sheet can't be clobbered
+  }
 }
 
 async function fetchEOMSheet(id, sheet){
