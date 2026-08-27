@@ -1424,6 +1424,8 @@ function renderPerfGap(rows){
 const EOM_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
 const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
 const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
+// ⬇️⬇️ الصقي هنا رابط تطبيق الويب (Web App URL) بعد نشر سكربت التخزين. بدونه يبقى الحفظ بالمتصفح فقط.
+const EOM_STORE_API = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
 let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
 let EOM_SHEET_LOADED=false; // true ONLY after a successful read of ManualStore — gates every write so a failed/blank load can never overwrite the sheet
@@ -1445,7 +1447,10 @@ function mergeEOMManual(base, extra){
 
 // Read the live ManualStore blob straight from the sheet (used before every write, and for verify).
 async function fetchManualStoreBlob(){
-  const rows=await fetchEOMSheet(EOM_SHEET_ID,'ManualStore');
+  const url=EOM_STORE_API+'?id='+encodeURIComponent(EOM_SHEET_ID)+'&sheetName=ManualStore';
+  const res=await fetch(url);
+  const data=await res.json();
+  const rows=Array.isArray(data)?data:(data.rows||[]);
   let blob=null;
   (rows||[]).forEach(function(row){
     if(blob)return;
@@ -1477,6 +1482,8 @@ function saveEOMManualToSheet(){
     if(!EOM_SHEET_LOADED){ setSt('#A32D2D','⚠️ لم تُحمّل بيانات الشيت بعد — محفوظ بالمتصفح فقط مؤقتاً'); return; }
     // GUARD 2 — never write an empty object on top of real data.
     if(!EOM_MANUAL || !Object.keys(EOM_MANUAL).length){ setSt('#A32D2D','⚠️ لا توجد بيانات للحفظ'); return; }
+    // GUARD 3 — the store URL hasn't been set yet.
+    if(/PASTE_YOUR_WEB_APP_URL_HERE/.test(EOM_STORE_API)){ setSt('#A32D2D','⚠️ لم يُضبط رابط التخزين (EOM_STORE_API) — محفوظ بالمتصفح فقط'); return; }
 
     setSt('var(--muted)','⏳ جاري الحفظ في قوقل شيت...');
     try{
@@ -1487,9 +1494,9 @@ function saveEOMManualToSheet(){
       EOM_MANUAL=merged;
       try{ localStorage.setItem('eom_manual', JSON.stringify(EOM_MANUAL)); }catch(e){}
 
-      // WRITE via the SAME deployment the reader uses (GAS_EOM) — the old code posted to PROXY,
-      // a different Apps Script, which is why saves weren't landing in the sheet.
-      const r=await fetch(GAS_EOM,{
+      // WRITE via the SAME endpoint the ManualStore reader uses (EOM_STORE_API) — the old code posted
+      // to PROXY, a different Apps Script, which is why saves weren't landing in the sheet.
+      const r=await fetch(EOM_STORE_API,{
         method:'POST',
         headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({id:EOM_SHEET_ID, sheetName:'ManualStore', data:JSON.stringify(merged)})
@@ -1513,6 +1520,7 @@ function saveEOMManualToSheet(){
   }, 1200);
 }
 async function loadEOMManualFromSheet(){
+  if(/PASTE_YOUR_WEB_APP_URL_HERE/.test(EOM_STORE_API)){ EOM_SHEET_LOADED=false; return; }
   try{
     const sheetManual=await fetchManualStoreBlob();
     // Fetch succeeded (even if the tab is empty) → it is now SAFE to write back.
