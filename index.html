@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sali KPIs Dashboard</title>
 <style>
-  :root{
-    --bg:#F4FAF7;--surface:#FFFFFF;--border:#D8EDE5;
-    --text:#1A1A1A;--muted:#6B6B6B;
-    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;--teal-border:#9FE1CB;
-    --amber:#BA7517;--amber-light:#FAEEDA;
-    --red:#A32D2D;--red-light:#FCEBEB;
-    --purple:#534AB7;--purple-light:#EEEDFE;
-    --gray:#F1EFE8;--gray-border:#D3D1C7;
+    :root{
+    --bg:#FAF7F2;--surface:#FFFFFF;--border:#ECE3D6;
+    --text:#4A3F33;--muted:#9E856A;
+    --teal:#7A6248;--teal-light:#F3E9D8;--teal-mid:#B79A6F;--teal-border:#E4D8C8;
+    --amber:#B08A5A;--amber-light:#F7EFE1;
+    --red:#B98A80;--red-light:#F6ECE9;
+    --purple:#9385A8;--purple-light:#ECE8F2;
+    --gray:#F5EFE6;--gray-border:#E4D8C8;
     --sidebar-w:200px;--radius:12px;--radius-sm:8px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -24,22 +24,22 @@
   .h-name{font-size:17px;font-weight:700;color:var(--text)}
   .h-role{font-size:12px;color:var(--muted);margin-top:2px}
   .h-pills{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
-  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#085041;border:1px solid var(--teal-border)}
-  .pill a{color:#085041;text-decoration:none}
+  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#5E4A38;border:1px solid var(--teal-border)}
+  .pill a{color:#5E4A38;text-decoration:none}
   .date-chip{font-size:11px;color:var(--muted);background:var(--gray);padding:4px 13px;border-radius:20px;border:0.5px solid var(--gray-border)}
   .ref-btn{font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
-  .ref-btn:hover{background:#c5eadf}
+  .ref-btn:hover{background:#EDE3D3}
 
   /* ── LAYOUT ── */
   .body-wrap{display:flex;flex:1;min-height:0}
 
   /* ── SIDEBAR ── */
-  .sidebar{width:var(--sidebar-w);background:#f0faf5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .sidebar{width:var(--sidebar-w);background:#F7F1E8;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
   .sb-section:first-child{margin-top:0}
-  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#3d5a4e;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
-  .nav-item:hover{background:rgba(15,110,86,.14);color:#085041}
-  .nav-item.active{background:#b2ddd0;color:#054035;font-weight:700}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#6E5946;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
+  .nav-item:hover{background:rgba(150,120,80,.12);color:#5E4A38}
+  .nav-item.active{background:#EFE3CF;color:#5E4A38;font-weight:600}
   .nav-item .ico{font-size:15px;flex-shrink:0}
   .nav-divider{height:1px;background:var(--border);margin:8px 4px}
 
@@ -47,14 +47,14 @@
   .content{flex:1;padding:20px 24px;overflow-y:auto;min-width:0}
 
   /* ── CARDS ── */
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px}
   .card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px;text-transform:none;letter-spacing:normal}
   .card-title-collapsible{font-size:12px;font-weight:700;color:var(--text);margin-bottom:0;display:flex;align-items:center;gap:7px;cursor:pointer;justify-content:space-between}
   .card-title-collapsible .ctitle-left{display:flex;align-items:center;gap:7px;flex:1}
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
-  .stat{background:var(--gray);border-radius:var(--radius-sm);padding:13px 15px}
-  .stat-num{font-size:24px;font-weight:700;line-height:1}
+  .stat{background:var(--gray);border-radius:14px;padding:14px 15px;border:1px solid rgba(120,90,60,.05)}.stat-grid > .stat:nth-child(4n+1){background:#F3E9D8}.stat-grid > .stat:nth-child(4n+2){background:#E7EFE5}.stat-grid > .stat:nth-child(4n+3){background:#ECE8F2}.stat-grid > .stat:nth-child(4n+4){background:#F4E6E2}
+  .stat-num{font-size:24px;font-weight:600;line-height:1;color:#6E5540}
   .stat-lbl{font-size:10px;color:var(--muted);margin-top:4px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 
@@ -72,7 +72,7 @@
 
   /* ── BADGE ── */
   .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600}
-  .b-green{background:#EAF3DE;color:#3B6D11}
+  .b-green{background:#EDF3E5;color:#6F8A56}
   .b-amber{background:var(--amber-light);color:var(--amber)}
   .b-teal{background:var(--teal-light);color:var(--teal)}
   .b-gray{background:var(--gray);color:#5F5E5A}
@@ -90,19 +90,19 @@
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
   .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
   .cal-empty{background:transparent}
-  .cal-office{background:var(--teal-light);color:#085041}
+  .cal-office{background:var(--teal-light);color:#5E4A38}
   .cal-off{background:var(--gray);color:#999}
   .cal-vacation{background:var(--amber-light);color:var(--amber)}
   .cal-workvac{background:#FFF9C4;color:#856400}
   .cal-sick{background:var(--red-light);color:var(--red)}
   .cal-remote{background:var(--purple-light);color:var(--purple)}
-  .cal-future{background:#f4faf7;color:#ccc;border:1px dashed #d0ede8}
+  .cal-future{background:#FAF7F2;color:#ccc;border:1px dashed #E4D8C8}
   .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
   .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
   .month-nav button:hover{background:#e0ddd6}
   .month-label{font-size:14px;font-weight:700;min-width:140px;text-align:center}
   .att-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:7px;margin-bottom:14px}
-  .att-stat{padding:9px 11px;border-radius:var(--radius-sm);text-align:center}
+  .att-stat{padding:10px 11px;border-radius:12px;text-align:center}
   .att-stat .num{font-size:20px;font-weight:700}
   .att-stat .lbl{font-size:9px;margin-top:2px;font-weight:600}
   .att-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
@@ -111,23 +111,23 @@
 
   /* ── TABLES ── */
   .tbl{width:100%;border-collapse:collapse;font-size:12px}
-  .tbl th{background:#f4faf7;padding:5px 5px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
-  .tbl td{padding:4px 5px;border-bottom:1px solid #eef5f1;vertical-align:middle;font-size:11px}
+  .tbl th{background:#FAF7F2;padding:5px 5px;font-size:10px;font-weight:700;color:var(--muted);text-transform:none;letter-spacing:normal;border-bottom:2px solid var(--border);text-align:left}
+  .tbl td{padding:4px 5px;border-bottom:1px solid #F4EDE2;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
-  .tbl tr:hover td{background:#f8fdf9}
+  .tbl tr:hover td{background:#FBF8F3}
   #eomPerfBody tr:hover td,
   #eomFbBody tr:hover td,
   #eomScoresTable tbody tr:hover td,
-  #qaTbody tr:hover td{background:#C7EDE0 !important}
+  #qaTbody tr:hover td{background:#EDE3D3 !important}
   #eomPerfBody tr:hover td:first-child,
   #eomFbBody tr:hover td:first-child,
   #eomScoresTable tbody tr:hover td:first-child,
-  #qaTbody tr:hover td:first-child{box-shadow:inset 3px 0 0 #1D9E75 !important}
+  #qaTbody tr:hover td:first-child{box-shadow:inset 3px 0 0 #B79A6F !important}
 
   /* ── KPI SUB TABS ── */
   .ksub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
   .ksub-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:.15s}
-  .ksub-btn.active{background:var(--teal-light);color:#085041;border-color:var(--teal-border)}
+  .ksub-btn.active{background:var(--teal-light);color:#5E4A38;border-color:var(--teal-border)}
 
   .loading{text-align:center;padding:50px;color:var(--muted);font-size:13px}
   .err{background:var(--red-light);color:var(--red);border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;margin-bottom:12px;border-left:4px solid var(--red)}
@@ -138,8 +138,8 @@
   .brand-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;margin:2px}
   .brand-nissan{background:#fef2f2;color:#c0272d}
   .brand-stellantis{background:#e3f2fd;color:#1565c0}
-  .brand-pe{background:#FAEEDA;color:#BA7517}
-  .brand-nos{background:#e8f5e9;color:#2e7d32}
+  .brand-pe{background:#F7EFE1;color:#B08A5A}
+  .brand-nos{background:#e8f5e9;color:#6f8a56}
   .brand-foton{background:#eceff1;color:#546e7a}
   .brand-electromin{background:#ede7f6;color:#4527a0}
 
@@ -162,8 +162,8 @@
   .eom-manual-row{display:grid;grid-template-columns:180px 1fr 1fr;gap:10px;align-items:center;padding:9px 12px;background:var(--gray);border-radius:8px;margin-bottom:6px}
   .eom-input{font-family:'Segoe UI',sans-serif;font-size:13px;font-weight:600;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;outline:none;width:100%;background:#fff;color:var(--text)}
   .eom-input:focus{border-color:var(--teal-mid)}
-  .eom-meet{color:#2e7d32;font-weight:700}
-  .eom-miss{color:#A32D2D;font-weight:700}
+  .eom-meet{color:#6f8a56;font-weight:700}
+  .eom-miss{color:#B07A6E;font-weight:700}
   .eom-na{color:#bbb}
 
   @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
@@ -399,16 +399,16 @@ function renderMonthly(rows){
   // Static fallback data
   const PERF = perfMetrics.length ? perfMetrics : [
     {metric:'Customers Answered',desc:'Manual Dials + Connected Inbound'},
-    {metric:'Customers Transferred',desc:'Grand Total من ريبورت فيد باك'},
+    {metric:'Customers Transferred',desc:'Grand Total from Feedback report'},
     {metric:'CT%',desc:'Customers Transferred / Customers Answered'},
-    {metric:'Customers Evaluated',desc:'1+2 توتل التقييم كامل من العملاء'},
+    {metric:'Customers Evaluated',desc:'Score 1+2 — total customer evaluations'},
     {metric:'CE%',desc:'Customers Evaluated / Customers Transferred'},
     {metric:'Satisfied',desc:'Score 1'},
     {metric:'Satisfied%',desc:'Satisfied / Customers Evaluated'},
     {metric:'Dissatisfied',desc:'Score 2'},
     {metric:'Dissatisfied%',desc:'Dissatisfied / Customers Evaluated'},
     {metric:'Transferred to CSAT',desc:'CE%'},
-    {metric:'CSAT',desc:'Satisfied% — نفس الناتج'},
+    {metric:'CSAT',desc:'Satisfied% — same result'},
     {metric:'WhatsApp Feedback Average',desc:'Feedback Section'}
   ];
   const EOM = eomSlide.length ? eomSlide : [
@@ -428,16 +428,16 @@ function renderMonthly(rows){
     {point:'Total Tickets VS number of calls',desc:'Percentage ticket numbers based on the number of calls received',weight:'15%',actual:'95%'}
   ];
   const QA = callsQA.length ? callsQA : [
-    {item:'Welcome',score:'10',ar:'المقدمة'},
-    {item:'Question or Inquiry / Purpose of call',score:'5',ar:'سؤال أو استفسار من العميل / إبلاغه بغرض الاتصال'},
-    {item:'Understanding the customer problem',score:'10',ar:'فهم العميل'},
-    {item:'Answering the customer question',score:'10',ar:'الرد على سؤال أو مشكلة العميل'},
-    {item:'How long it took to answer',score:'5',ar:'كم استغرق الرد'},
-    {item:'Attitude & Language',score:'5',ar:'السلوك واللغة'},
-    {item:'Personal Enthusiasm',score:'5',ar:'الحماس الشخصي'},
-    {item:'Hold time / Mute',score:'—',ar:'زمن الانتظار / كتم الصوت'},
-    {item:'Closure of call',score:'10',ar:'إغلاق المكالمة'},
-    {item:'Ticket Quality / System input',score:'30',ar:'جودة التذاكر / إدخال النظام'}
+    {item:'Welcome',score:'10',ar:'Welcome'},
+    {item:'Question or Inquiry / Purpose of call',score:'5',ar:'Customer question/inquiry & stating call purpose'},
+    {item:'Understanding the customer problem',score:'10',ar:'Understanding the customer'},
+    {item:'Answering the customer question',score:'10',ar:'Answering the customer question/problem'},
+    {item:'How long it took to answer',score:'5',ar:'Response time taken'},
+    {item:'Attitude & Language',score:'5',ar:'Attitude & language'},
+    {item:'Personal Enthusiasm',score:'5',ar:'Personal enthusiasm'},
+    {item:'Hold time / Mute',score:'—',ar:'Hold time / mute'},
+    {item:'Closure of call',score:'10',ar:'Call closure'},
+    {item:'Ticket Quality / System input',score:'30',ar:'Ticket quality / system input'}
   ];
   const total=QA.reduce((s,r)=>{const n=parseInt(r.score)||0;return s+n;},0);
 
@@ -517,45 +517,45 @@ function renderReports(rows){
   if(!sections.length || sections.every(s=>!s.items.length)){
     // Static fallback
     sections.push({title:"Ameyo Reports",items:[
-      {name:'ACD Call Details',desc:'المفقود + اختيار الموظفة للاتصال (Disposition)',note:''},
-      {name:'AGENT Productivity Interval Summary',desc:'تقرير الموظفة كامل لفترة الدوام',note:'Staffed Duration · First Login Time · Avg Handling Time'},
-      {name:'Agent Session Details',desc:'وقت تسجيل الدخول والخروج',note:''},
-      {name:'Call Details',desc:'تقرير المفقود خارج ساعات الدوام',note:''},
-      {name:'Feedback IVR Report',desc:'تقييم العملاء للمكالمات',note:'اختار من رقم الوظيفي للبنات — Grand Total'},
-      {name:'Updated Petromin Interaction',desc:'للتيكيتات — نحط Campaign كامل',note:'يتمسح Incoming Email Queue'},
-      {name:'WhatsApp Ni/ST',desc:'Chats · Speed of answer (First response)',note:'من الـ Dashboard'}
+      {name:'ACD Call Details',desc:'Missed + agent call disposition',note:''},
+      {name:'AGENT Productivity Interval Summary',desc:'Full agent report for the shift',note:'Staffed Duration · First Login Time · Avg Handling Time'},
+      {name:'Agent Session Details',desc:'Login and logout times',note:''},
+      {name:'Call Details',desc:'Missed-calls report outside working hours',note:''},
+      {name:'Feedback IVR Report',desc:'Customer call ratings',note:'Pick by agent badge no. — Grand Total'},
+      {name:'Updated Petromin Interaction',desc:'For tickets — set full Campaign',note:'Clear Incoming Email Queue'},
+      {name:'WhatsApp Ni/ST',desc:'Chats · Speed of answer (First response)',note:'From the Dashboard'}
     ]});
     sections.push({title:'CRM-MASTERDECK- Ghada',items:[
-      {name:'Calls Volume',desc:'عدد المكالمات الأسبوعي كامل',note:''},
-      {name:'SL%',desc:'من ACD Call Details Report',note:'Total calls + calls ≤30s Wait Time at ACD'},
+      {name:'Calls Volume',desc:'Full weekly call volume',note:''},
+      {name:'SL%',desc:'From ACD Call Details Report',note:'Total calls + calls ≤30s Wait Time at ACD'},
       {name:'AHT',desc:'AGENT Productivity Interval Summary',note:'User Talk Time + ACW Duration'},
       {name:'Avg. ACW',desc:'AGENT Productivity Interval Summary',note:'Report'},
-      {name:'Avg. Staffed',desc:'AGENT Productivity Interval Summary',note:'اشيل عدد الساعات القليل — البنات من تيم ثاني'},
-      {name:'Speed of Answer',desc:'من ACD Call Details Report',note:'Only Answered = Total Wait Time at ACD'},
+      {name:'Avg. Staffed',desc:'AGENT Productivity Interval Summary',note:'Drop low-hours rows — agents from another team'},
+      {name:'Speed of Answer',desc:'From ACD Call Details Report',note:'Only Answered = Total Wait Time at ACD'},
       {name:'WhatsApp Volume',desc:'Total Chats',note:'Download WhatsApp'},
       {name:'Avg. First RT',desc:'First Response',note:'Download WhatsApp'},
       {name:'Avg. RT',desc:'Avg. Response Time',note:'Download WhatsApp'}
     ]});
     sections.push({title:'WhatsApp',items:[
-      {name:'Dashboard',desc:'عدد المكالمات - وقت الدخول',note:''},
-      {name:'Feedback Section',desc:'تقييم العملاء',note:'محادثة التقييم من الأرشيف برقم العميل'},
-      {name:'Chat Statistics',desc:'حالة المحادثة (الإغلاق)',note:''},
-      {name:'Archive',desc:'سجل المحادثات',note:''},
-      {name:'Permission',desc:'الخصائص',note:''},
-      {name:'User List',desc:'معلومات الموظفات',note:''},
-      {name:'Canned Response',desc:'هاشتاق',note:''},
-      {name:'Supervise & Tip Off',desc:'نفس الداش بورد حق الكيو',note:''},
-      {name:'Download Center',desc:'ملف التقارير',note:''},
-      {name:'User Logging',desc:'وقت دخول الموظفات',note:''},
-      {name:'Offline Queries',desc:'محادثات العملاء خارج أوقات الدوام',note:''},
-      {name:'Missed Chats',desc:'مفقود',note:''},
-      {name:'Agent Performance',desc:'أداء الموظفات',note:''},
+      {name:'Dashboard',desc:'Call count - login time',note:''},
+      {name:'Feedback Section',desc:'Customer ratings',note:'Rating chat from archive by customer no.'},
+      {name:'Chat Statistics',desc:'Chat status (closure)',note:''},
+      {name:'Archive',desc:'Chat log',note:''},
+      {name:'Permission',desc:'Properties',note:''},
+      {name:'User List',desc:'Agents info',note:''},
+      {name:'Canned Response',desc:'Hashtag',note:''},
+      {name:'Supervise & Tip Off',desc:'Same dashboard as the queue',note:''},
+      {name:'Download Center',desc:'Reports file',note:''},
+      {name:'User Logging',desc:'Agents login time',note:''},
+      {name:'Offline Queries',desc:'Customer chats outside working hours',note:''},
+      {name:'Missed Chats',desc:'Missed',note:''},
+      {name:'Agent Performance',desc:'Agents performance',note:''},
       {name:'Customer List',desc:'Push',note:''}
     ]});
   }
 
-  const SECTION_COLORS=['#0F6E56','#534AB7','#185FA5'];
-  const SECTION_BG=['#E1F5EE','#EEEDFE','#E6F1FB'];
+  const SECTION_COLORS=['#7A6248','#9385A8','#8296A8'];
+  const SECTION_BG=['#F3E9D8','#ECE8F2','#EAEEF2'];
 
   let html='<div class="sec-label">📄 Reports Reference Guide</div>';
   sections.forEach((sec,si)=>{
@@ -640,7 +640,7 @@ async function loadAll(){
     const hasCachedFallback = cachedInb || cachedAtt || cachedKpi;
     if(!hasCachedFallback){
       ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
-        document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>تأكدي إن الشيت مشاركة "Anyone with the link" ثم اضغطي Refresh</div>';
+        document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>Make sure the sheet is shared as "Anyone with the link", then press Refresh</div>';
       });
     }
     // Monthly and Reports use static fallback even on error
@@ -674,7 +674,7 @@ function renderEscalations(rawRows){
     'Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8',
     'Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2',
     'Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8',
-    'Closed':'#EAF3DE','Resolved':'#EAF3DE'
+    'Closed':'#EDF3E5','Resolved':'#EDF3E5'
   };
   const DEPT_COLORS={
     'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2',
@@ -706,7 +706,7 @@ function renderEscalations(rawRows){
   const statusBadge=s=>{
     if(!s)return'<span style="color:#aaa">—</span>';
     const bg=STATUS_COLORS[s]||'#F1EFE8';
-    const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';
+    const col=s==='Closed'||s==='Resolved'?'#6F8A56':'#B07A6E';
     return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;
   };
   const deptBadge=d=>{
@@ -740,7 +740,7 @@ function renderEscalations(rawRows){
         <div>
           <div style="font-size:12px;font-weight:600;color:var(--text)">Today's cases</div>
           <div style="font-size:11px;color:var(--muted);margin-bottom:5px">${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
-          <div style="font-size:11px;color:#085041;background:var(--teal-light);padding:2px 9px;border-radius:6px;display:inline-block;font-weight:600">Sali Aljehani</div>
+          <div style="font-size:11px;color:#5E4A38;background:var(--teal-light);padding:2px 9px;border-radius:6px;display:inline-block;font-weight:600">Sali Aljehani</div>
         </div>
       </div>
       <div class="card" style="margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
@@ -751,12 +751,12 @@ function renderEscalations(rawRows){
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted)">Pending</div>
-          <div id="esc-stat-pending" style="font-size:22px;font-weight:700;color:#A32D2D">${pending}</div>
+          <div id="esc-stat-pending" style="font-size:22px;font-weight:700;color:#B07A6E">${pending}</div>
         </div>
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="text-align:center">
           <div style="font-size:10px;color:var(--muted)">Closed</div>
-          <div id="esc-stat-closed" style="font-size:22px;font-weight:700;color:#3B6D11">${closed}</div>
+          <div id="esc-stat-closed" style="font-size:22px;font-weight:700;color:#6F8A56">${closed}</div>
         </div>
         <div style="width:1px;height:30px;background:var(--border)"></div>
         <div style="flex:1;min-width:120px">
@@ -769,7 +769,7 @@ function renderEscalations(rawRows){
 
     <div class="card" style="margin:0">
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-        <input id="esc-search" type="text" placeholder="🔍 ابحث بـ Case ID أو الاسم..."
+        <input id="esc-search" type="text" placeholder="🔍 Search by Case ID or name..."
           style="flex:1;min-width:180px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;outline:none"
           oninput="filterEsc()">
         <select id="esc-sf" onchange="filterEsc()"
@@ -802,14 +802,14 @@ function renderEscalations(rawRows){
           <table style="width:100%;border-collapse:collapse;font-size:12px">
             <thead style="position:sticky;top:0;z-index:1">
               <tr style="background:var(--teal-light)">
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">#</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Case ID</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Escalation Date</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Status</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Department</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Assigned to</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Modified by</th>
-                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#085041;border-bottom:1px solid var(--teal-border)">Comments</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">#</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Case ID</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Escalation Date</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Status</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Department</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Assigned to</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Modified by</th>
+                <th style="padding:9px 10px;text-align:left;font-size:10px;font-weight:700;color:#5E4A38;border-bottom:1px solid var(--teal-border)">Comments</th>
               </tr>
             </thead>
             <tbody id="esc-tbody">${rows.map((r,i)=>{
@@ -819,8 +819,8 @@ function renderEscalations(rawRows){
               const assigned=r['Assigned to']||'';
               const modby=getModBy(r);
               const comments=r['Comments']||'';
-              const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
-              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'" onclick="openEscEdit(${i})">
+              const rowBg=i%2===0?'background:#ffffff':'background:#FAF7F2';
+              return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#FAF7F2'}'" onclick="openEscEdit(${i})">
                 <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
                 <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
                 <td style="padding:8px 10px;color:var(--muted);font-size:11px;white-space:nowrap">${fmtEscDate(getEscDate(r))}</td>
@@ -860,11 +860,11 @@ function openEscEdit(idx){
         <div style="font-size:14px;font-weight:700;color:#1A1A1A">Edit Case</div>
         <button onclick="document.getElementById('esc-overlay').remove()" style="border:none;background:none;font-size:18px;cursor:pointer;color:#888">✕</button>
       </div>
-      <div style="font-size:12px;color:#888;margin-bottom:16px;background:#F4FAF7;padding:8px 12px;border-radius:8px;font-weight:600">${caseId}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px;background:#FAF7F2;padding:8px 12px;border-radius:8px;font-weight:600">${caseId}</div>
 
       <div style="margin-bottom:14px">
         <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Status</label>
-        <select id="edit-status" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;background:#fff">
+        <select id="edit-status" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ECE3D6;font-size:13px;background:#fff">
           <option value="">— Select —</option>
           ${['Pending','Pending Refund','Pending MCI','Pending with Sales','Pending Compensation','Pending Customer contact','Pending for parts','Duplicate','Raise a new complaint','Closed'].map(s=>`<option value="${s}"${s===status?' selected':''}>${s}</option>`).join('')}
         </select>
@@ -872,7 +872,7 @@ function openEscEdit(idx){
 
       <div style="margin-bottom:14px">
         <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Department</label>
-        <select id="edit-dept" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;background:#fff">
+        <select id="edit-dept" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ECE3D6;font-size:13px;background:#fff">
           <option value="">— Select —</option>
           ${['PAC','Nissan','Stellantis','PE','Bodyshop','Foton'].map(d=>`<option value="${d}"${d===dept?' selected':''}>${d}</option>`).join('')}
         </select>
@@ -880,16 +880,16 @@ function openEscEdit(idx){
 
       <div style="margin-bottom:14px">
         <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Assigned to</label>
-        <input id="edit-assigned" type="text" value="${assigned}" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px">
+        <input id="edit-assigned" type="text" value="${assigned}" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ECE3D6;font-size:13px">
       </div>
 
       <div style="margin-bottom:20px">
         <label style="font-size:11px;color:#666;font-weight:600;display:block;margin-bottom:5px">Comments</label>
-        <textarea id="edit-comments" rows="4" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #D8EDE5;font-size:13px;resize:vertical">${comments}</textarea>
+        <textarea id="edit-comments" rows="4" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #ECE3D6;font-size:13px;resize:vertical">${comments}</textarea>
       </div>
 
       <div style="display:flex;gap:10px">
-        <button onclick="saveEscEdit(${idx})" style="flex:1;padding:10px;border-radius:8px;border:none;background:#0F6E56;color:#fff;font-size:13px;font-weight:700;cursor:pointer">💾 Save</button>
+        <button onclick="saveEscEdit(${idx})" style="flex:1;padding:10px;border-radius:8px;border:none;background:#7A6248;color:#fff;font-size:13px;font-weight:700;cursor:pointer">💾 Save</button>
         <button onclick="document.getElementById('esc-overlay').remove()" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;background:#fff;color:#666;font-size:13px;cursor:pointer">Cancel</button>
       </div>
       <div id="edit-msg" style="margin-top:10px;text-align:center;font-size:12px"></div>
@@ -922,16 +922,16 @@ function saveEscEdit(idx){
     if(data.success){
       Object.assign(rows[idx],updates);
       window._escRows=rows;
-      if(msg){msg.style.color='#0F6E56';msg.textContent='✓ Saved!';}
+      if(msg){msg.style.color='#7A6248';msg.textContent='✓ Saved!';}
       setTimeout(()=>{
         document.getElementById('esc-overlay')?.remove();
         renderEscalations(rows);
       },800);
     } else {
-      if(msg){msg.style.color='#A32D2D';msg.textContent='Error: '+JSON.stringify(data.error);}
+      if(msg){msg.style.color='#B07A6E';msg.textContent='Error: '+JSON.stringify(data.error);}
     }
   }).catch(err=>{
-    if(msg){msg.style.color='#A32D2D';msg.textContent='Error: '+err.message;}
+    if(msg){msg.style.color='#B07A6E';msg.textContent='Error: '+err.message;}
   });
 }
 
@@ -969,8 +969,8 @@ function calcEscDate(dateStr){
   if(el)el.innerHTML=`
     <div style="margin-top:4px;display:flex;flex-direction:column;gap:2px">
       <div style="display:flex;align-items:center;gap:6px">
-        <span style="font-size:15px;font-weight:700;color:#0F6E56">${saliCount}</span>
-        <span style="font-size:10px;color:#085041;background:#E1F5EE;padding:1px 7px;border-radius:6px;font-weight:600">Sali Aljehani</span>
+        <span style="font-size:15px;font-weight:700;color:#7A6248">${saliCount}</span>
+        <span style="font-size:10px;color:#5E4A38;background:#F3E9D8;padding:1px 7px;border-radius:6px;font-weight:600">Sali Aljehani</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
         <span style="font-size:15px;font-weight:700;color:#888">${shahadCount}</span>
@@ -987,9 +987,9 @@ function filterEsc(){
   const af=document.getElementById('esc-af')?.value||'';
   const mf=document.getElementById('esc-mf')?.value||'';
 
-  const STATUS_COLORS={'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8','Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8','Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2','Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8','Closed':'#EAF3DE','Resolved':'#EAF3DE'};
+  const STATUS_COLORS={'Pending':'#FAF0F0','Pending Refund':'#FAF0F0','Pending MCI':'#FBF3D8','Pending with Sales':'#E8F5EE','Pending Compensation':'#E8EFF8','Pending Customer contact':'#F0E8FE','Pending for parts':'#EBF4F2','Duplicate':'#F1EFE8','Raise a new complaint':'#FBF3D8','Closed':'#EDF3E5','Resolved':'#EDF3E5'};
   const DEPT_COLORS={'PAC':'#FAF0F0','Nissan':'#E8EFF8','Stellantis':'#EBF4F2','PE':'#EBF4F2','Bodyshop':'#F0E8FE','Foton':'#F1EFE8'};
-  const sb=s=>{if(!s)return'<span style="color:#aaa">—</span>';const bg=STATUS_COLORS[s]||'#F1EFE8';const col=s==='Closed'||s==='Resolved'?'#3B6D11':'#A32D2D';return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;};
+  const sb=s=>{if(!s)return'<span style="color:#aaa">—</span>';const bg=STATUS_COLORS[s]||'#F1EFE8';const col=s==='Closed'||s==='Resolved'?'#6F8A56':'#B07A6E';return`<span style="background:${bg};color:${col};padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap">${s}</span>`;};
   const db=d=>{if(!d)return'<span style="color:#aaa">—</span>';const bg=DEPT_COLORS[d]||'#F1EFE8';return`<span style="background:${bg};color:#444;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:600">${d}</span>`;};
 
   const filtered=rows.filter(r=>{
@@ -1014,8 +1014,8 @@ function filterEsc(){
       const assigned=r['Assigned to']||'';
       const modby=r['Modified By']||'';
       const comments=r['Comments']||'';
-      const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
-      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#f4faf7'}'">
+      const rowBg=i%2===0?'background:#ffffff':'background:#FAF7F2';
+      return`<tr style="${rowBg};cursor:pointer;border-bottom:0.5px solid var(--border)" onmouseover="this.style.background='var(--teal-light)'" onmouseout="this.style.background='${i%2===0?'#ffffff':'#FAF7F2'}'">
         <td style="padding:8px 10px;color:var(--muted);font-size:11px">${i+1}</td>
         <td style="padding:8px 10px;font-weight:600;color:var(--text);font-size:11px">${caseId}</td>
         <td style="padding:8px 10px">${sb(status)}</td>
@@ -1101,12 +1101,12 @@ function renderWorkDone(rows){
   rows.forEach(r=>{const a=(r[0]||'').trim();if(a==='Work Done'){inS=true;return;}if(!inS||!a)return;items.push(a);});
   function getCat(item){
     const t=item.toLowerCase();
-    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#534AB7',bg:'#EEEDFE',dot:'#534AB7'};
-    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
-    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#A32D2D',bg:'#FCEBEB',dot:'#A32D2D'};
-    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#BA7517',bg:'#FAEEDA',dot:'#BA7517'};
-    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#185FA5',bg:'#E6F1FB',dot:'#185FA5'};
-    return{label:'Achievement',color:'#0F6E56',bg:'#E1F5EE',dot:'#1D9E75'};
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#9385A8',bg:'#ECE8F2',dot:'#9385A8'};
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#7A6248',bg:'#F3E9D8',dot:'#B79A6F'};
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#B07A6E',bg:'#F6ECE9',dot:'#B07A6E'};
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#B08A5A',bg:'#F7EFE1',dot:'#B08A5A'};
+    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#8296A8',bg:'#EAEEF2',dot:'#8296A8'};
+    return{label:'Achievement',color:'#7A6248',bg:'#F3E9D8',dot:'#B79A6F'};
   }
   document.getElementById('tab-workdone').innerHTML=`
     <div class="stat-grid" style="margin-bottom:16px">
@@ -1298,7 +1298,7 @@ function renderChecklist(rows){
             if(!raw) return `<td style="text-align:center"><span style="color:#ddd">—</span></td>`;
             const up=raw.toUpperCase();
             if(up==='TRUE'||up==='✓'||up==='YES') return `<td style="text-align:center"><span style="color:var(--teal);font-size:15px;font-weight:700">✓</span></td>`;
-            return `<td style="text-align:center"><span style="color:#085041;font-size:10px;font-weight:600;white-space:nowrap">${raw}</span></td>`;
+            return `<td style="text-align:center"><span style="color:#5E4A38;font-size:10px;font-weight:600;white-space:nowrap">${raw}</span></td>`;
           }).join('')}
         </tr>`).join('')}
         </tbody></table></div></div>`;
@@ -1424,7 +1424,7 @@ function renderPerfGap(rows){
 const EOM_SHEET_ID = '1e_TzL2YGAnjqbC8ox0UtZ7sXtRVV4dkDGS1p58pcG0I';
 const AGENT_PERF_SHEET_ID = '1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU';
 const GAS_EOM = 'https://script.google.com/macros/s/AKfycbyzLwaqPUjIrJ3FW76CTfMZZs0FUEMUqvdPNoOIbZCxZlED5J-1eb_4NJSw_vV2YuksDg/exec';
-// ⬇️⬇️ الصقي هنا رابط تطبيق الويب (Web App URL) بعد نشر سكربت التخزين. بدونه يبقى الحفظ بالمتصفح فقط.
+// ⬇️⬇️ Paste the Web App URL here after publishing the storage script. Without it, saving stays browser-only.
 const EOM_STORE_API = 'https://script.google.com/macros/s/AKfycbyccy-jbtVrbot1B1HQcaajny5hXL37cJFp46Hud24AgAMWpWHR2HymkMw51o_8TcmD/exec';
 const W_EOM = {calls:0.25, quality:0.25, csat:0.20, aht:0.15, tickets:0.15};
 let EOM_RAW=[], EOM_SHEET_DATA=[], EOM_MANUAL={}, EOM_MONTHS=[], EOM_LOADED=false;
@@ -1479,13 +1479,13 @@ function saveEOMManualToSheet(){
     const setSt=function(c,t){ if(st){ st.style.color=c; st.textContent=t; } };
 
     // GUARD 1 — never write until we've successfully loaded the sheet once this session.
-    if(!EOM_SHEET_LOADED){ setSt('#A32D2D','⚠️ لم تُحمّل بيانات الشيت بعد — محفوظ بالمتصفح فقط مؤقتاً'); return; }
+    if(!EOM_SHEET_LOADED){ setSt('#B07A6E','⚠️ Sheet data not loaded yet — temporarily saved in browser only'); return; }
     // GUARD 2 — never write an empty object on top of real data.
-    if(!EOM_MANUAL || !Object.keys(EOM_MANUAL).length){ setSt('#A32D2D','⚠️ لا توجد بيانات للحفظ'); return; }
+    if(!EOM_MANUAL || !Object.keys(EOM_MANUAL).length){ setSt('#B07A6E','⚠️ No data to save'); return; }
     // GUARD 3 — the store URL hasn't been set yet.
-    if(/PASTE_YOUR_WEB_APP_URL_HERE/.test(EOM_STORE_API)){ setSt('#A32D2D','⚠️ لم يُضبط رابط التخزين (EOM_STORE_API) — محفوظ بالمتصفح فقط'); return; }
+    if(/PASTE_YOUR_WEB_APP_URL_HERE/.test(EOM_STORE_API)){ setSt('#B07A6E','⚠️ Storage URL (EOM_STORE_API) not set — saved in browser only'); return; }
 
-    setSt('var(--muted)','⏳ جاري الحفظ في قوقل شيت...');
+    setSt('var(--muted)','⏳ Saving to Google Sheet...');
     try{
       // MERGE-BEFORE-WRITE — re-read the live sheet and layer our edits on top, so we can never erase
       // months/agents that aren't in memory right now (another device, or a partial local load).
@@ -1511,11 +1511,11 @@ function saveEOMManualToSheet(){
         confirmed=!!(back && firstKey && Object.prototype.hasOwnProperty.call(back, firstKey));
       }catch(_){}
 
-      if(confirmed){ setSt('#0F6E56','✓ محفوظ ومؤكَّد في قوقل شيت'); }
-      else if(ok){ setSt('#B8860B','✓ أُرسل للشيت (لم يتأكد الاسترجاع — راجعي Apps Script)'); }
-      else{ setSt('#A32D2D','⚠️ فشل الحفظ في الشيت — محفوظ بالمتصفح فقط'); }
+      if(confirmed){ setSt('#7A6248','✓ Saved & confirmed in Google Sheet'); }
+      else if(ok){ setSt('#B8860B','✓ Sent to sheet (not confirmed — check Apps Script)'); }
+      else{ setSt('#B07A6E','⚠️ Save to sheet failed — saved in browser only'); }
     }catch(e){
-      setSt('#A32D2D','⚠️ خطأ في الحفظ — محفوظ بالمتصفح فقط');
+      setSt('#B07A6E','⚠️ Save error — saved in browser only');
     }
   }, 1200);
 }
@@ -1596,7 +1596,7 @@ function renderEOMTab(){
           <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
           <select id="eomMonthSel" onchange="calcEOM()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
           <button onclick="saveEOMAll()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">⚡ Save & Calculate</button>
-          <span id="eomSaveStatus" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+          <span id="eomSaveStatus" style="font-size:11px;color:var(--muted)">Data saved automatically</span>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--teal-light);color:var(--teal)">📞 Calls 25%</span>
@@ -1608,7 +1608,7 @@ function renderEOMTab(){
       </div>
       <div style="flex:0 0 auto;margin-left:auto;text-align:center;background:linear-gradient(135deg,#fffdf5,#fff6da);border:1.5px solid #EBD98F;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
         <div style="font-size:10px;font-weight:700;color:#B8860B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">🏆 <span id="eomPodiumTitle">${fmtMonthEOM(month)}</span> · Employee of the Month</div>
-        <div id="eomPodium"><div style="color:var(--muted);padding:16px;font-size:12px">اضغطي Save &amp; Calculate</div></div>
+        <div id="eomPodium"><div style="color:var(--muted);padding:16px;font-size:12px">Press Save & Calculate</div></div>
       </div>
     </div>
   </div>
@@ -1629,12 +1629,12 @@ function renderEOMTab(){
           <thead>
             <tr>
               <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#5F5E5A;background:#F1EFE8;border-bottom:2px solid #D3D1C7">Info</th>
-              <th colspan="7" style="text-align:center;font-size:9.5px;font-weight:700;color:#085041;background:#d1f0e4;border-bottom:2px solid #9FE1CB">Time</th>
-              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#185FA5;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls</th>
-              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#854F0B;background:#faeeda;border-bottom:2px solid #FAC775">WA</th>
-              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#3B6D11;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total</th>
+              <th colspan="7" style="text-align:center;font-size:9.5px;font-weight:700;color:#5E4A38;background:#EFE6D8;border-bottom:2px solid #E4D8C8">Time</th>
+              <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#8296A8;background:#daeaf8;border-bottom:2px solid #B5D4F4">Calls</th>
+              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#854F0B;background:#F7EFE1;border-bottom:2px solid #FAC775">WA</th>
+              <th style="text-align:center;font-size:9.5px;font-weight:700;color:#6F8A56;background:#e5f3d5;border-bottom:2px solid #C0DD97">Total</th>
               <th colspan="3" style="text-align:center;font-size:9.5px;font-weight:700;color:#993C1D;background:#fde8e0;border-bottom:2px solid #F5C4B3">CSAT</th>
-              <th colspan="2" style="text-align:center;font-size:9.5px;font-weight:700;color:#534AB7;background:#eeedfe;border-bottom:2px solid #CECBF6">Tickets</th>
+              <th colspan="2" style="text-align:center;font-size:9.5px;font-weight:700;color:#9385A8;background:#ECE8F2;border-bottom:2px solid #CECBF6">Tickets</th>
               <th style="text-align:center;font-size:9.5px;font-weight:700;color:#993556;background:#fbeaf0;border-bottom:2px solid #F4C0D1">Quality</th>
               <th style="text-align:center;font-size:9.5px;font-weight:700;color:#444441;background:#e8e8e4;border-bottom:2px solid #D3D1C7">Score</th>
             </tr>
@@ -1662,20 +1662,20 @@ function renderEOMTab(){
             <th style="text-align:center;font-size:9px;color:#e65100;width:54px">Quality</th>
             <th style="text-align:center;font-size:9px;color:var(--purple);width:54px">Score</th>
           </tr>
-          <tr style="background:#e6f1fb">
+          <tr style="background:#EAEEF2">
             <td colspan="3" style="padding:3px 8px;font-size:9px;color:var(--muted);font-weight:600">Target</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">9:00:00</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">8:00:00</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:30:00</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">1:00:00</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:04:00</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:00:30</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">0:04:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">9:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">8:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">0:30:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">1:00:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">0:04:00</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">0:00:30</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">0:04:00</td>
             <td colspan="8"></td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">95%</td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">90%</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">95%</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">90%</td>
             <td></td>
-            <td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">90%</td>
+            <td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">90%</td>
             <td></td>
           </tr>
         </thead>
@@ -1705,9 +1705,9 @@ function renderEOMTab(){
             <th style="text-align:center">Customers<br>Evaluated</th>
             <th style="text-align:center;color:var(--teal)">CE%</th>
             <th style="text-align:center">Satisfied</th>
-            <th style="text-align:center;color:#2e7d32">Satisfied%</th>
+            <th style="text-align:center;color:#6f8a56">Satisfied%</th>
             <th style="text-align:center">Dissatisfied</th>
-            <th style="text-align:center;color:#A32D2D">Dissatisfied%</th>
+            <th style="text-align:center;color:#B07A6E">Dissatisfied%</th>
           </tr></thead>
           <tbody id="eomFbBody"></tbody>
         </table>
@@ -1726,7 +1726,7 @@ function renderEOMTab(){
       <span id="eomScoresArrow" style="font-size:11px;color:var(--muted);flex-shrink:0">▲</span>
     </div>
     <div id="eomScoresBody">
-      <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">أدخلي البيانات واضغطي Save & Calculate</div></div>
+      <div id="eomScoresTable"><div style="text-align:center;color:var(--muted);padding:30px">Enter data and press Save & Calculate</div></div>
     </div>
   </div>`;
   document.getElementById('tab-eom').innerHTML=html;
@@ -1903,7 +1903,7 @@ function renderEOMPerfTable(agentNames, agents, month){
   if(!el)return;
   const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
   const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
-  const inp=`border:1.2px solid #c8e6c9;border-radius:4px;background:#fff;font-size:9px;padding:2px 3px;text-align:center`;
+  const inp=`border:1.2px solid #dce8d0;border-radius:4px;background:#fff;font-size:9px;padding:2px 3px;text-align:center`;
   let html='';
   agentNames.forEach((name,i)=>{
     const a=agents[name];
@@ -1931,20 +1931,20 @@ function renderEOMPerfTable(agentNames, agents, month){
     const fbPtr=parseFloat(fbP.tr)||0, fbPev=parseFloat(fbP.ev)||0, fbPsat=parseFloat(fbP.sat)||0;
     const tocsatAuto=fbPtr>0?Math.round(fbPev/fbPtr*100):null;
     const csatAuto=fbPev>0?Math.round(fbPsat/fbPev*100):null;
-    const bg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    const bg=i%2===0?'background:#ffffff':'background:#FAF7F2';
     html+=`<tr style="${bg}" data-perf-agent="${name}">
       <td style="text-align:center;font-size:9.5px" id="eomPerf_no_${nid}">—</td>
       <td style="padding:4px 10px 4px 4px;font-size:10px;font-weight:600;white-space:nowrap" title="${name}">${name}</td>
       <td style="text-align:center;padding:2px">${badgeVal
-        ?`<input type="text" class="perf-badge" value="${badgeVal}" readonly title="رقم الموظفة" style="width:42px;${inp};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
+        ?`<input type="text" class="perf-badge" value="${badgeVal}" readonly title="Agent badge no." style="width:42px;${inp};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
         :`<input type="text" class="perf-badge" placeholder="—" value="${md.badge||''}" style="width:42px;${inp}" oninput="savePerfField('${name}','badge',this.value,'${month}')">`}</td>
-      <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
-      <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
-      <td style="text-align:center;font-size:9.5px;${avgCallOff>0?(callOffOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgCallOff)}</td>
-      <td style="text-align:center;font-size:9.5px;${avgBreak>0?(breakOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'):'color:var(--muted)'}">${fmtT(avgBreak)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgLogin>0?(loginOk?'color:#6f8a56;font-weight:700':'color:#B07A6E;font-weight:700'):'color:var(--muted)'}">${fmtT(avgLogin)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgReady>0?(readyOk?'color:#6f8a56;font-weight:700':'color:#B07A6E;font-weight:700'):'color:var(--muted)'}">${fmtT(avgReady)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgCallOff>0?(callOffOk?'color:#6f8a56;font-weight:700':'color:#B07A6E;font-weight:700'):'color:var(--muted)'}">${fmtT(avgCallOff)}</td>
+      <td style="text-align:center;font-size:9.5px;${avgBreak>0?(breakOk?'color:#6f8a56;font-weight:700':'color:#B07A6E;font-weight:700'):'color:var(--muted)'}">${fmtT(avgBreak)}</td>
       <td style="text-align:center;font-size:9.5px;color:var(--muted)">${fmtMS(avgTalk)}</td>
       <td style="text-align:center;font-size:9.5px;color:var(--muted)">${fmtMS(avgACW)}</td>
-      <td style="text-align:center;font-size:9.5px;${ahtOk?'color:#2e7d32;font-weight:700':'color:#A32D2D;font-weight:700'}">${fmtMS(avgAHT)}</td>
+      <td style="text-align:center;font-size:9.5px;${ahtOk?'color:#6f8a56;font-weight:700':'color:#B07A6E;font-weight:700'}">${fmtMS(avgAHT)}</td>
       <td style="text-align:center;font-size:9.5px">${a.manual}</td>
       <td style="text-align:center;font-size:9.5px">${a.calls}</td>
       <td style="text-align:center;font-size:9.5px;font-weight:700">${total}</td>
@@ -1954,7 +1954,7 @@ function renderEOMPerfTable(agentNames, agents, month){
       <td style="text-align:center;padding:2px">${tocsatAuto!==null?`<span style="font-size:9.5px;font-weight:700;color:#993C1D">${tocsatAuto}%</span>`:`<span style="font-size:9.5px;color:var(--muted)">—</span>`}</td>
       <td style="text-align:center;padding:2px">${csatAuto!==null?`<span style="font-size:9.5px;font-weight:700;color:#993C1D">${csatAuto}%</span>`:`<span style="font-size:9.5px;color:var(--muted)">—</span>`}</td>
       <td style="text-align:center;font-size:9.5px">${a.tickets}</td>
-      <td style="text-align:center;font-size:9.5px;${tktOk?'color:#2e7d32;font-weight:700':'color:var(--muted)'}">${tktPct}</td>
+      <td style="text-align:center;font-size:9.5px;${tktOk?'color:#6f8a56;font-weight:700':'color:var(--muted)'}">${tktPct}</td>
       <td style="text-align:center;padding:2px"><span style="display:inline-flex;align-items:center;gap:2px;justify-content:center"><input type="number" class="perf-quality" placeholder="—" value="${md.quality||''}" min="0" max="100" step="0.1" style="width:34px;${inp}" oninput="savePerfField('${name}','quality',this.value,'${month}')"><span style="font-size:9px;color:var(--muted)">%</span></span></td>
       <td style="text-align:center;font-size:11px;font-weight:800" id="eomPerf_score_${nid}">—</td>
     </tr>`;
@@ -1990,16 +1990,16 @@ function renderEOMFeedbackTable(agentNames, month, agents){
     html+=`<tr data-fb-agent="${name}">
       <td style="padding:4px 10px;font-weight:600;font-size:11px">${name}</td>
       <td style="text-align:center;padding:3px 4px">${autoAns>0
-        ?`<input class="fb-inp fb-ans" type="number" value="${autoAns}" readonly title="من الشيت: Manual Dials + Connected Inbound" style="${inp_style};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
+        ?`<input class="fb-inp fb-ans" type="number" value="${autoAns}" readonly title="From sheet: Manual Dials + Connected Inbound" style="${inp_style};background:#e8f1fb;color:#1c5a8f;font-weight:700;cursor:default">`
         :`<input class="fb-inp fb-ans" type="number" min="0" placeholder="—" value="${ans}" oninput="updateFBRow(this,'${name}')" style="${inp_style}">`}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-tr" type="number" min="0" placeholder="—" value="${tr}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ct_${i}">${ct}</td>
-      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" value="${ev}" readonly title="تلقائي: Satisfied + Dissatisfied" style="${inp_style};background:#e1f5ee;color:#0f6e56;font-weight:700;cursor:default"></td>
+      <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-ev" type="number" value="${ev}" readonly title="Auto: Satisfied + Dissatisfied" style="${inp_style};background:#F3E9D8;color:#7A6248;font-weight:700;cursor:default"></td>
       <td style="text-align:center;font-weight:600;color:var(--teal);font-size:11px;padding:3px 6px" id="fb_ce_${i}">${ce}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-sat" type="number" min="0" placeholder="—" value="${sat}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
-      <td style="text-align:center;font-weight:600;color:#2e7d32;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
+      <td style="text-align:center;font-weight:600;color:#6f8a56;font-size:11px;padding:3px 6px" id="fb_sp_${i}">${sp}</td>
       <td style="text-align:center;padding:3px 4px"><input class="fb-inp fb-dis" type="number" min="0" placeholder="—" value="${dis}" oninput="updateFBRow(this,'${name}')" style="${inp_style}"></td>
-      <td style="text-align:center;font-weight:600;color:#A32D2D;font-size:11px;padding:3px 6px" id="fb_dp_${i}">${dp}</td>
+      <td style="text-align:center;font-weight:600;color:#B07A6E;font-size:11px;padding:3px 6px" id="fb_dp_${i}">${dp}</td>
     </tr>`;
   });
   // Total row
@@ -2011,9 +2011,9 @@ function renderEOMFeedbackTable(agentNames, month, agents){
     <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_ev">—</td>
     <td style="text-align:center;font-weight:700;color:var(--teal);font-size:12px" id="fb_tot_ce">—</td>
     <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_sat">—</td>
-    <td style="text-align:center;font-weight:700;color:#2e7d32;font-size:12px" id="fb_tot_sp">—</td>
+    <td style="text-align:center;font-weight:700;color:#6f8a56;font-size:12px" id="fb_tot_sp">—</td>
     <td style="text-align:center;font-weight:700;font-size:12px" id="fb_tot_dis">—</td>
-    <td style="text-align:center;font-weight:700;color:#A32D2D;font-size:12px" id="fb_tot_dp">—</td>
+    <td style="text-align:center;font-weight:700;color:#B07A6E;font-size:12px" id="fb_tot_dp">—</td>
   </tr>`;
   fbEl.innerHTML=html;
   updateFBTotals();
@@ -2121,12 +2121,12 @@ function saveEOMAll(){
   });
   persistEOMManual();
   const st=document.getElementById('eomSaveStatus');
-  if(st){st.textContent='✅ تم الحفظ!';st.style.color='#2e7d32';setTimeout(()=>{st.textContent='البيانات محفوظة تلقائياً';st.style.color='';},2000);}
+  if(st){st.textContent='✅ Saved!';st.style.color='#6f8a56';setTimeout(()=>{st.textContent='Data saved automatically';st.style.color='';},2000);}
   calcEOM();
 }
 
 function renderEOMPodium(results){
-  if(!results.length){document.getElementById('eomPodium').innerHTML='<div style="color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  if(!results.length){document.getElementById('eomPodium').innerHTML='<div style="color:var(--muted);padding:30px">No data</div>';return;}
   const top=results.slice(0,2);
   const medals=['🥇','🥈'];
   const avBg=['linear-gradient(135deg,#DAA520,#b8860b)','#9e9e9e'];
@@ -2146,7 +2146,7 @@ function renderEOMPodium(results){
 }
 
 function renderEOMScores(results){
-  if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">لا توجد بيانات</div>';return;}
+  if(!results.length){document.getElementById('eomScoresTable').innerHTML='<div style="text-align:center;color:var(--muted);padding:30px">No data</div>';return;}
   const em=['🥇','🥈'];
   const fmtT=s=>s>0?`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}`:'—';
   const fmtMS=s=>s>0?`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`:'—';
@@ -2166,17 +2166,17 @@ function renderEOMScores(results){
   ];
 
   const KPI_COLORS=[
-    '#d1f0e4','#d1f0e4','#d1f0e4','#d1f0e4', // Time: teal
-    '#d1f0e4','#d1f0e4','#d1f0e4',             // Time: teal
-    '#faeeda',                                  // WA: amber
+    '#EFE6D8','#EFE6D8','#EFE6D8','#EFE6D8', // Time: teal
+    '#EFE6D8','#EFE6D8','#EFE6D8',             // Time: teal
+    '#F7EFE1',                                  // WA: amber
     '#fde8e0',                                  // CSAT: coral
-    '#eeedfe',                                  // Tickets: purple
+    '#ECE8F2',                                  // Tickets: purple
     '#fbeaf0',                                  // Quality: pink
   ];
   const KPI_TEXT_COLORS=[
-    '#085041','#085041','#085041','#085041',
-    '#085041','#085041','#085041',
-    '#854F0B','#993C1D','#534AB7','#993556',
+    '#5E4A38','#5E4A38','#5E4A38','#5E4A38',
+    '#5E4A38','#5E4A38','#5E4A38',
+    '#854F0B','#993C1D','#9385A8','#993556',
   ];
 
   let html=`<div style="overflow-x:auto"><table class="tbl" style="min-width:950px;font-size:9.5px">
@@ -2185,24 +2185,24 @@ function renderEOMScores(results){
       <th style="font-size:10px;white-space:nowrap;width:150px;background:#F1EFE8">Agent</th>
       <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">KPIs<br>Passed</th>
       <th style="text-align:center;font-size:9px;width:46px;background:#e8e8e4;color:#444441">Score</th>
-      ${KPI_COLS.map((c,i)=>`<th style="text-align:center;font-size:9px;width:62px;background:${KPI_COLORS[i]||'#f4faf7'};color:${KPI_TEXT_COLORS[i]||'var(--muted)'};border-bottom:2px solid rgba(0,0,0,.08)">${c.label}</th>`).join('')}
+      ${KPI_COLS.map((c,i)=>`<th style="text-align:center;font-size:9px;width:62px;background:${KPI_COLORS[i]||'#FAF7F2'};color:${KPI_TEXT_COLORS[i]||'var(--muted)'};border-bottom:2px solid rgba(0,0,0,.08)">${c.label}</th>`).join('')}
     </tr>
-    <tr style="background:#e6f1fb">
+    <tr style="background:#EAEEF2">
       <td colspan="4" style="padding:3px 8px;font-size:9px;color:var(--muted);font-weight:600">Target</td>
-      ${KPI_COLS.map(c=>`<td style="text-align:center;font-size:9px;font-weight:700;color:#185fa5">${c.target}</td>`).join('')}
+      ${KPI_COLS.map(c=>`<td style="text-align:center;font-size:9px;font-weight:700;color:#8296A8">${c.target}</td>`).join('')}
     </tr>
     </thead><tbody>`;
 
   results.forEach((r,i)=>{
     const rank=i<2?`<span style="font-size:12px">${em[i]}</span>`:`<span style="color:#ccc;font-size:9.5px">${i+1}</span>`;
     const scoreCol=i===0?'#DAA520':i===1?'#9e9e9e':i===2?'#cd7f32':'var(--text)';
-    const rowBg=i%2===0?'background:#ffffff':'background:#f4faf7';
+    const rowBg=i%2===0?'background:#ffffff':'background:#FAF7F2';
     const kpiCells=KPI_COLS.map(c=>{
       const passed=r.kpis[c.key];
       const display=c.val(r);
       let icon='—', col='var(--muted)';
-      if(passed===true){icon='✓';col='#2e7d32';}
-      else if(passed===false){icon='✗';col='#A32D2D';}
+      if(passed===true){icon='✓';col='#6f8a56';}
+      else if(passed===false){icon='✗';col='#B07A6E';}
       return `<td style="text-align:center;font-size:9px;padding:4px 3px">
         <div style="font-size:10px;font-weight:600;color:${col};line-height:1.1">${icon}</div>
         <div style="color:var(--muted);font-size:8.5px;margin-top:1px">${display}</div>
@@ -2311,7 +2311,7 @@ function renderQA(){
       <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase">Month:</label>
       <select onchange="QA_ACTIVE_MONTH=this.value;renderQA()" style="font-size:13px;font-weight:600;color:var(--teal);padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;outline:none;cursor:pointer">${selHTML}</select>
       <button onclick="saveQAData();showQASaveMsg()" style="padding:7px 18px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">💾 Save</button>
-      <span id="qaSaveMsg" style="font-size:11px;color:var(--muted)">البيانات محفوظة تلقائياً</span>
+      <span id="qaSaveMsg" style="font-size:11px;color:var(--muted)">Data saved automatically</span>
       <button onclick="exportQA()" style="padding:7px 14px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Copy Summary</button>
     </div>
   </div>
@@ -2322,23 +2322,23 @@ function renderQA(){
         <thead style="position:sticky;top:0;z-index:2">
           <!-- Group row -->
           <tr>
-            <th colspan="4" style="padding:6px 10px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2);position:sticky;left:0;z-index:3">Info</th>
-            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">تقييم العميل |20</th>
-            <th colspan="6" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">خدمة العملاء |50</th>
-            <th colspan="2" style="padding:6px 8px;text-align:center;background:#0F6E56;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">جودة التكت |30</th>
-            <th colspan="3" style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Result</th>
-            <th style="padding:6px 8px;text-align:center;background:#085041;color:#fff;font-size:10px;font-weight:500">Comments</th>
+            <th colspan="4" style="padding:6px 10px;text-align:center;background:#5E4A38;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2);position:sticky;left:0;z-index:3">Info</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#7A6248;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Customer Evaluation |20</th>
+            <th colspan="6" style="padding:6px 8px;text-align:center;background:#7A6248;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Customer Service |50</th>
+            <th colspan="2" style="padding:6px 8px;text-align:center;background:#7A6248;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Ticket Quality |30</th>
+            <th colspan="3" style="padding:6px 8px;text-align:center;background:#5E4A38;color:#fff;font-size:10px;font-weight:500;border-right:1px solid rgba(255,255,255,.2)">Result</th>
+            <th style="padding:6px 8px;text-align:center;background:#5E4A38;color:#fff;font-size:10px;font-weight:500">Comments</th>
           </tr>
           <!-- Column headers -->
-          <tr style="background:#f4faf7;border-bottom:2px solid #9FE1CB">
-            <th style="padding:5px 10px;text-align:left;font-size:9px;font-weight:500;color:#085041;min-width:110px;position:sticky;left:0;background:#f4faf7;z-index:3">Name</th>
-            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:42px">Company</th>
-            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:76px">Date</th>
-            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#085041;min-width:88px;border-right:1px solid #9FE1CB">Customer number</th>
-            ${QA_COL_HEADERS.map(c=>`<th title="${c.t.replace(/<br>/g,' ')}" style="padding:4px 3px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:${c.max===30?62:c.max<=5?48:52}px;line-height:1.4;cursor:help">${c.t}<br><span style="color:#0F6E56;font-weight:700">|${c.max}</span></th>`).join('')}
-            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:44px;border-right:1px solid #9FE1CB">Total<br>|100</th>
+          <tr style="background:#FAF7F2;border-bottom:2px solid #E4D8C8">
+            <th style="padding:5px 10px;text-align:left;font-size:9px;font-weight:500;color:#5E4A38;min-width:110px;position:sticky;left:0;background:#FAF7F2;z-index:3">Name</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#5E4A38;min-width:42px">Company</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#5E4A38;min-width:76px">Date</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#5E4A38;min-width:88px;border-right:1px solid #E4D8C8">Customer number</th>
+            ${QA_COL_HEADERS.map(c=>`<th title="${c.t.replace(/<br>/g,' ')}" style="padding:4px 3px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:${c.max===30?62:c.max<=5?48:52}px;line-height:1.4;cursor:help">${c.t}<br><span style="color:#7A6248;font-weight:700">|${c.max}</span></th>`).join('')}
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#7A6248;min-width:44px;border-right:1px solid #E4D8C8">Total<br>|100</th>
             <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:var(--muted);min-width:42px">Target</th>
-            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#0F6E56;min-width:38px;border-right:1px solid #9FE1CB">%</th>
+            <th style="padding:5px 6px;text-align:center;font-size:9px;font-weight:500;color:#7A6248;min-width:38px;border-right:1px solid #E4D8C8">%</th>
             <th style="padding:5px 8px;text-align:left;font-size:9px;font-weight:500;color:var(--muted);min-width:280px">Other comments</th>
           </tr>
         </thead>
@@ -2346,7 +2346,7 @@ function renderQA(){
           ${buildQARows(rows)}
         </tbody>
         <tfoot>
-          <tr style="background:#e8f5ee;font-weight:700;border-top:2px solid #9FE1CB">
+          <tr style="background:#e8f5ee;font-weight:700;border-top:2px solid #E4D8C8">
             <td colspan="4" style="padding:8px 10px;font-size:11px;color:var(--teal);font-weight:600">Total</td>
             ${QA_COLS.map((_,i)=>`<td id="qa_ft_${i}" style="text-align:center;font-size:11px;color:var(--teal)">—</td>`).join('')}
             <td id="qa_ft_total" style="text-align:center;font-size:12px;font-weight:800;color:var(--teal)">—</td>
@@ -2377,16 +2377,16 @@ function buildQARows(rows){
   Object.entries(agents).forEach(([agent,agentRows])=>{
     const rowspan=agentRows.length;
     const displayName=agent;
-    const rowBg=agentIdx%2===0?'background:#ffffff':'background:#f0faf5';
-    const stickyBg=agentIdx%2===0?'#ffffff':'#f0faf5';
+    const rowBg=agentIdx%2===0?'background:#ffffff':'background:#F7F1E8';
+    const stickyBg=agentIdx%2===0?'#ffffff':'#F7F1E8';
 
     agentRows.forEach((r,ri)=>{
       const key=QA_ACTIVE_MONTH+'_'+agent+'_r'+r.idx;
       const d=QA_DATA[key]||{};
       const total=QA_COLS.reduce((s,c)=>{const v=parseFloat(d[c.key]||0);return s+(isNaN(v)?0:v);},0);
       const pct=Math.round(total/QA_TOTAL_MAX*100);
-      const pctCol=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';
-      const borderBottom=ri===rowspan-1?'border-bottom:2px solid #c8e6c9':'border-bottom:0.5px solid #ddd';
+      const pctCol=pct>=95?'#6f8a56':pct>=80?'#e65100':'#c0272d';
+      const borderBottom=ri===rowspan-1?'border-bottom:2px solid #dce8d0':'border-bottom:0.5px solid #ddd';
       const colInputs=QA_COLS.map(c=>{
         const v=d[c.key]||'';
         const vn=parseFloat(v);const over=!isNaN(vn)&&vn>c.max;
@@ -2446,7 +2446,7 @@ function updateQARow(key){
   const totEl=document.getElementById('qa_tot_'+nid);
   const pctEl=document.getElementById('qa_pct_'+nid);
   if(totEl)totEl.textContent=total||0;
-  if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+  if(pctEl){pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#6f8a56':pct>=80?'#e65100':'#c0272d';}
 }
 
 function updateQATotals(){
@@ -2463,21 +2463,21 @@ function updateQATotals(){
     const totEl=document.getElementById('qa_tot_'+nid);
     const pctEl=document.getElementById('qa_pct_'+nid);
     if(totEl)totEl.textContent=rowTotal||0;
-    if(pctEl){const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#2e7d32':pct>=80?'#e65100':'#c0272d';}
+    if(pctEl){const pct=Math.round(rowTotal/QA_TOTAL_MAX*100);pctEl.textContent=pct+'%';pctEl.style.color=pct>=95?'#6f8a56':pct>=80?'#e65100':'#c0272d';}
   });
   QA_COLS.forEach((_,i)=>{const el=document.getElementById('qa_ft_'+i);if(el)el.textContent=colSums[i]||'—';});
   const totEl=document.getElementById('qa_ft_total');
   const pctEl=document.getElementById('qa_ft_pct');
   if(totEl)totEl.textContent=grandTotal||'—';
-  if(pctEl&&rowCount>0){const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);pctEl.textContent=avg+'%';pctEl.style.color=avg>=95?'#2e7d32':avg>=80?'#e65100':'#c0272d';}
+  if(pctEl&&rowCount>0){const avg=Math.round(grandTotal/rowCount/QA_TOTAL_MAX*100);pctEl.textContent=avg+'%';pctEl.style.color=avg>=95?'#6f8a56':avg>=80?'#e65100':'#c0272d';}
 }
 
 
 function showQASaveMsg(){
   const el=document.getElementById('qaSaveMsg');
   if(!el)return;
-  el.textContent='✅ تم الحفظ!';el.style.color='#2e7d32';
-  setTimeout(()=>{el.textContent='البيانات محفوظة تلقائياً';el.style.color='var(--muted)';},2000);
+  el.textContent='✅ Saved!';el.style.color='#6f8a56';
+  setTimeout(()=>{el.textContent='Data saved automatically';el.style.color='var(--muted)';},2000);
 }
 
 function exportQA(){
