@@ -9,7 +9,7 @@
 <title>Sali KPIs Dashboard</title>
 <style>
     :root{
-    --bg:#FCFAF6;--surface:#FFFFFF;--border:#EEE7DB;
+    --bg:#FEFDFB;--surface:#FFFFFF;--border:#F0E9DE;
     --text:#4A3F33;--muted:#9E856A;
     --teal:#7A6248;--teal-light:#F3E9D8;--teal-mid:#B79A6F;--teal-border:#E4D8C8;
     --amber:#B08A5A;--amber-light:#F7EFE1;
@@ -37,7 +37,7 @@
   .body-wrap{display:flex;flex:1;min-height:0}
 
   /* ── SIDEBAR ── */
-  .sidebar{width:var(--sidebar-w);background:#FAF6EF;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+  .sidebar{width:var(--sidebar-w);background:#FCFAF5;border-right:1px solid var(--border);padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
   .sb-section{font-size:9px;color:var(--teal-border);font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:0 8px;margin:10px 0 5px}
   .sb-section:first-child{margin-top:0}
   .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--radius-sm);color:#6E5946;font-size:12px;font-weight:500;cursor:pointer;transition:.15s;user-select:none}
@@ -56,7 +56,7 @@
   .card-title-collapsible .ctitle-left{display:flex;align-items:center;gap:7px;flex:1}
   .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
   .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}
-  .stat{background:var(--gray);border-radius:14px;padding:14px 15px;border:1px solid rgba(120,90,60,.05)}.stat-grid > .stat:nth-child(4n+1){background:#F3E9D8}.stat-grid > .stat:nth-child(4n+2){background:#E7EFE5}.stat-grid > .stat:nth-child(4n+3){background:#ECE8F2}.stat-grid > .stat:nth-child(4n+4){background:#F4E6E2}
+  .stat{background:var(--gray);border-radius:14px;padding:14px 15px;border:1px solid rgba(120,90,60,.05)}.stat-grid > .stat:nth-child(4n+1){background:#F7F0E5}.stat-grid > .stat:nth-child(4n+2){background:#EEF3ED}.stat-grid > .stat:nth-child(4n+3){background:#F2EEF6}.stat-grid > .stat:nth-child(4n+4){background:#F8EEEB}
   .stat-num{font-size:24px;font-weight:600;line-height:1;color:#6E5540}
   .stat-lbl{font-size:10px;color:var(--muted);margin-top:4px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
@@ -82,10 +82,13 @@
   .b-red{background:var(--red-light);color:var(--red)}
 
   /* ── KPI ROWS ── */
-  .kpi-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:8px}
+  .kpi-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 11px;margin-bottom:5px}
   .kpi-row:last-child{margin-bottom:0}
+  .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:start}
+  .kpi-grid .kpi-row{margin-bottom:0;align-items:flex-start}
+  @media(max-width:760px){.kpi-grid{grid-template-columns:1fr}}
   .kpi-name{font-size:12px;font-weight:600;color:var(--teal)}
-  .kpi-measure{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.6}
+  .kpi-measure{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.45}
 
   /* ── CALENDAR ── */
   .cal-header-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
@@ -93,12 +96,12 @@
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
   .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
   .cal-empty{background:transparent}
-  .cal-office{background:var(--teal-light);color:#5E4A38}
-  .cal-off{background:var(--gray);color:#999}
-  .cal-vacation{background:var(--amber-light);color:var(--amber)}
-  .cal-workvac{background:#FFF9C4;color:#856400}
-  .cal-sick{background:var(--red-light);color:var(--red)}
-  .cal-remote{background:var(--purple-light);color:var(--purple)}
+  .cal-office{background:#DDEBE0;color:#4e7256}
+  .cal-off{background:#E8E2D6;color:#8a8172}
+  .cal-vacation{background:#F5E4C8;color:#9a6f2e}
+  .cal-workvac{background:#FBEFB8;color:#8a6d1a}
+  .cal-sick{background:#F3D6CF;color:#a05545}
+  .cal-remote{background:#DCE4F0;color:#5a6b8a}
   .cal-future{background:#FAF7F2;color:#ccc;border:1px dashed #E4D8C8}
   .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
   .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
@@ -114,7 +117,7 @@
 
   /* ── TABLES ── */
   .tbl{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border-radius:10px;overflow:hidden}
-  .tbl th{background:var(--tan,#F3E9D8);padding:8px 9px;font-size:10px;font-weight:600;color:var(--teal);text-transform:none;letter-spacing:normal;border-bottom:1px solid var(--teal-border);text-align:left}
+  .tbl th{background:var(--tan,#F3E9D8);padding:8px 9px;font-size:11px;font-weight:800;color:var(--teal);text-transform:none;letter-spacing:normal;border-bottom:1px solid var(--teal-border);text-align:left}
   .tbl td{padding:7px 9px;border-bottom:1px solid #F4EDE2;vertical-align:middle;font-size:11px}
   .tbl tr:last-child td{border-bottom:none}
   .tbl tr:hover td{background:#FBF8F3}
@@ -172,7 +175,7 @@
   @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
 
   /* ── ACCOUNTS SCROLL STRIP ── */
-  .acct-strip{background:#FCF9F3;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;padding:7px 26px;overflow-x:auto;white-space:nowrap;position:sticky;top:0;z-index:99}
+  .acct-strip{background:#FDFBF7;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;padding:7px 26px;overflow-x:auto;white-space:nowrap;position:sticky;top:0;z-index:99}
   .acct-strip::-webkit-scrollbar{height:5px}
   .acct-strip::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px}
   .acct-chip{flex-shrink:0;display:inline-block;background:#F5EEE2;color:var(--muted);border:0.5px solid var(--border);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:600}
@@ -1123,24 +1126,36 @@ function renderWorkDone(rows){
     if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#8296A8',bg:'#EAEEF2',dot:'#8296A8'};
     return{label:'Achievement',color:'#7A6248',bg:'#F3E9D8',dot:'#B79A6F'};
   }
+  // Group achievements by category so they're always tidy, even if the sheet is unsorted
+  const CAT_ORDER=['Tool / Project','Operations','Support','People','Quality','Achievement'];
+  const groups={};
+  items.forEach(item=>{
+    const cat=getCat(item);
+    (groups[cat.label]=groups[cat.label]||{cat,list:[]}).list.push(item);
+  });
+  const orderedLabels=CAT_ORDER.filter(l=>groups[l]);
+
+  let cards='';
+  orderedLabels.forEach(label=>{
+    const g=groups[label];
+    cards+=`<div style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="width:9px;height:9px;border-radius:50%;background:${g.cat.dot}"></span>
+        <span style="font-size:12px;font-weight:700;color:${g.cat.color}">${label}</span>
+        <span style="font-size:9px;font-weight:700;color:#fff;background:${g.cat.dot};border-radius:20px;padding:1px 8px">${g.list.length}</span>
+      </div>
+      ${g.list.map(item=>`<div style="background:#fff;border:1px solid var(--border);border-radius:10px;border-left:4px solid ${g.cat.dot};padding:9px 13px;margin-bottom:6px;font-size:12px;font-weight:500;color:var(--text);line-height:1.4">${item}</div>`).join('')}
+    </div>`;
+  });
+
   document.getElementById('tab-workdone').innerHTML=`
     <div class="stat-grid" style="margin-bottom:16px">
       <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
-      <div class="stat"><div class="stat-num">6</div><div class="stat-lbl">Months (Jan–Jun)</div></div>
+      <div class="stat"><div class="stat-num">${orderedLabels.length}</div><div class="stat-lbl">Categories</div></div>
       <div class="stat"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-lbl">Start</div></div>
       <div class="stat"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-lbl">Current</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px">
-      ${items.map((item,i)=>{
-        const cat=getCat(item);
-        return`<div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;border-left:4px solid ${cat.dot}">
-          <div style="font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px">${item}</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:${cat.bg};color:${cat.color}">${cat.label}</span>
-            <span style="font-size:10px;color:#ccc;font-weight:600">#${i+1}</span>
-          </div></div>`;
-      }).join('')}
-    </div>`;
+    ${cards}`;
 }
 
 // ══ KPIs ══
@@ -1174,23 +1189,26 @@ function renderKPIs(rows){
   };
   let html=`<div class="sec-label">Supervisor KPIs</div>
     <div style="margin-bottom:16px">
-      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>`;
+      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>
+      <div class="kpi-grid">`
+  ;
   supervisorKPIs.forEach(k=>{
     const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
     html+=`<div class="kpi-row">
       <div style="flex:1">
         <div class="kpi-name">${k.cat}</div>
         <div class="kpi-measure">${k.measure}</div>
-        ${k.note?`<div style="font-size:10px;color:var(--teal);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}
+        ${k.note?`<div style="font-size:9px;color:var(--amber);margin-top:2px;direction:rtl;text-align:right">${k.note}</div>`:''}
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-        <span class="badge ${s.cls}">${s.txt}</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
         <span style="font-size:11px;font-weight:700;color:var(--amber)">${k.weight}</span>
+        <span class="badge ${s.cls}">${s.txt}</span>
       </div></div>`;
   });
-  html+=`</div><div class="sec-label">Inbound Performance KPIs</div>
+  html+=`</div></div><div class="sec-label">Inbound Performance KPIs</div>
     <div>
-      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>`;
+      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>
+      <div class="kpi-grid">`;
   inboundPerf.forEach(k=>{
     const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
     html+=`<div class="kpi-row">
@@ -1201,7 +1219,7 @@ function renderKPIs(rows){
       <span class="badge b-teal" style="flex-shrink:0">${k.weight}</span>
     </div>`;
   });
-  html+=`</div>`;
+  html+=`</div></div>`;
   document.getElementById('tab-kpis').innerHTML=html;
 }
 
@@ -1251,12 +1269,12 @@ function renderCal(){
     <button onclick="changeMonth(1)">›</button>
   </div>
   <div class="att-stats">
-    <div class="att-stat" style="background:var(--teal-light)"><div class="num" style="color:var(--teal)">${counts.office}</div><div class="lbl" style="color:var(--teal)">Office</div></div>
-    <div class="att-stat" style="background:var(--purple-light)"><div class="num" style="color:var(--purple)">${counts.remote}</div><div class="lbl" style="color:var(--purple)">Remote</div></div>
-    <div class="att-stat" style="background:var(--amber-light)"><div class="num" style="color:var(--amber)">${counts.vacation}</div><div class="lbl" style="color:var(--amber)">Vacation</div></div>
-    <div class="att-stat" style="background:#FFF9C4"><div class="num" style="color:#856400">${counts.workvac}</div><div class="lbl" style="color:#856400">Work Vac</div></div>
-    <div class="att-stat" style="background:var(--red-light)"><div class="num" style="color:var(--red)">${counts.sick}</div><div class="lbl" style="color:var(--red)">Sick</div></div>
-    <div class="att-stat" style="background:var(--gray)"><div class="num" style="color:#888">${counts.off}</div><div class="lbl" style="color:#888">Off</div></div>
+    <div class="att-stat" style="background:#DDEBE0"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
+    <div class="att-stat" style="background:#DCE4F0"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
+    <div class="att-stat" style="background:#F5E4C8"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
+    <div class="att-stat" style="background:#FBEFB8"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
+    <div class="att-stat" style="background:#F3D6CF"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
+    <div class="att-stat" style="background:#E8E2D6"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
   </div>
   <div class="card">
     <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
@@ -1270,12 +1288,12 @@ function renderCal(){
   }
   html+=`</div>
   <div class="att-legend">
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--teal-light)"></div>Office</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--purple-light)"></div>Remote</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--amber-light)"></div>Vacation</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#FFF9C4"></div>Work Vac</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--red-light)"></div>Sick</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:var(--gray)"></div>Off</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#DDEBE0"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#DCE4F0"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#F5E4C8"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#FBEFB8"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#F3D6CF"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#E8E2D6"></div>Off</div>
   </div></div>`;
   document.getElementById('tab-attendance').innerHTML=html;
   window.changeMonth=function(dir){
