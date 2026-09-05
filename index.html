@@ -167,6 +167,12 @@
   .eom-na{color:#bbb}
 
   @media(max-width:700px){.sidebar{display:none}.grid2{grid-template-columns:1fr}}
+
+  /* ── ACCOUNTS SCROLL STRIP ── */
+  .acct-strip{background:#FBF7F0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;padding:7px 26px;overflow-x:auto;white-space:nowrap;position:sticky;top:0;z-index:99}
+  .acct-strip::-webkit-scrollbar{height:5px}
+  .acct-strip::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px}
+  .acct-chip{flex-shrink:0;display:inline-block;background:#F5EEE2;color:var(--muted);border:0.5px solid var(--border);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:600}
 </style>
 </head>
 <body>
@@ -177,7 +183,7 @@
     <div class="av">SA</div>
     <div>
       <div class="h-name">Sali Aljehani</div>
-      <div class="h-role">Team Lead · Inbound Contact Center · Petromin Group</div>
+      <div class="h-role">Inbound Customer Service Team Leader</div>
       <div class="h-pills">
         <span class="pill">🪪 22952</span>
         <span class="pill">📱 552705577</span>
@@ -190,6 +196,9 @@
     <button class="ref-btn" id="refreshBtn" onclick="handleRefreshClick()">↻ Refresh</button>
   </div>
 </div>
+
+<!-- ACCOUNTS STRIP -->
+<div class="acct-strip"><span class="acct-chip">Petromin</span><span class="acct-chip">BAIC</span><span class="acct-chip">Nissan</span><span class="acct-chip">Stellantis</span><span class="acct-chip">Body Shop</span><span class="acct-chip">Foton</span><span class="acct-chip">National Oil</span><span class="acct-chip">Energy</span><span class="acct-chip">Volvo</span></div>
 
 <!-- BODY -->
 <div class="body-wrap">
