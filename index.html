@@ -84,9 +84,9 @@
   /* ── KPI ROWS ── */
   .kpi-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 11px;margin-bottom:5px}
   .kpi-row:last-child{margin-bottom:0}
-  .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:start}
-  .kpi-grid .kpi-row{margin-bottom:0;align-items:flex-start}
-  @media(max-width:760px){.kpi-grid{grid-template-columns:1fr}}
+  .kpi-grid{column-count:2;column-gap:9px}
+  .kpi-grid .kpi-row{break-inside:avoid;-webkit-column-break-inside:avoid;margin-bottom:9px;align-items:flex-start}
+  @media(max-width:760px){.kpi-grid{column-count:1}}
   .kpi-name{font-size:12px;font-weight:600;color:var(--teal)}
   .kpi-measure{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.45}
 
@@ -96,12 +96,12 @@
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
   .cal-cell{height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
   .cal-empty{background:transparent}
-  .cal-office{background:#DDEBE0;color:#4e7256}
-  .cal-off{background:#E8E2D6;color:#8a8172}
-  .cal-vacation{background:#F5E4C8;color:#9a6f2e}
-  .cal-workvac{background:#FBEFB8;color:#8a6d1a}
-  .cal-sick{background:#F3D6CF;color:#a05545}
-  .cal-remote{background:#DCE4F0;color:#5a6b8a}
+  .cal-office{background:#E7EFE6;color:#4e7256}
+  .cal-off{background:#ECE7DE;color:#8a8172}
+  .cal-vacation{background:#F1E7D6;color:#9a6f2e}
+  .cal-workvac{background:#F3EAD2;color:#8a6d1a}
+  .cal-sick{background:#F0E0DB;color:#a05545}
+  .cal-remote{background:#E6EAF1;color:#5a6b8a}
   .cal-future{background:#FAF7F2;color:#ccc;border:1px dashed #E4D8C8}
   .month-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
   .month-nav button{background:var(--gray);border:none;border-radius:var(--radius-sm);padding:5px 13px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text)}
@@ -1116,7 +1116,15 @@ function renderInbound(rows){
 // ══ WORK DONE ══
 function renderWorkDone(rows){
   const items=[];let inS=false;
-  rows.forEach(r=>{const a=(r[0]||'').trim();if(a==='Work Done'){inS=true;return;}if(!inS||!a)return;items.push(a);});
+  rows.forEach(r=>{
+    const a=(r[0]||'').trim();
+    const al=a.toLowerCase();
+    // Section marker: tolerate case, extra spaces, and 'Work Done' / 'Work done' etc.
+    if(al==='work done' || al==='workdone' || al==='work-done'){ inS=true; return; }
+    if(!inS||!a) return;
+    // Stop if a new section header appears (e.g. back to a Daily/Weekly block)
+    items.push(a);
+  });
   function getCat(item){
     const t=item.toLowerCase();
     if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#9385A8',bg:'#ECE8F2',dot:'#9385A8'};
@@ -1269,12 +1277,12 @@ function renderCal(){
     <button onclick="changeMonth(1)">›</button>
   </div>
   <div class="att-stats">
-    <div class="att-stat" style="background:#DDEBE0"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
-    <div class="att-stat" style="background:#DCE4F0"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
-    <div class="att-stat" style="background:#F5E4C8"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
-    <div class="att-stat" style="background:#FBEFB8"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
-    <div class="att-stat" style="background:#F3D6CF"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
-    <div class="att-stat" style="background:#E8E2D6"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
+    <div class="att-stat" style="background:#E7EFE6"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
+    <div class="att-stat" style="background:#E6EAF1"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
+    <div class="att-stat" style="background:#F1E7D6"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
+    <div class="att-stat" style="background:#F3EAD2"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
+    <div class="att-stat" style="background:#F0E0DB"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
+    <div class="att-stat" style="background:#ECE7DE"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
   </div>
   <div class="card">
     <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
@@ -1288,12 +1296,12 @@ function renderCal(){
   }
   html+=`</div>
   <div class="att-legend">
-    <div class="att-legend-item"><div class="att-dot" style="background:#DDEBE0"></div>Office</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#DCE4F0"></div>Remote</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#F5E4C8"></div>Vacation</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#FBEFB8"></div>Work Vac</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#F3D6CF"></div>Sick</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#E8E2D6"></div>Off</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#E7EFE6"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#E6EAF1"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#F1E7D6"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#F3EAD2"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#F0E0DB"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot" style="background:#ECE7DE"></div>Off</div>
   </div></div>`;
   document.getElementById('tab-attendance').innerHTML=html;
   window.changeMonth=function(dir){
