@@ -571,15 +571,20 @@ function renderReports(rows){
   sections.forEach((sec,si)=>{
     if(!sec.items.length) return;
     const col=SECTION_COLORS[si%SECTION_COLORS.length];
-    const bg=SECTION_BG[si%SECTION_BG.length];
-    html+=`<div class="card" style="margin-bottom:14px;border-left:4px solid ${col}">
-      <div class="card-title" style="color:${col}"><span class="dot" style="background:${col}"></span>${sec.title}</div>
-      ${sec.items.map((item,i)=>`
-        <div style="padding:9px 0;border-bottom:${i<sec.items.length-1?'1px solid var(--border)':'none'};display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center">
-          <div style="font-size:12px;font-weight:600;color:var(--text)">${item.name}</div>
-          <div style="font-size:11px;color:var(--muted);text-align:center">${item.desc}</div>
-          <div style="font-size:11px;color:${col};text-align:right;direction:rtl">${item.note||'—'}</div>
-        </div>`).join('')}
+    html+=`<div style="margin-bottom:16px">
+      <div class="card-title" style="color:${col};margin-bottom:9px"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr>
+          <th style="width:30%">Report</th>
+          <th style="width:38%">What it's for</th>
+          <th>How-to note</th>
+        </tr></thead>
+        <tbody>${sec.items.map(item=>`<tr>
+          <td style="font-weight:600;color:var(--text)">${item.name}</td>
+          <td style="color:var(--muted)">${item.desc||'—'}</td>
+          <td style="color:${col}">${item.note||'—'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
     </div>`;
   });
   document.getElementById('tab-reports').innerHTML=html;
