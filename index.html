@@ -87,6 +87,8 @@
   .kpi-grid{column-count:2;column-gap:9px}
   .kpi-grid .kpi-row{break-inside:avoid;-webkit-column-break-inside:avoid;margin-bottom:9px;align-items:flex-start}
   @media(max-width:760px){.kpi-grid{column-count:1}}
+  .wd-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  @media(max-width:760px){.wd-grid{grid-template-columns:1fr}}
   .kpi-name{font-size:12px;font-weight:600;color:var(--teal)}
   .kpi-measure{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.45}
 
@@ -456,7 +458,7 @@ function renderMonthly(rows){
 
   const html=`
   <div class="sec-label">📊 Monthly Agents Performance &amp; EOM Slide Inbound</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:start">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:stretch">
     <div class="card" style="margin-bottom:0">
       <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Monthly Agents Performance</div>
       <div style="overflow-x:auto"><table class="tbl">
@@ -1146,13 +1148,15 @@ function renderWorkDone(rows){
   let cards='';
   orderedLabels.forEach(label=>{
     const g=groups[label];
-    cards+=`<div style="margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+    cards+=`<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px">
         <span style="width:9px;height:9px;border-radius:50%;background:${g.cat.dot}"></span>
         <span style="font-size:12px;font-weight:700;color:${g.cat.color}">${label}</span>
         <span style="font-size:9px;font-weight:700;color:#fff;background:${g.cat.dot};border-radius:20px;padding:1px 8px">${g.list.length}</span>
       </div>
-      ${g.list.map(item=>`<div style="background:#fff;border:1px solid var(--border);border-radius:10px;border-left:4px solid ${g.cat.dot};padding:9px 13px;margin-bottom:6px;font-size:12px;font-weight:500;color:var(--text);line-height:1.4">${item}</div>`).join('')}
+      <div class="wd-grid">
+        ${g.list.map(item=>`<div style="background:#fff;border:1px solid var(--border);border-radius:10px;border-left:4px solid ${g.cat.dot};padding:9px 13px;font-size:12px;font-weight:500;color:var(--text);line-height:1.4">${item}</div>`).join('')}
+      </div>
     </div>`;
   });
 
