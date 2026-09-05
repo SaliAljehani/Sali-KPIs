@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Sali KPIs Dashboard</title>
 <style>
     :root{
@@ -312,7 +315,7 @@ function fetchCSVOnce(gid){
   if(!sheetName) return Promise.reject(new Error('Unknown GID: '+gid));
   return new Promise(function(resolve, reject){
     const cbName = 'jscb_' + Math.random().toString(36).slice(2) + Date.now();
-    const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName;
+    const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName + '&_ts=' + Date.now();
     const script = document.createElement('script');
     const timer = setTimeout(function(){
       cleanup();
