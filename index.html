@@ -27,7 +27,7 @@
   .h-name{font-size:17px;font-weight:700;color:var(--text)}
   .h-role{font-size:12px;color:var(--muted);margin-top:2px}
   .h-pills{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
-  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:var(--teal-light);color:#5E4A38;border:1px solid var(--teal-border)}
+  .pill{font-size:11px;font-weight:600;padding:4px 13px;border-radius:20px;background:#FBF7F0;color:#8A7256;border:1px solid #F0E9DE}
   .pill a{color:#5E4A38;text-decoration:none}
   .date-chip{font-size:11px;color:var(--muted);background:var(--gray);padding:4px 13px;border-radius:20px;border:0.5px solid var(--gray-border)}
   .ref-btn{font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--teal-border);background:var(--teal-light);color:var(--teal);cursor:pointer;font-weight:600}
@@ -577,7 +577,7 @@ function renderReports(rows){
     if(!sec.items.length) return;
     const col=SECTION_COLORS[si%SECTION_COLORS.length];
     html+=`<div style="margin-bottom:16px">
-      <div class="card-title" style="color:${col};margin-bottom:9px"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+      <div class="card-title" style="color:${col};margin-bottom:9px;justify-content:center"><span class="dot" style="background:${col}"></span>${sec.title}</div>
       <div style="overflow-x:auto"><table class="tbl">
         <thead><tr>
           <th style="width:30%">Report</th>
@@ -1149,7 +1149,7 @@ function renderWorkDone(rows){
   orderedLabels.forEach(label=>{
     const g=groups[label];
     cards+=`<div style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
         <span style="width:9px;height:9px;border-radius:50%;background:${g.cat.dot}"></span>
         <span style="font-size:12px;font-weight:700;color:${g.cat.color}">${label}</span>
         <span style="font-size:9px;font-weight:700;color:#fff;background:${g.cat.dot};border-radius:20px;padding:1px 8px">${g.list.length}</span>
@@ -1200,38 +1200,46 @@ function renderKPIs(rows){
     'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
   };
   let html=`<div class="sec-label">Supervisor KPIs</div>
-    <div style="margin-bottom:16px">
+    <div style="margin-bottom:18px">
       <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>
-      <div class="kpi-grid">`
-  ;
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr>
+          <th style="width:26%">KPI</th>
+          <th>Description</th>
+          <th style="width:8%;text-align:center">Wt</th>
+          <th style="width:16%;text-align:center">Status</th>
+        </tr></thead>
+        <tbody>`;
   supervisorKPIs.forEach(k=>{
     const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
-    html+=`<div class="kpi-row">
-      <div style="flex:1">
-        <div class="kpi-name">${k.cat}</div>
-        <div class="kpi-measure">${k.measure}</div>
-        ${k.note?`<div style="font-size:9px;color:var(--amber);margin-top:2px;direction:rtl;text-align:right">${k.note}</div>`:''}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <span style="font-size:11px;font-weight:700;color:var(--amber)">${k.weight}</span>
-        <span class="badge ${s.cls}">${s.txt}</span>
-      </div></div>`;
+    html+=`<tr>
+      <td style="font-weight:600;color:var(--text)">${k.cat}</td>
+      <td style="color:var(--muted)">${k.measure}${k.note?`<div style="font-size:9px;color:var(--amber);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}</td>
+      <td style="text-align:center;font-weight:700;color:var(--amber)">${k.weight}</td>
+      <td style="text-align:center"><span class="badge ${s.cls}">${s.txt}</span></td>
+    </tr>`;
   });
-  html+=`</div></div><div class="sec-label">Inbound Performance KPIs</div>
+  html+=`</tbody></table></div>
+    </div><div class="sec-label">Inbound Performance KPIs</div>
     <div>
       <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>
-      <div class="kpi-grid">`;
+      <div style="overflow-x:auto"><table class="tbl">
+        <thead><tr>
+          <th style="width:28%">KPI</th>
+          <th>KPIs Covered</th>
+          <th style="width:8%;text-align:center">Wt</th>
+        </tr></thead>
+        <tbody>`;
   inboundPerf.forEach(k=>{
     const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
-    html+=`<div class="kpi-row">
-      <div style="flex:1">
-        <div class="kpi-name">${k.cat}</div>
-        <div class="kpi-measure">${bullets.map(b=>'• '+b).join('<br>')}</div>
-      </div>
-      <span class="badge b-teal" style="flex-shrink:0">${k.weight}</span>
-    </div>`;
+    html+=`<tr>
+      <td style="font-weight:600;color:var(--text)">${k.cat}</td>
+      <td style="color:var(--muted)">${bullets.map(b=>'• '+b).join('<br>')}</td>
+      <td style="text-align:center;font-weight:700;color:var(--amber)">${k.weight}</td>
+    </tr>`;
   });
-  html+=`</div></div>`;
+  html+=`</tbody></table></div>
+    </div>`;
   document.getElementById('tab-kpis').innerHTML=html;
 }
 
