@@ -283,8 +283,7 @@ const GID = {
   checklist:'1272140156', coaching:'144857263',
   improvement:'115510114', perfgap:'1669804764',
   monthly:'413119919',
-  reports:'2136858309',
-  escalations:'371798932'
+  reports:'2136858309'
 };
 const AGENTS=[
   'Asmaa M. Bawayan',
@@ -337,8 +336,7 @@ const GID_TO_NAME = {
   '115510114':  'Improvement Plans',
   '1669804764': 'Performance Gap',
   '413119919':  'Monthly Performance',
-  '2136858309': 'Reports',
-  '371798932':  'Escalations 2026'
+  '2136858309': 'Reports'
 };
 
 // ── Live sheet reads via Google Visualization API (gviz) ──
@@ -354,7 +352,7 @@ function fetchCSVOnce(gid){
     const cbName = 'gvcb_' + Math.random().toString(36).slice(2) + Date.now();
     const tqx = 'out:json;responseHandler:' + cbName;
     const url = GVIZ_BASE + '?gid=' + encodeURIComponent(gid)
-              + '&headers=1&tqx=' + encodeURIComponent(tqx)
+              + '&headers=0&tqx=' + encodeURIComponent(tqx)
               + '&_ts=' + Date.now();
     const script = document.createElement('script');
     const timer = setTimeout(function(){ cleanup(); reject(new Error('Timeout: ' + sheetName)); }, 9000);
@@ -371,15 +369,14 @@ function fetchCSVOnce(gid){
         reject(new Error(er.detailed_message || er.message || ('gviz error: ' + sheetName)));
         return;
       }
-      const table   = resp.table || { cols: [], rows: [] };
-      const headers = (table.cols || []).map(function(c){ return String((c && (c.label || c.id)) || ''); });
-      const out = [];
-      if(headers.some(function(h){ return h !== ''; })) out.push(headers);
-      (table.rows || []).forEach(function(r){
-        out.push((r.c || []).map(function(cell){
+      const table = resp.table || { rows: [] };
+      // headers=0 → every sheet row (including row 1) comes back in table.rows,
+      // giving the exact grid the renderers expect (same as the old proxy's getDisplayValues).
+      const out = (table.rows || []).map(function(r){
+        return (r.c || []).map(function(cell){
           if(cell == null) return '';
           return String(cell.f != null ? cell.f : (cell.v != null ? cell.v : ''));
-        }));
+        });
       });
       resolve(out);
     };
@@ -446,7 +443,7 @@ function renderMonthly(rows){
     if(section==='perf'&&b) perfMetrics.push({metric:a,desc:b});
     if(section==='eom'&&b) eomSlide.push({field:a,source:b});
     if(section==='cc'&&b&&a!=='Points') inboundCC.push({point:a,desc:b,weight:c,actual:d});
-    if(section==='qa'){const p=a.split('|');callsQA.push({item:p[0].trim(),score:p[1]||'',ar:b});}
+    if(section==='qa'&&a){callsQA.push({item:a,score:c,ar:b});}
   });
 
   // Static fallback data
@@ -664,8 +661,6 @@ async function loadAll(){
   if(cachedImp) renderImprovement(cachedImp);
   const cachedGap = getCachedSheet(GID.perfgap);
   if(cachedGap) renderPerfGap(cachedGap);
-  const cachedEsc = getCachedSheet(GID.escalations);
-  if(cachedEsc) renderEscalations(cachedEsc);
 
   // Show loading indicator only for tabs without cache
   TAB_IDS.forEach(id=>{
@@ -686,8 +681,7 @@ async function loadAll(){
     { gid: GID.improvement, tabs:['improvement'],        render: renderImprovement },
     { gid: GID.perfgap,     tabs:['perfgap'],            render: renderPerfGap },
     { gid: GID.monthly,     tabs:['monthly'],            render: renderMonthly,  staticFallback:true },
-    { gid: GID.reports,     tabs:['reports'],            render: renderReports,  staticFallback:true },
-    { gid: GID.escalations, tabs:['escalations'],        render: renderEscalations }
+    { gid: GID.reports,     tabs:['reports'],            render: renderReports,  staticFallback:true }
   ];
 
   await Promise.allSettled(JOBS.map(function(job){
@@ -1154,16 +1148,23 @@ function renderInbound(rows){
 
 // ══ WORK DONE ══
 function renderWorkDone(rows){
-  const items=[];let inS=false;
-  rows.forEach(r=>{
-    const a=(r[0]||'').trim();
-    const al=a.toLowerCase();
-    // Section marker: tolerate case, extra spaces, and 'Work Done' / 'Work done' etc.
-    if(al==='work done' || al==='workdone' || al==='work-done'){ inS=true; return; }
-    if(!inS||!a) return;
-    // Stop if a new section header appears (e.g. back to a Daily/Weekly block)
-    items.push(a);
-  });
+  const items=[];
+  // The sheet keeps "Work Done" in its own column (currently col D), separate from the
+  // daily-tasks column. Find the header cell wherever it is, then read down that column.
+  let wdCol=-1, wdRow=-1;
+  for(let ri=0; ri<rows.length && wdCol<0; ri++){
+    const row=rows[ri]||[];
+    for(let ci=0; ci<row.length; ci++){
+      const v=String(row[ci]||'').trim().toLowerCase();
+      if(v==='work done' || v==='workdone' || v==='work-done'){ wdCol=ci; wdRow=ri; break; }
+    }
+  }
+  if(wdCol>=0){
+    for(let ri=wdRow+1; ri<rows.length; ri++){
+      const v=String((rows[ri]||[])[wdCol]||'').trim();
+      if(v) items.push(v);
+    }
+  }
   function getCat(item){
     const t=item.toLowerCase();
     if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#9385A8',bg:'#ECE8F2',dot:'#9385A8'};
