@@ -351,7 +351,7 @@ function fetchCSVOnce(gid){
     const timer = setTimeout(function(){
       cleanup();
       reject(new Error('Timeout: ' + sheetName));
-    }, 18000);
+    }, 9000);
     function cleanup(){
       if(window[cbName]) delete window[cbName];
       if(script.parentNode) script.parentNode.removeChild(script);
@@ -403,7 +403,7 @@ function fetchCSV(gid, opts){
     }
   }
 
-  return attempt(4).catch(err=>{
+  return attempt(1).catch(err=>{
     // On final failure, fall back to cached data if available
     if(useCache){
       try{
@@ -667,36 +667,37 @@ async function loadAll(){
     }
   });
 
-  // 2) Fetch fresh data in background and update when ready
-  try{
-    const [inbRows,attRows,kpiRows,clRows,coachRows,impRows,gapRows,monthlyRows,reportsRows,escRows]=await Promise.all([
-      fetchCSV(GID.inbound),fetchCSV(GID.attendance),fetchCSV(GID.kpis),
-      fetchCSV(GID.checklist),fetchCSV(GID.coaching),fetchCSV(GID.improvement),fetchCSV(GID.perfgap),
-      fetchCSV(GID.monthly),fetchCSV(GID.reports),fetchCSV(GID.escalations)
-    ]);
-    renderInbound(inbRows);
-    renderWorkDone(inbRows);
-    renderKPIs(kpiRows);
-    renderAttendance(attRows);
-    renderChecklist(clRows);
-    renderCoaching(coachRows);
-    renderImprovement(impRows);
-    renderPerfGap(gapRows);
-    renderMonthly(monthlyRows);
-    renderReports(reportsRows);
-    renderEscalations(escRows);
-  }catch(e){
-    // If we already showed cached data, don't overwrite with an error
-    const hasCachedFallback = cachedInb || cachedAtt || cachedKpi;
-    if(!hasCachedFallback){
-      ['inbound','workdone','kpis','attendance','checklist','coaching','improvement','perfgap'].forEach(id=>{
-        document.getElementById('tab-'+id).innerHTML='<div class="err">⚠️ '+e.message+'<br><br>Make sure the sheet is shared as "Anyone with the link", then press Refresh</div>';
+  // 2) Fetch each sheet INDEPENDENTLY and render as it arrives.
+  // One missing/deleted/renamed sheet must never block the other sections.
+  const JOBS = [
+    { gid: GID.inbound,     tabs:['inbound','workdone'], render: rows=>{ renderInbound(rows); renderWorkDone(rows); } },
+    { gid: GID.attendance,  tabs:['attendance'],         render: renderAttendance },
+    { gid: GID.kpis,        tabs:['kpis'],               render: renderKPIs },
+    { gid: GID.checklist,   tabs:['checklist'],          render: renderChecklist },
+    { gid: GID.coaching,    tabs:['coaching'],           render: renderCoaching },
+    { gid: GID.improvement, tabs:['improvement'],        render: renderImprovement },
+    { gid: GID.perfgap,     tabs:['perfgap'],            render: renderPerfGap },
+    { gid: GID.monthly,     tabs:['monthly'],            render: renderMonthly,  staticFallback:true },
+    { gid: GID.reports,     tabs:['reports'],            render: renderReports,  staticFallback:true },
+    { gid: GID.escalations, tabs:['escalations'],        render: renderEscalations }
+  ];
+
+  await Promise.allSettled(JOBS.map(function(job){
+    return fetchCSV(job.gid)
+      .then(function(rows){ try{ job.render(rows); }catch(e){ console.error('render fail '+job.gid, e); } })
+      .catch(function(err){
+        console.warn('Sheet fetch failed ('+job.gid+'): '+(err&&err.message));
+        // Sections with a built-in static fallback still render.
+        if(job.staticFallback){ try{ job.render([]); }catch(e){} return; }
+        // Otherwise show a small per-tile notice — but never overwrite good cached data.
+        job.tabs.forEach(function(id){
+          const el=document.getElementById('tab-'+id);
+          if(el && !getCachedSheet(job.gid)){
+            el.innerHTML='<div class="err">⚠️ This section couldn\'t load — its sheet may have been removed or renamed.<br><br><small>'+(err&&err.message||'')+'</small></div>';
+          }
+        });
       });
-    }
-    // Monthly and Reports use static fallback even on error
-    renderMonthly([]);
-    renderReports([]);
-  }
+  }));
 }
 
 // ── ESCALATIONS ──
