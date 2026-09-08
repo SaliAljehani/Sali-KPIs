@@ -341,42 +341,50 @@ const GID_TO_NAME = {
   '371798932':  'Escalations 2026'
 };
 
+// ── Live sheet reads via Google Visualization API (gviz) ──
+// gviz is loaded with a <script> tag + responseHandler, so it returns real JavaScript
+// (never blocked by the browser like the old proxy) and works cross-origin.
+// REQUIREMENT: the spreadsheet must be shared "Anyone with the link → Viewer".
+// (SHEET_ID is already declared above.)
+const GVIZ_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq';
+
 function fetchCSVOnce(gid){
-  const sheetName = GID_TO_NAME[String(gid)];
-  if(!sheetName) return Promise.reject(new Error('Unknown GID: '+gid));
+  const sheetName = GID_TO_NAME[String(gid)] || ('gid ' + gid);
   return new Promise(function(resolve, reject){
-    const cbName = 'jscb_' + Math.random().toString(36).slice(2) + Date.now();
-    const url = PROXY + '?sheetName=' + encodeURIComponent(sheetName) + '&callback=' + cbName + '&_ts=' + Date.now();
+    const cbName = 'gvcb_' + Math.random().toString(36).slice(2) + Date.now();
+    const tqx = 'out:json;responseHandler:' + cbName;
+    const url = GVIZ_BASE + '?gid=' + encodeURIComponent(gid)
+              + '&headers=1&tqx=' + encodeURIComponent(tqx)
+              + '&_ts=' + Date.now();
     const script = document.createElement('script');
-    const timer = setTimeout(function(){
-      cleanup();
-      reject(new Error('Timeout: ' + sheetName));
-    }, 9000);
+    const timer = setTimeout(function(){ cleanup(); reject(new Error('Timeout: ' + sheetName)); }, 9000);
     function cleanup(){
-      if(window[cbName]) delete window[cbName];
+      if(cbName in window){ try{ delete window[cbName]; }catch(e){ window[cbName] = undefined; } }
       if(script.parentNode) script.parentNode.removeChild(script);
       clearTimeout(timer);
     }
-    window[cbName] = function(data){
+    window[cbName] = function(resp){
       cleanup();
-      if(!data){ reject(new Error('No data: '+sheetName)); return; }
-      if(!Array.isArray(data) && data.error){ reject(new Error(data.error)); return; }
-      if(!data.length){ resolve([]); return; }
-      if(Array.isArray(data[0])){
-        resolve(data.map(function(row){ return row.map(function(c){ return String(c||''); }); }));
+      if(!resp){ reject(new Error('No data: ' + sheetName)); return; }
+      if(resp.status === 'error'){
+        const er = (resp.errors && resp.errors[0]) || {};
+        reject(new Error(er.detailed_message || er.message || ('gviz error: ' + sheetName)));
         return;
       }
-      const headers=Object.keys(data[0]);
-      const rows=[headers].concat(data.map(function(obj){
-        return headers.map(function(h){ return String(obj[h]||''); });
-      }));
-      resolve(rows);
+      const table   = resp.table || { cols: [], rows: [] };
+      const headers = (table.cols || []).map(function(c){ return String((c && (c.label || c.id)) || ''); });
+      const out = [];
+      if(headers.some(function(h){ return h !== ''; })) out.push(headers);
+      (table.rows || []).forEach(function(r){
+        out.push((r.c || []).map(function(cell){
+          if(cell == null) return '';
+          return String(cell.f != null ? cell.f : (cell.v != null ? cell.v : ''));
+        }));
+      });
+      resolve(out);
     };
     script.src = url;
-    script.onerror = function(){
-      cleanup();
-      reject(new Error('Script load error: ' + sheetName));
-    };
+    script.onerror = function(){ cleanup(); reject(new Error('Script load error: ' + sheetName)); };
     document.body.appendChild(script);
   });
 }
@@ -687,9 +695,7 @@ async function loadAll(){
       .then(function(rows){ try{ job.render(rows); }catch(e){ console.error('render fail '+job.gid, e); } })
       .catch(function(err){
         console.warn('Sheet fetch failed ('+job.gid+'): '+(err&&err.message));
-        // Sections with a built-in static fallback still render.
         if(job.staticFallback){ try{ job.render([]); }catch(e){} return; }
-        // Otherwise show a small per-tile notice — but never overwrite good cached data.
         job.tabs.forEach(function(id){
           const el=document.getElementById('tab-'+id);
           if(el && !getCachedSheet(job.gid)){
