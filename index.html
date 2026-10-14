@@ -437,9 +437,155 @@ body.s1 .nav-item .ico{width:auto;height:auto;background:none!important;border:n
 body.s1 .nav-item.active{background:#F3EADF;box-shadow:none;color:#5E4A38;font-weight:700}
 body.s1 .nav-item.active:before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:#8A6A4A}
 
+
+/* Compact KPI + Improvement tables */
+.ktbl td{padding:6px 10px!important;line-height:1.35}
+.ktbl th{padding:7px 10px!important}
+.kt-wt{flex-direction:row!important;gap:5px;align-items:baseline!important;padding:2px 9px!important;min-width:0!important}
+.kt-wt b{font-size:12px!important}.kt-wt small{font-size:8px!important}
+.kt-note{margin-top:1px!important}
+.ktbl .badge{padding:2px 9px!important;font-size:10.5px!important}
+.it-date{background:#FAF7F3!important}.it-date b{color:#6B5E50!important;font-weight:700!important}
+/* compact header banner */
+body.h2 .header{padding:10px 24px!important}
+body.h2 .av{width:44px!important;height:44px!important;font-size:15px!important;box-shadow:0 0 0 3px #EFE2CF!important}
+body.h2 .h-name{font-size:17px!important}
+body.h2 .h-pills{margin-top:5px!important}
+body.h2 .pill{padding:2px 11px!important;font-size:10.5px!important}
+body.h2 .acct-strip{padding:6px 24px!important}
+body.h2 .acct-chip{padding:3px 11px!important}
+
+/* Inner colors: beige in shades */
+/* i2 · beige in shades (sections still distinguishable) */
+body.i2{--purple:#8A6E4E;--purple-light:#EDE3D3}
+body.i2 .stat-grid>.stat:nth-child(odd){background:#F7F0E5!important}
+body.i2 .stat-grid>.stat:nth-child(even){background:#EFE6D8!important}
+body.i2 .stat-num{color:#7A6248!important}
+body.i2 .dot,body.i2 .wd-dot{background:#B79A6F!important}
+body.i2 .ra-sec:nth-of-type(3n+1),body.i2 .mo-card,body.i2 .mo-cct{--c:#7A6248!important;--bg:#F3E9D8!important}
+body.i2 .ra-sec:nth-of-type(3n+2){--c:#6E5840!important;--bg:#E9DECB!important}
+body.i2 .ra-sec:nth-of-type(3n+3){--c:#8E7558!important;--bg:#F8F2E8!important}
+body.i2 .ra-sec .card-title{color:var(--c)!important}
+body.i2 .ktbl.ib .kt-wt{background:#EDE3D3!important}body.i2 .ktbl.ib .kt-wt b{color:#6E5840!important}
+body.i2 .wd-group:nth-child(odd){--c:#A88A62!important}body.i2 .wd-group:nth-child(even){--c:#8A6E4E!important}
+body.i2 .cav,body.i2 #tab-coaching td div[style*="border-radius:50%"]{background:#EFE6D8!important;color:#7A6248!important}
+body.i2 .badge[style*="purple"]{background:#EDE3D3!important;color:#6E5840!important}
+
+
+body.i1 .ra-sec td:last-child,body.i2 .ra-sec td:last-child,body.i3 .ra-sec td:last-child{color:var(--c)!important}
+body.i2 .ra-sec:nth-of-type(3n+2){--c:#7A6248!important;--bg:#F3E9D8!important}
+body.i2 .ra-sec:nth-of-type(3n+3){--c:#6E5840!important;--bg:#E9DECB!important}
+body.i2 .ra-sec:nth-of-type(3n+1){--c:#8E7558!important;--bg:#F8F2E8!important}
+
+/* Inner colors: pink-beige shades (overrides) */
+body.i2{--purple:#7A5A50;--purple-light:#F4E8E2}
+body.i2 .stat-grid>.stat:nth-child(odd){background:#FBF5F2!important;border-color:#F1E4DE!important}
+body.i2 .stat-grid>.stat:nth-child(even){background:#F4E8E2!important;border-color:#EDDDD5!important}
+body.i2 .stat-num{color:#654840!important}
+body.i2 .dot,body.i2 .wd-dot{background:#C4A398!important}
+body.i2 .ra-sec:nth-of-type(3n+2),body.i2 .mo-card,body.i2 .mo-cct{--c:#7A5A50!important;--bg:#F4E8E2!important}
+body.i2 .ra-sec:nth-of-type(3n+3){--c:#654840!important;--bg:#EBDAD2!important}
+body.i2 .ra-sec:nth-of-type(3n+1){--c:#8F6E64!important;--bg:#FBF5F2!important}
+body.i2 .ra-sec .card-title{color:var(--c)!important}
+body.i2 .ra-sec td:last-child{color:var(--c)!important}
+body.i2 .tbl th{background:#F4E8E2;color:#7A5A50}
+body.i2 .kt-wt{background:#F4E8E2!important}body.i2 .kt-wt b{color:#7A5A50!important}
+body.i2 .ktbl.ib .kt-wt{background:#EBDAD2!important}body.i2 .ktbl.ib .kt-wt b{color:#654840!important}
+body.i2 .it-date{background:#FBF5F2!important}
+body.i2 .wd-group:nth-child(odd){--c:#B08A7E!important}body.i2 .wd-group:nth-child(even){--c:#7A5A50!important}
+body.i2 .cav,body.i2 #tab-coaching td div[style*="border-radius:50%"]{background:#F4E8E2!important;color:#7A5A50!important}
+body.i2 .badge[style*="purple"]{background:#F4E8E2!important;color:#7A5A50!important}
+
+/* Pink-beige across the whole dashboard (attendance calendar keeps its status colors) */
+body.i2{--bg:#FDFAF9;--border:#F1E6E2;--muted:#9A7E76;--teal:#7A5A50;--teal-light:#F4E8E2;--teal-mid:#C4A398;--teal-border:#EADBD5;--amber:#8F6E64;--amber-light:#F4E8E2;--gray:#FBF5F2;--gray-border:#EADBD5;--tan:#F4E8E2;background:#FDFAF9}
+body.i2 .header{background:linear-gradient(100deg,#F4E8E2 0%,#FBF6F4 55%,#fff 100%)!important}
+body.i2 .av{color:#7A5A50!important;box-shadow:0 0 0 3px #EBDAD2!important}
+body.i2 .h-role{color:#8F6E64!important}
+body.i2 .pill,body.i2 .pill a{color:#7A5A50!important}
+body.i2 .acct-chip{border-color:#EADBD5!important;color:#8F6E64!important}
+body.i2 .ref-btn{background:#F4E8E2!important;border-color:#EADBD5!important;color:#7A5A50!important}
+body.i2 .date-chip{color:#8F6E64!important}
+body.i2 .sidebar{background:#FCF8F7!important;border-color:#F1E6E2!important}
+body.i2 .sb-section{color:#C4A398!important}
+body.i2 .nav-item{color:#7A5A50!important}
+body.i2 .nav-item:hover{background:#FBF5F2!important}
+body.i2 .nav-item.active{background:#F4E8E2!important;color:#654840!important}
+body.i2 .nav-item.active:before{background:#8F6E64!important}
+body.i2 .sec-label{color:#8F6E64!important}
+body.i2 .card{border-color:#F1E6E2}
+body.i2 .wd-item{color:#4A3A35}
+body.i2 .sheet-ico{background:#F4E8E2!important}
+body.i2 .sheet-sub{background:#F4E8E2!important;color:#7A5A50!important}
+body.i2 .check-icon.done{background:#C4A398!important;border-color:#C4A398!important}
+body.i2 .month-nav button{background:#F4E8E2;color:#7A5A50}
+body.i2 .month-label{color:#654840}
+
+
+/* Livelier pink-beige (more warmth, same family) */
+body.i2 .header{background:linear-gradient(100deg,#F2DCD2 0%,#F9EEE9 50%,#fff 100%)!important}
+body.i2 .av{box-shadow:0 0 0 3px #EBCFC4!important;color:#8A5A4E!important}
+body.i2 .stat-grid>.stat:nth-child(odd){background:#FAEFEA!important;border-color:#F0DED6!important}
+body.i2 .stat-grid>.stat:nth-child(even){background:#F3DFD6!important;border-color:#EBD3C9!important}
+body.i2 .stat-num{color:#8A5A4E!important}
+body.i2 .dot,body.i2 .wd-dot{background:#C9958A!important}
+body.i2 .tbl th{background:#F3DFD6;color:#83564A}
+body.i2 .ra-sec:nth-of-type(3n+1){--c:#9A6A5E!important;--bg:#FAEFEA!important}
+body.i2 .ra-sec:nth-of-type(3n+2),body.i2 .mo-card,body.i2 .mo-cct{--c:#83564A!important;--bg:#F3DFD6!important}
+body.i2 .ra-sec:nth-of-type(3n+3){--c:#6B4438!important;--bg:#EACDC1!important}
+body.i2 .kt-wt{background:#F3DFD6!important}body.i2 .kt-wt b{color:#83564A!important}
+body.i2 .ktbl.ib .kt-wt{background:#EACDC1!important}body.i2 .ktbl.ib .kt-wt b{color:#6B4438!important}
+body.i2 .wd-group:nth-child(odd){--c:#B98172!important}body.i2 .wd-group:nth-child(even){--c:#94675A!important}
+body.i2 .nav-item.active{background:#F2DDD3!important;color:#6B4438!important}
+body.i2 .nav-item.active:before{background:#B98172!important}
+body.i2 .ref-btn{background:#F2DDD3!important;color:#83564A!important}
+body.i2 .cav,body.i2 #tab-coaching td div[style*="border-radius:50%"]{background:#F3DFD6!important;color:#83564A!important}
+body.i2 .sheet-ico{background:#F3DFD6!important}
+body.i2 .sheet-sub{background:#F3DFD6!important;color:#83564A!important}
+
+/* Pink-beige: lighter header + remove leftover beige/green */
+body.i2 .header{background:linear-gradient(100deg,#FAEDE8 0%,#FDF7F5 55%,#fff 100%)!important}
+body.i2 .av{box-shadow:0 0 0 3px #F3E1DA!important}
+body.i2 .ref-btn{background:#FAEFEA!important;border-color:#EFDCD4!important}
+body.i2 tr:hover td{background:#FCF4F1!important}
+body.i2 tr:hover td:first-child{box-shadow:none!important}
+body.i2 .freq{background:#FAEFEA!important;color:#A07B70!important}
+body.i2 .check-item{background:#FDF9F7!important;border-color:#F3E6E0!important}
+body.i2 .check-item:hover{background:#FAEFEA!important;border-color:#EBD3C9!important}
+body.i2 .check-item:has(.check-icon.done){background:#F8ECE7!important;border-color:#EBD3C9!important}
+body.i2 .check-icon{border-color:#DDBFB3!important}
+body.i2 .check-icon.done{background:#C9958A!important;border-color:#C9958A!important}
+body.i2 .progress-fill{background:#C9958A!important}
+body.i2 .b-green{background:#F0DCD4!important;color:#7A4A3E!important}
+body.i2 .b-amber{background:#FAEFEA!important;color:#A07B70!important}
+body.i2 .b-gray{background:#F6EEEA!important;color:#9A857E!important}
+body.i2 .b-teal{background:#F0DCD4!important;color:#7A4A3E!important}
+body.i2 .b-red{background:#F7E6E3!important;color:#A0675E!important}
+body.i2 #tab-coaching td span[style*="teal-light"]{background:#F0DCD4!important;color:#7A4A3E!important}
+body.i2 #tab-coaching td span[style*="amber-light"]{background:#FAEFEA!important;color:#A07B70!important}
+body.i2 .mo-src{background:#FAEFEA!important;color:#8A5A4E!important}
+body.i2 .mo-sc{background:#FAEFEA!important;color:#8A5A4E!important}
+body.i2 .it-date{background:#FAEFEA!important}body.i2 .it-date b{color:#8A5A4E!important}
+body.i2 .gc-col.gap,body.i2 .gc-col.act{background:#FCF5F2!important}
+body.i2 .gs-w.n{background:#FAF2EF!important;color:#D2BBB2!important}
+body.i2 .gs-w.y{background:#F0DCD4!important;color:#7A4A3E!important}
+body.i2 .gstrip,body.i2 .gcard,body.i2 .card{border-color:#F3E6E0!important}
+body.i2 #tab-perfgap .gc-head .badge:first-child{background:#FAEFEA!important;color:#8A5A4E!important}
+body.i2 .wd-item{background:color-mix(in srgb,var(--c) 10%,#fff)!important}
+body.i2 .acct-strip{background:#fff!important}
+
+/* Lighter table headers + section shades */
+body.i2 .tbl th{background:#FBF1ED!important;color:#8A5A4E!important;border-bottom-color:#F3E4DE!important}
+body.i2 .ra-sec:nth-of-type(3n+1){--bg:#FDF6F3!important;--c:#9A6A5E!important}
+body.i2 .ra-sec:nth-of-type(3n+2),body.i2 .mo-card,body.i2 .mo-cct{--bg:#FBF1ED!important;--c:#8A5A4E!important}
+body.i2 .ra-sec:nth-of-type(3n+3){--bg:#F7E9E3!important;--c:#7A4E42!important}
+body.i2 .ra-sec .tbl th,body.i2 .mo-card .tbl th,body.i2 .mo-cct .tbl th{background:var(--bg)!important;color:var(--c)!important}
+body.i2 .stat-grid>.stat:nth-child(odd){background:#FDF7F4!important;border-color:#F5E8E2!important}
+body.i2 .stat-grid>.stat:nth-child(even){background:#FAEFEA!important;border-color:#F3E3DC!important}
+body.i2 .kt-wt{background:#FAEFEA!important}
+body.i2 .ktbl.ib .kt-wt{background:#F7E9E3!important}
 </style>
 </head>
-<body class="h2 s1 t4 wB aB r1 m1 m3 e2 e3 e5">
+<body class="h2 s1 t4 wB aB r1 m1 m3 e2 e3 e5 i2">
 
 <!-- HEADER -->
 <div class="header">
@@ -1728,9 +1874,15 @@ function renderImprovement(rows){
   if(!plans.length){
     html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:13px;font-weight:600">No improvement plans yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Improvement Plans</div></div>';
   } else {
-    html+=`<div class="kh"><span class="dot" style="background:var(--amber)"></span>Improvement Plans<span class="kh-n">${plans.length} plans</span></div>`;
-    html+=plans.map((r,i)=>{const t=cls(r[3]);const name=String(r[0]||'—').trim();const ix=AGENTS.indexOf(name);const c=avColor(ix<0?i:ix);
-      return `<div class="krow2 ${t[0]}" style="grid-template-columns:36px minmax(0,1fr) 80px 120px"><span class="cav" style="width:30px;height:30px;background:${c.bg};color:${c.text}">${initials(name)}</span><div class="kr-main"><div class="kr-name">${name}${r[1]?` <span style="font-weight:500;color:var(--muted)">· ${r[1]}</span>`:''}</div>${r[4]?`<div class="kr-desc">${r[4]}</div>`:''}</div><div class="kr-wt"><b style="font-size:12px">${r[2]||'—'}</b><small>Start</small></div><div class="kr-st"><span class="badge ${t[1]}">${t[2]}</span></div></div>`;}).join('');
+    html+=`<div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--amber)"></span>Improvement Plans</div>
+      <div style="overflow-x:auto"><table class="tbl ktbl itbl"><thead><tr>
+        <th style="width:24%">Agent</th><th style="width:26%">Reason</th><th>Notes</th><th style="width:11%;text-align:center">Start</th><th style="width:12%;text-align:center">Status</th>
+      </tr></thead><tbody>`+plans.map((r,i)=>{const t=cls(r[3]);const name=String(r[0]||'—').trim();
+      return `<tr><td><div style="display:flex;align-items:center;gap:8px"><span class="cav" style="width:26px;height:26px;background:#F4EFE8;color:#8A7A68;font-size:9px">${initials(name)}</span><span style="font-weight:600;color:var(--text)">${name}</span></div></td>
+        <td style="color:var(--text)">${r[1]||'—'}</td>
+        <td style="color:var(--muted)">${r[4]||'—'}</td>
+        <td style="text-align:center"><span class="kt-wt it-date"><b>${r[2]||'—'}</b></span></td>
+        <td style="text-align:center"><span class="badge ${t[1]}">${t[2]}</span></td></tr>`;}).join('')+`</tbody></table></div>`;
   }
   document.getElementById('tab-improvement').innerHTML=html;
 }
