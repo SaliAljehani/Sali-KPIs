@@ -256,14 +256,13 @@ body.aB .as-off .num,body.aB .as-off .lbl,body.aC .as-off .num,body.aC .as-off .
 body.aB .att-stat,body.aC .att-stat{border:1px solid #F1E8DD;border-radius:14px}
 body.aB .att-dot,body.aC .att-dot{border-radius:50%;width:10px;height:10px;border:1px solid #E6DCCF}
 /* B · circles */
-body.aB .cal-grid{justify-items:center;row-gap:8px}
-body.aB .cal-cell{width:38px;height:38px;border-radius:50%;font-size:12px}
+body.aB .cal-cell{height:36px;border-radius:8px;font-size:11px}
 body.aB .cal-office{background:#F5F9F2;color:#6A8A60;box-shadow:inset 0 0 0 1.5px #D3E2C9}
 body.aB .cal-remote{background:#F7F6FB;color:#7E78A8;box-shadow:inset 0 0 0 1.5px #DCD9EE}
 body.aB .cal-vacation,body.aB .cal-workvac{background:#FDFAF1;color:#9C8D63;box-shadow:inset 0 0 0 1.5px #F0E7CB}
 body.aB .cal-sick{background:#FDF7F2;color:#A88068;box-shadow:inset 0 0 0 1.5px #F0DCCD}
 body.aB .cal-off{background:#FCF6F6;color:#B48484;box-shadow:inset 0 0 0 1.5px #F0DCDC}
-body.aB .cal-future{background:transparent;border:none;color:#D0C6BA}
+body.aB .cal-future{background:#FBF9F6;border:1px dashed #E8DED2;color:#CFC5B8}
 /* KPI B · detailed rows */
 .kh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);margin:4px 0 12px}
 .kh-n{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted)}
@@ -385,9 +384,62 @@ body.aB .att-stat.as-workvac,body.aB .att-dot.as-workvac{background:#FDFAF1!impo
 body.aB .as-workvac .num,body.aB .as-workvac .lbl{color:#9C8D63!important}
 @media(max-width:900px){.gc-body{grid-template-columns:1fr}.gc-arr{transform:rotate(90deg)}}
 
+
+/* KPI: old table + weight chip + bigger status badge */
+.ktbl td{vertical-align:middle}
+.kt-wt{display:inline-flex;flex-direction:column;align-items:center;background:#F7F0E5;border-radius:8px;padding:4px 10px;min-width:58px}
+.kt-wt b{font-size:13.5px;font-weight:800;color:#8A6A4A}.kt-wt small{font-size:8.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.ktbl.ib .kt-wt{background:#F2F0F8}.ktbl.ib .kt-wt b{color:#6E6890}
+.ktbl .badge{font-size:11px;padding:4px 11px;border-radius:8px;font-weight:600;display:inline-block;line-height:1.35}
+.kt-note{font-size:9px;color:var(--amber);margin-top:3px;direction:rtl;text-align:right}
+
+/* Calmer Improvement + Perf. Gap (fewer colors) */
+#tab-improvement .krow2,#tab-perfgap .gcard{border-left:1px solid var(--border)!important}
+#tab-improvement .cav{background:#F4EFE8!important;color:#8A7A68!important}
+#tab-improvement .kr-wt{background:#FAF7F3}
+#tab-improvement .kr-wt b{color:#6B5E50}
+#tab-improvement .kr-name span{color:var(--muted)!important}
+#tab-perfgap .gc-col.gap,#tab-perfgap .gc-col.act{background:#FAF7F3}
+#tab-perfgap .gc-col.gap span,#tab-perfgap .gc-col.act span{color:var(--muted)}
+#tab-perfgap .gc-head .badge:first-child{background:#F4EFE8!important;color:#8A7A68!important}
+#tab-perfgap .gs-w.n{background:#FAF7F3;color:#C9BEB1}
+#tab-perfgap .gs-w.y{background:#F2F7EF;color:#6A8A60}
+
+/* Reports: centered titles, no count, row hover in section color */
+body.r1 .rA .card-title{justify-content:center!important}
+body.r1 .rA .ra-cnt{display:none!important}
+.rA .ra-sec .tbl tbody tr{transition:background .12s}
+.rA .ra-sec .tbl tbody tr:hover td{background:color-mix(in srgb,var(--bg) 45%,#fff)!important}
+
+/* Monthly: same look as Reports (no card frame, centered titles, no counts, light hover) */
+body.m1 .mo-card,body.m1 .mo-cct{border:none!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+body.m1 .mo-t{justify-content:center!important}
+body.m1 .mo-cnt{display:none!important}
+#tab-monthly .tbl tbody tr:hover td{background:color-mix(in srgb,var(--bg,#F3E9D8) 45%,#fff)!important}
+
+/* Header option 2 (soft banner) + Sidebar option 1 (clean list) */
+/* H2 · soft banner */
+body.h2 .header{background:linear-gradient(100deg,#F7EFE3 0%,#FBF8F3 55%,#fff 100%);padding:18px 28px;border-bottom:none}
+body.h2 .av{width:56px;height:56px;font-size:18px;background:#fff;box-shadow:0 0 0 4px #EFE2CF}
+body.h2 .h-name{font-size:21px;letter-spacing:-.01em}
+body.h2 .h-role{font-size:12.5px;color:#9A7B58}
+body.h2 .pill{background:#fff;border:none;box-shadow:0 1px 3px rgba(110,82,56,.10)}
+body.h2 .date-chip{background:#fff;border:none;box-shadow:0 1px 3px rgba(110,82,56,.10)}
+body.h2 .acct-strip{background:#fff;padding:9px 28px;gap:7px}
+body.h2 .acct-chip{background:#fff;border:1px solid #EADFD0;color:#8A7256;font-size:10.5px;padding:4px 13px}
+
+/* S1 · clean list */
+body.s1 .sidebar{width:210px;padding:16px 12px;background:#FCFAF6}
+body.s1 .nav-divider{display:none}
+body.s1 .sb-section{margin:16px 0 6px;color:#C2AB8C;font-size:9.5px}
+body.s1 .nav-item{font-size:13px;padding:8px 12px;border-radius:10px;position:relative;color:#6E5946}
+body.s1 .nav-item .ico{width:auto;height:auto;background:none!important;border:none!important;font-size:14px}
+body.s1 .nav-item.active{background:#F3EADF;box-shadow:none;color:#5E4A38;font-weight:700}
+body.s1 .nav-item.active:before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:#8A6A4A}
+
 </style>
 </head>
-<body class="t1 t2 t4 wB aB r1 m1 m3 e2 e3 e5">
+<body class="h2 s1 t4 wB aB r1 m1 m3 e2 e3 e5">
 
 <!-- HEADER -->
 <div class="header">
@@ -1466,17 +1518,32 @@ function renderKPIs(rows){
     'Process Enhancement':{cls:'b-green',txt:'✓ Done (Inbound Dashboard)'},
     'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
   };
-  const stCls=s=>s.cls==='b-green'?'ok':(s.cls==='b-amber'?'ip':'');
-  let html=`<div class="kh"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators<span class="kh-n">${supervisorKPIs.length} KPIs</span></div>`;
-  supervisorKPIs.forEach((k,i)=>{
+  const wt=w=>`<span class="kt-wt"><b>${w||'—'}</b><small>Weight</small></span>`;
+  let html=`<div class="sec-label">Supervisor KPIs</div>
+    <div style="margin-bottom:18px">
+      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>
+      <div style="overflow-x:auto"><table class="tbl ktbl">
+        <thead><tr><th style="width:24%">KPI</th><th>Description</th><th style="width:9%;text-align:center">Wt</th><th style="width:15%;text-align:center">Status</th></tr></thead><tbody>`;
+  supervisorKPIs.forEach(k=>{
     const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
-    html+=`<div class="krow2 ${stCls(s)}"><div class="kr-num">${String(i+1).padStart(2,'0')}</div><div class="kr-main"><div class="kr-name">${k.cat}</div><div class="kr-desc">${k.measure}</div>${k.note?`<div class="kr-note">${k.note}</div>`:''}</div><div class="kr-wt"><b>${k.weight}</b><small>Weight</small></div><div class="kr-st"><span class="badge ${s.cls}">${s.txt}</span></div></div>`;
+    html+=`<tr><td style="font-weight:600;color:var(--text)">${k.cat}</td>
+      <td style="color:var(--muted)">${k.measure}${k.note?`<div class="kt-note">${k.note}</div>`:''}</td>
+      <td style="text-align:center">${wt(k.weight)}</td>
+      <td style="text-align:center"><span class="badge ${s.cls}">${s.txt}</span></td></tr>`;
   });
-  html+=`<div class="kh" style="margin-top:24px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards<span class="kh-n">${inboundPerf.length} KPIs</span></div>`;
-  inboundPerf.forEach((k,i)=>{
+  html+=`</tbody></table></div></div>
+    <div class="sec-label">Inbound Performance KPIs</div>
+    <div>
+      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>
+      <div style="overflow-x:auto"><table class="tbl ktbl ib">
+        <thead><tr><th style="width:24%">KPI</th><th>KPIs Covered</th><th style="width:9%;text-align:center">Wt</th></tr></thead><tbody>`;
+  inboundPerf.forEach(k=>{
     const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
-    html+=`<div class="krow2 ib"><div class="kr-num">${String(i+1).padStart(2,'0')}</div><div class="kr-main"><div class="kr-name">${k.cat}</div><ul class="kr-list">${bullets.map(b=>'<li>'+b+'</li>').join('')}</ul></div><div class="kr-wt"><b>${k.weight}</b><small>Weight</small></div><div class="kr-st"></div></div>`;
+    html+=`<tr><td style="font-weight:600;color:var(--text)">${k.cat}</td>
+      <td style="color:var(--muted)">${bullets.map(b=>'• '+b).join('<br>')}</td>
+      <td style="text-align:center">${wt(k.weight)}</td></tr>`;
   });
+  html+=`</tbody></table></div></div>`;
   document.getElementById('tab-kpis').innerHTML=html;
 }
 
@@ -1604,17 +1671,40 @@ function renderCoaching(rows){
     if(!sessionMap[name])sessionMap[name]=[];
     sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
   });
-  const coached=AGENTS.filter(a=>(sessionMap[a]||[]).length);
-  const done=coached.length;
-  const pct=AGENTS.length?Math.round(done/AGENTS.length*100):0;
-  const av=(name,i,sz)=>{const c=avColor(i);return `<span class="cav" style="width:${sz}px;height:${sz}px;background:${c.bg};color:${c.text}">${initials(name)}</span>`;};
-  const order=AGENTS.map((g,i)=>[g,i]).sort((p,q)=>((sessionMap[p[0]]||[]).length?1:0)-((sessionMap[q[0]]||[]).length?1:0));
-  let html=`<div class="cprog"><div><b>${done}</b><span> / ${AGENTS.length} agents coached</span></div><div class="cp-track"><i style="width:${pct}%"></i></div><div class="cp-pct">${pct}%</div></div>
-  <div class="cgrid">${order.map(([g,i])=>{
-    const ss=sessionMap[g]||[]; const x=ss[ss.length-1];
-    const sub=x?('Last: '+(x.date||'—')+(x.next?' · Next: '+x.next:'')+(ss.length>1?' · '+ss.length+' sessions':'')):'No session yet';
-    return `<div class="ccard ${x?'done':'pend'}"><div class="cc-top">${av(g,i,34)}<div><div class="cc-name">${g}</div><div class="cc-sub">${sub}</div></div></div>${x&&x.notes?`<div class="cc-note">${x.notes}</div>`:''}<span class="badge ${x?'b-green':'b-amber'} cc-badge">${x?'✓ Done':'Pending'}</span></div>`;
-  }).join('')}</div>`;
+  const done=Object.keys(sessionMap).length;
+  const total=rows.slice(1).filter(r=>r[0]).length;
+  let html=`<div class="stat-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${total}</div><div class="stat-lbl">Total sessions</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Agents coached</div></div>
+    <div class="stat"><div class="stat-num" style="color:var(--amber)">${AGENTS.length-done}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat"><div class="stat-num">${AGENTS.length}</div><div class="stat-lbl">Total agents</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Coaching Sessions Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">1 session / agent / month</span></div>
+    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
+      <th>#</th><th>Agent</th><th style="text-align:center">Sessions</th>
+      <th style="text-align:center">Last Date</th><th>Notes</th>
+      <th style="text-align:center">Next</th><th style="text-align:center">Status</th>
+    </tr></thead><tbody>`;
+  AGENTS.forEach((agent,i)=>{
+    const sessions=sessionMap[agent]||[];
+    const last=sessions[sessions.length-1]||null;
+    const c=avColor(i);
+    html+=`<tr>
+      <td style="color:#ccc;font-size:10px">${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${initials(agent)}</div>
+        <span style="font-weight:600;font-size:12px">${agent}</span></div></td>
+      <td style="text-align:center"><span style="background:${sessions.length?'var(--teal-light)':'var(--gray)'};color:${sessions.length?'var(--teal)':'#999'};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${sessions.length}</span></td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last?last.date:'—'}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${last?last.notes:'—'}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${last&&last.next?last.next:'—'}</td>
+      <td style="text-align:center">${sessions.length
+        ?'<span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">✓ Done</span>'
+        :'<span style="background:var(--amber-light);color:var(--amber);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">Pending</span>'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table></div></div>`;
   document.getElementById('tab-coaching').innerHTML=html;
 }
 
