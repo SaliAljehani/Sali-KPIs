@@ -583,6 +583,25 @@ body.i2 .stat-grid>.stat:nth-child(odd){background:#FDF7F4!important;border-colo
 body.i2 .stat-grid>.stat:nth-child(even){background:#FAEFEA!important;border-color:#F3E3DC!important}
 body.i2 .kt-wt{background:#FAEFEA!important}
 body.i2 .ktbl.ib .kt-wt{background:#F7E9E3!important}
+
+/* Attendance summary strip (option E) */
+.sE{display:grid;grid-template-columns:repeat(var(--n,7),minmax(0,1fr));background:#fff;border:1px solid #EFEBE6;border-radius:14px;margin-bottom:14px}
+.sE>div{padding:12px 8px;text-align:center}
+.sE>div+div{border-left:1px solid #F3F0EC}
+.sE b{display:block;font-size:24px;font-weight:700;line-height:1.2}
+.sE span{font-size:11.5px;color:#888;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.sE i{width:8px;height:8px;border-radius:50%;display:inline-block}
+@media(max-width:900px){.sE{grid-template-columns:repeat(3,1fr)}.sE>div+div{border-left:none}}
+
+/* Work Done: open sections, sequential numbers, colored + shaded titles */
+.wdacc{background:#fff;border:1px solid #F3E6E0;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.wdacc-h{display:flex;align-items:center;gap:9px;padding:10px 16px;font-weight:700;font-size:12.5px;color:var(--c);background:color-mix(in srgb,var(--c) 7%,#fff)}
+.wdacc-h i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.wdacc-h b{margin-left:auto;font-size:11px;color:var(--muted)}
+.wdacc-r{display:flex;gap:10px;padding:8px 16px;border-top:1px solid #F7EEEA}
+.wdacc-n{flex:none;min-width:24px;height:24px;border-radius:50%;background:#fff;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 30%,#fff);font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.wdacc-t{display:inline-block;font-size:12.5px;font-weight:600;line-height:1.4;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:6px;padding:1px 8px;margin-left:-8px}
+.wdacc-d{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:2px}
 </style>
 </head>
 <body class="h2 s1 t4 wB aB r1 m1 m3 e2 e3 e5 i2">
@@ -1576,8 +1595,8 @@ function renderInbound(rows){
 
 // ══ WORK DONE ══
 function renderWorkDone(rows){
-  const items=[];
-  // "Work Done" lives in its own column (col D); the column right after it (col E) is "Category".
+  // Reads the "Work Done" column (first "Work Done" header) down to the next "Work Done" header (older list below is ignored).
+  // Each cell: "N. Title" on the first line, description on the next line(s). Optional category in the column to its right.
   let wdCol=-1, wdRow=-1;
   for(let ri=0; ri<rows.length && wdCol<0; ri++){
     const row=rows[ri]||[];
@@ -1586,45 +1605,45 @@ function renderWorkDone(rows){
       if(v==='work done' || v==='workdone' || v==='work-done'){ wdCol=ci; wdRow=ri; break; }
     }
   }
+  const items=[];
   if(wdCol>=0){
     for(let ri=wdRow+1; ri<rows.length; ri++){
-      const v=String((rows[ri]||[])[wdCol]||'').trim();
-      const c=String((rows[ri]||[])[wdCol+1]||'').trim();
-      if(v) items.push({text:v,cat:(c.toLowerCase()==='category'?'':c)});
+      const raw=String((rows[ri]||[])[wdCol]||'').trim();
+      if(!raw) continue;
+      if(/^work\s*-?\s*done$/i.test(raw)) break;
+      const cat=String((rows[ri]||[])[wdCol+1]||'').trim();
+      const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+      let title=lines[0]||'', num='';
+      const m=title.match(/^(\d+)\s*[.\-)]\s*(.*)$/); if(m){num=m[1];title=m[2];}
+      items.push({num:num?parseInt(num):9999,title:title,desc:lines.slice(1).join(' '),cat:(cat.toLowerCase()==='category'?'':cat)});
     }
   }
-  const KNOWN={'tool / project':'#9385A8','operations':'#B79A6F','support':'#B07A6E','people':'#B08A5A','quality':'#8296A8','achievement':'#A08C76'};
-  const EXTRA=['#7E9A72','#A07A96','#6F94A0','#B0956A','#8A8FB0','#A88068'];
-  function getCat(item){
-    const t=item.toLowerCase();
-    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return'Tool / Project';
-    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return'Operations';
-    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return'Support';
-    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return'People';
-    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return'Quality';
-    return'Achievement';
-  }
-  const CAT_ORDER=['Tool / Project','Operations','Support','People','Quality'];
+  const RULES=[
+    ['Dashboards & Tools',['dashboard','sheet','template','sms','quick repl']],
+    ['People & Training',['employee','onboarding','training','vacation','days-off','announcement']],
+    ['Performance & Quality',['performance','quality','monitoring','analysis','reporting','case handling','survey']],
+    ['Operations & Support',['']]
+  ];
+  const ORDER=['Dashboards & Tools','Performance & Quality','Operations & Support','People & Training'];
+  const COLORS={'Dashboards & Tools':'#9A6A5E','Performance & Quality':'#86687F','Operations & Support':'#5F7F6E','People & Training':'#A07A4E'};
+  const EXTRA=['#7E8AA0','#A0806E','#6E8A8A','#957A9A'];
+  const autoCat=t=>{const x=t.toLowerCase();for(const [n,ks] of RULES){if(ks.some(k=>x.includes(k)))return n;}return 'Operations & Support';};
   const groups={}, seen=[];
-  items.forEach(it=>{
-    let label=it.cat||getCat(it.text);
-    const k=Object.keys(groups).find(x=>x.toLowerCase()===label.toLowerCase());
-    if(k) label=k;
+  items.sort((a,b)=>a.num-b.num).forEach(it=>{
+    let label=it.cat||autoCat(it.title);
+    const k=Object.keys(groups).find(x=>x.toLowerCase()===label.toLowerCase()); if(k) label=k;
     if(!groups[label]){groups[label]=[];seen.push(label);}
-    groups[label].push(it.text);
+    groups[label].push(it);
   });
-  const ordered=CAT_ORDER.filter(l=>groups[l]).concat(seen.filter(l=>CAT_ORDER.indexOf(l)<0));
-  let extraI=0;
-  const colorOf=l=>KNOWN[l.toLowerCase()]||EXTRA[(extraI++)%EXTRA.length];
-
-  let cards='<div class="wd-wrap">';
+  const ordered=ORDER.filter(l=>groups[l]).concat(seen.filter(l=>ORDER.indexOf(l)<0));
+  let extraI=0, n=0;
+  let cards='';
   ordered.forEach(label=>{
-    const list=groups[label], c=colorOf(label);
-    cards+=`<div class="wd-group" style="--c:${c}"><div class="wd-head"><span class="wd-dot"></span><span class="wd-lbl">${label}</span><span class="wd-n">${list.length}</span></div><div class="wd-grid">${list.map((t,i)=>`<div class="wd-item"><span class="wd-i">${String(i+1).padStart(2,'0')}</span>${t}</div>`).join('')}</div></div>`;
+    const c=COLORS[label]||EXTRA[(extraI++)%EXTRA.length];
+    cards+=`<div class="wdacc" style="--c:${c}"><div class="wdacc-h"><i></i>${label}<b>${groups[label].length}</b></div>`+
+      groups[label].map(it=>{n++;return `<div class="wdacc-r"><span class="wdacc-n">${n}</span><div><div class="wdacc-t">${it.title}</div>${it.desc?`<div class="wdacc-d">${it.desc}</div>`:''}</div></div>`;}).join('')+`</div>`;
   });
-  cards+='</div>';
   const curMon=today.toLocaleDateString('en-US',{month:'short'});
-
   document.getElementById('tab-workdone').innerHTML=`
     <div class="stat-grid" style="margin-bottom:16px">
       <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
@@ -1739,14 +1758,7 @@ function renderCal(){
     <div class="month-label">${MONTHS[calMonth]} ${calYear}</div>
     <button onclick="changeMonth(1)">›</button>
   </div>
-  <div class="att-stats">
-    <div class="att-stat as-office" style="background:#E7EFE6"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
-    <div class="att-stat as-remote" style="background:#E6EAF1"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
-    <div class="att-stat as-vacation" style="background:#F1E7D6"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
-    <div class="att-stat as-workvac" style="background:#F3EAD2"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
-    <div class="att-stat as-sick" style="background:#F0E0DB"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
-    <div class="att-stat as-off" style="background:#ECE7DE"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
-  </div>
+  <div class="sE" style="--n:6">${[['office','Office','#6A8A60','#D3E2C9'],['remote','Remote','#7E78A8','#DCD9EE'],['vacation','Vacation','#9C8D63','#F0E7CB'],['workvac','Work Vac','#9C8D63','#F0E7CB'],['sick','Sick','#A88068','#F0DCCD'],['off','Off','#B48484','#F0DCDC']].map(x=>`<div><b style="color:${counts[x[0]]?x[2]:'#d0cdc8'}">${counts[x[0]]}</b><span><i style="background:${x[3]}"></i>${x[1]}</span></div>`).join('')}</div>
   <div class="card">
     <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
     <div class="cal-grid">${Array(firstDay).fill('<div class="cal-cell cal-empty"></div>').join('')}`;
