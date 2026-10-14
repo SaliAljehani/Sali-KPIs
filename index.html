@@ -189,9 +189,205 @@
   .acct-strip::-webkit-scrollbar{height:5px}
   .acct-strip::-webkit-scrollbar-thumb{background:var(--gray-border);border-radius:3px}
   .acct-chip{flex-shrink:0;display:inline-block;background:#F5EEE2;color:var(--muted);border:0.5px solid var(--border);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:600}
+
+/* ===== Redesign tweaks (Oct 2026) ===== */
+/* 1 Header: one compact line */
+body.t1 .header{padding:10px 24px}
+body.t1 .av{width:40px;height:40px;font-size:14px}
+body.t1 .header>div:first-child>div:last-child{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+body.t1 .h-role{margin-top:0}
+body.t1 .h-pills{margin-top:0}
+body.t1 .acct-strip{padding:8px 24px}
+
+/* 2 Sidebar: colored icon circles + active bar */
+body.t2 .sidebar{width:215px;padding:16px 12px}
+body.t2 .nav-item{font-size:13px;padding:7px 10px;border-radius:10px;position:relative}
+body.t2 .nav-item .ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;background:#fff;border:1px solid #EFE6DC}
+body.t2 .nav-item.active{background:#fff;box-shadow:0 1px 5px rgba(110,82,56,.10)}
+body.t2 .nav-item.active:before{content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:#8A6A4A}
+body.t2 .nav-item.active .ico{background:#F5EDE3;border-color:#E2CFB8}
+body.t2 .sb-section{color:#B79A6F;font-size:9.5px}
+/* 4 Tasks: small cards instead of lines */
+body.t4 .check-item{border:1px solid #F1E8DD;border-radius:12px;padding:10px 12px;margin-bottom:7px;background:#FDFBF8;transition:.15s}
+body.t4 .check-item:last-child{border-bottom:1px solid #F1E8DD}
+body.t4 .check-item:hover{background:#F8F1E8;border-color:#E6D6C3;transform:translateX(2px)}
+body.t4 .check-item:has(.check-icon.done){background:#F3F7F1;border-color:#DCE7D6}
+body.t4 .check-icon{width:20px;height:20px;border-color:#D6C6B3}
+/* ===== Work Done styles ===== */
+.wd-group{margin-bottom:16px}
+.wd-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.wd-dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.wd-lbl{font-size:12px;font-weight:700;color:var(--c)}
+.wd-n{font-size:9px;font-weight:700;color:#fff;background:var(--c);border-radius:20px;padding:1px 8px}
+.wd-item{background:#fff;border:1px solid var(--border);border-radius:10px;border-left:4px solid var(--c);padding:9px 13px;font-size:12px;font-weight:500;color:var(--text);line-height:1.4}
+.wd-i{display:none}
+/* B · tinted tiles */
+body.wB .wd-item{border:none;background:color-mix(in srgb,var(--c) 11%,#fff);color:#3E342A;padding:12px 14px;border-radius:12px}
+body.wB .wd-head{padding:0 2px}
+/* C · one card per category */
+body.wC .wd-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;align-items:start}
+body.wC .wd-group{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin:0}
+body.wC .wd-head{background:color-mix(in srgb,var(--c) 12%,#fff);padding:11px 16px;margin:0}
+body.wC .wd-lbl{font-size:13.5px}
+body.wC .wd-grid{display:block;padding:6px 16px 10px}
+body.wC .wd-item{border:none;border-bottom:1px solid #F4EDE4;border-radius:0;padding:10px 0;display:flex;gap:10px;font-size:12.5px}
+body.wC .wd-item:last-child{border-bottom:none}
+body.wC .wd-i{display:inline;color:var(--c);font-weight:800;opacity:.7}
+/* D · chips */
+body.wD .wd-grid{display:flex;flex-wrap:wrap;gap:8px}
+body.wD .wd-item{border:1px solid color-mix(in srgb,var(--c) 30%,#fff);background:color-mix(in srgb,var(--c) 8%,#fff);border-radius:20px;padding:7px 15px;font-size:12px}
+/* E · columns side by side */
+body.wE .wd-wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start}
+body.wE .wd-group{margin:0;background:color-mix(in srgb,var(--c) 7%,#fff);border-radius:16px;padding:12px}
+body.wE .wd-head{border-bottom:2px solid var(--c);padding-bottom:8px}
+body.wE .wd-grid{display:flex;flex-direction:column;gap:7px}
+body.wE .wd-item{border:none;border-radius:10px;padding:10px 12px;box-shadow:0 1px 3px rgba(80,60,40,.06)}
+/* ===== Attendance options ===== */
+body.aB .att-stat.as-office,body.aC .att-stat.as-office,body.aB .att-dot.as-office,body.aC .att-dot.as-office{background:#F5F9F2!important}
+body.aB .as-office .num,body.aB .as-office .lbl,body.aC .as-office .num,body.aC .as-office .lbl{color:#6A8A60!important}
+body.aB .att-stat.as-remote,body.aC .att-stat.as-remote,body.aB .att-dot.as-remote,body.aC .att-dot.as-remote{background:#F7F6FB!important}
+body.aB .as-remote .num,body.aB .as-remote .lbl,body.aC .as-remote .num,body.aC .as-remote .lbl{color:#7E78A8!important}
+body.aB .att-stat.as-vacation,body.aC .att-stat.as-vacation,body.aB .att-dot.as-vacation,body.aC .att-dot.as-vacation{background:#FDFAF1!important}
+body.aB .as-vacation .num,body.aB .as-vacation .lbl,body.aC .as-vacation .num,body.aC .as-vacation .lbl{color:#9C8D63!important}
+body.aB .att-stat.as-sick,body.aC .att-stat.as-sick,body.aB .att-dot.as-sick,body.aC .att-dot.as-sick{background:#FDF7F2!important}
+body.aB .as-sick .num,body.aB .as-sick .lbl,body.aC .as-sick .num,body.aC .as-sick .lbl{color:#A88068!important}
+body.aB .att-stat.as-off,body.aC .att-stat.as-off,body.aB .att-dot.as-off,body.aC .att-dot.as-off{background:#FCF6F6!important}
+body.aB .as-off .num,body.aB .as-off .lbl,body.aC .as-off .num,body.aC .as-off .lbl{color:#B48484!important}
+body.aB .att-stat,body.aC .att-stat{border:1px solid #F1E8DD;border-radius:14px}
+body.aB .att-dot,body.aC .att-dot{border-radius:50%;width:10px;height:10px;border:1px solid #E6DCCF}
+/* B · circles */
+body.aB .cal-grid{justify-items:center;row-gap:8px}
+body.aB .cal-cell{width:38px;height:38px;border-radius:50%;font-size:12px}
+body.aB .cal-office{background:#F5F9F2;color:#6A8A60;box-shadow:inset 0 0 0 1.5px #D3E2C9}
+body.aB .cal-remote{background:#F7F6FB;color:#7E78A8;box-shadow:inset 0 0 0 1.5px #DCD9EE}
+body.aB .cal-vacation,body.aB .cal-workvac{background:#FDFAF1;color:#9C8D63;box-shadow:inset 0 0 0 1.5px #F0E7CB}
+body.aB .cal-sick{background:#FDF7F2;color:#A88068;box-shadow:inset 0 0 0 1.5px #F0DCCD}
+body.aB .cal-off{background:#FCF6F6;color:#B48484;box-shadow:inset 0 0 0 1.5px #F0DCDC}
+body.aB .cal-future{background:transparent;border:none;color:#D0C6BA}
+/* KPI B · detailed rows */
+.kh{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text);margin:4px 0 12px}
+.kh-n{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted)}
+.krow2{display:grid;grid-template-columns:28px minmax(0,1fr) 60px 150px;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-left:4px solid #E3CFB0;border-radius:10px;padding:8px 12px;margin-bottom:6px}
+.krow2.ok{border-left-color:#9FC293}.krow2.ip{border-left-color:#E2B77E}.krow2.ib{border-left-color:#B4ADDE}
+.kr-num{font-size:13px;font-weight:800;color:#D3BFA3}
+.kr-name{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:2px}
+.kr-desc{font-size:12px;color:#6B5A49;line-height:1.45}
+.kr-note{font-size:11.5px;color:#9A6E28;background:#FBF4E8;border-radius:6px;padding:2px 8px;margin-top:4px;direction:rtl;text-align:right;display:inline-block}
+.kr-list{margin:2px 0 0 16px;font-size:12px;color:#6B5A49;line-height:1.5}
+.kr-wt{text-align:center;background:#F7F0E5;border-radius:8px;padding:4px 2px}.krow2.ib .kr-wt{background:#F2F0F8}
+.kr-wt b{display:block;font-size:14px;font-weight:800;color:#8A6A4A}.krow2.ib .kr-wt b{color:#6E6890}
+.kr-wt small{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.kr-st{text-align:center}.kr-st .badge{font-size:10.5px;padding:3px 9px}
+@media(max-width:900px){.krow2{grid-template-columns:34px 1fr;}.kr-wt,.kr-st{grid-column:2}}
+.cav{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex:none}
+.cprog{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 16px;margin-bottom:14px}
+.cprog b{font-size:22px;color:#8A6A4A}.cprog span{font-size:12px;color:var(--muted)}
+.cp-track{flex:1;height:8px;border-radius:5px;background:#F3ECE3;overflow:hidden}.cp-track i{display:block;height:100%;background:#B9D2AC;border-radius:5px}
+.cp-pct{font-size:13px;font-weight:700;color:#6A8A60}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.ccard{position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px;border-left:4px solid #E8C9A0}
+.ccard.done{border-left-color:#9FC293;background:#FAFCF8}
+.cc-top{display:flex;align-items:center;gap:9px}.cc-name{font-size:12.5px;font-weight:600;color:var(--text)}
+.cc-sub{font-size:10.5px;color:var(--muted);font-weight:400}
+.cc-note{font-size:11.5px;color:#6B5A49;background:#F6F9F4;border-radius:8px;padding:5px 8px;margin-top:7px}
+.cc-badge{position:absolute;top:10px;right:10px}
+.cpill-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.cpill{display:inline-flex;align-items:center;gap:7px;background:#FBF6EF;border:1px solid #F0E3D1;border-radius:20px;padding:3px 12px 3px 3px;font-size:12px;color:var(--text)}
+.cdone{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F4EDE4}.cdone:last-child{border-bottom:none}
+.krow2.pd{border-left-color:#CFC6BA}
+.krow2.op{border-left-color:#D99A9A}
+.glab{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6E6890;background:#F2F0F8;border-radius:5px;padding:1px 6px;margin-right:6px}
+.gstrip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:12px;padding:9px 14px;margin-bottom:14px}
+.gs-l{font-size:11.5px;font-weight:600;color:var(--muted);margin-right:auto}
+.gs-w{display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;width:46px;border-radius:9px;padding:4px 0}
+.gs-w small{font-size:9.5px;font-weight:500;color:var(--muted)}
+.gs-w.y{background:#F2F7EF;color:#6A8A60}.gs-w.n{background:#FBF1F1;color:#B48484}
+.gcard{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;border-left:4px solid #E3CFB0}
+.gcard.ok{border-left-color:#9FC293}.gcard.ip{border-left-color:#E2B77E}.gcard.op{border-left-color:#D99A9A}
+.gc-head{display:flex;justify-content:space-between;margin-bottom:9px}
+.gc-body{display:grid;grid-template-columns:1fr 24px 1.4fr;gap:8px;align-items:stretch}
+.gc-col{border-radius:10px;padding:9px 11px}.gc-col.gap{background:#FBF3F3}.gc-col.act{background:#F3F8F1}
+.gc-col span{display:block;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.gc-col.gap span{color:#A86A6A}.gc-col.act span{color:#6A8A60}
+.gc-col p{font-size:12px;line-height:1.5;color:#4A3F33}
+.gc-arr{display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700}
+/* Reports A tweaks */
+.ra-search,.ra-cnt,.ra-dot{display:none}
+.rA .ra-hn{color:var(--muted)}
+body.r1 .rA .card-title{justify-content:flex-start!important}
+body.r1 .rA .ra-cnt{display:inline;margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+body.r1 .rA .tbl th{background:var(--bg);color:var(--c);border-bottom-color:transparent}
+body.r1 .rA .tbl{border:1px solid var(--border);border-top:3px solid var(--c)}
+body.r2 .rA .ra-hn{display:inline-block;background:var(--bg);color:var(--c);border-radius:7px;padding:3px 9px;font-size:11.5px;font-weight:600}
+body.r2 .rA .ra-e{color:transparent}
+body.r3 .rA .ra-d{color:#4A3F33!important}
+body.r3 .rA .ra-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c);margin-right:8px;vertical-align:middle}
+body.r3 .rA .tbl td{padding:10px 12px}
+body.r3 .rA .tbl tbody tr:hover td{background:#FBF7F1}
+body.r4 .rA .ra-search{display:block}
+body.r5 .rA .ra-sec{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+body.r5 .rA .tbl{border:none!important}
+
+
+/* Monthly tweaks */
+.mo-cnt,.mo-f,.mo-arr,.mo-wb,.mo-sb,.mo-ccw{display:none}
+.mo-sc{background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700}
+.mo-w{font-weight:700;color:var(--teal)}.mo-act{color:var(--muted)}
+body.m1 .mo-t{justify-content:flex-start!important}
+body.m1 .mo-cnt{display:inline;margin-left:auto;font-size:11px;color:var(--muted);font-weight:500}
+body.m1 .mo-card .tbl th,body.m1 .mo-cct .tbl th{background:var(--bg);color:var(--c);border-bottom-color:transparent}
+body.m1 .mo-card,body.m1 .mo-cct{border-top:3px solid var(--c)}
+body.m2 .mo-plain{display:none}
+body.m2 .mo-f{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:center}
+body.m2 .mo-fx{background:#F6F2EC;color:#6B5A49;border-radius:6px;padding:2px 8px;font-size:11.5px}
+body.m2 .mo-op{font-weight:800;color:#B79A6F;font-size:13px}
+body.m2 .mo-pct td:first-child{color:#7A6248}
+body.m3 .mo-arr{display:inline;color:var(--muted);margin-right:7px}
+body.m3 .mo-src{background:#F7EFE1;color:#8A6A3E;border-radius:6px;padding:2px 8px;font-weight:600;font-size:11.5px}
+body.m4 .mo-w{display:none}
+body.m4 .mo-wb{display:flex;align-items:center;gap:7px}
+body.m4 .mo-wb i{display:block;height:7px;border-radius:4px;background:#C9AE86}
+body.m4 .mo-wb b{font-size:11.5px;color:var(--teal)}
+body.m4 .mo-act{display:inline-block;background:#F3F8F1;color:#55744D;border-radius:6px;padding:2px 9px;font-weight:600;font-size:11.5px}
+body.m5 .mo-sc{display:none}
+body.m5 .mo-sb{display:flex;align-items:center;gap:7px;justify-content:flex-start}
+body.m5 .mo-sb i{display:block;height:7px;border-radius:4px;background:#B9D2AC;min-width:2px}
+body.m5 .mo-sb b{font-size:11.5px;color:#55744D}
+body.m6 .mo-cct{display:none}
+body.m6 .mo-ccw{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.mo-ccc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.mo-ccp{font-size:24px;font-weight:800;color:#7A6248}
+.mo-ccn{font-size:12.5px;font-weight:700}
+.mo-ccd{font-size:11px;color:var(--muted);line-height:1.45;flex:1}
+.mo-cca{font-size:11.5px;background:#F3F8F1;color:#55744D;border-radius:8px;padding:5px 8px;font-weight:600}
+.mo-cca span{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#8AA382}
+@media(max-width:1000px){body.m6 .mo-ccw{grid-template-columns:repeat(2,minmax(0,1fr))}.mo-two{grid-template-columns:1fr!important}}
+
+
+/* EOM Sheets tweaks */
+.es-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.es-desc{display:none;font-size:11px;color:var(--muted)}
+body.e1 .sheet-link{border-top:3px solid var(--c)}
+body.e1 .sheet-ico{background:var(--bg)}
+body.e1 .sheet-sub{color:var(--c)}
+body.e1 .sheet-link:hover{background:var(--bg)}
+body.e2 .es-grid{grid-template-columns:1fr;gap:8px}
+body.e2 .sheet-link{flex-direction:row;text-align:left;padding:12px 16px;gap:14px}
+body.e2 .sheet-link .sheet-sub{margin-left:auto}
+body.e2 .sheet-link:hover{transform:translateX(3px)}
+body.e2.e1 .sheet-link{border-top:1px solid var(--teal-border);border-left:4px solid var(--c)}
+body.e3 .es-desc{display:block}
+body.e2.e3 .sheet-link .sheet-name{min-width:170px}
+body.e4 .es-wrap{background:transparent;border:none;box-shadow:none;padding:0}
+body.e4 .sheet-link{background:#fff}
+body.e5 .sheet-sub{background:var(--bg,var(--teal-light));border-radius:20px;padding:5px 14px;font-size:11px}
+body.aB .att-stat.as-workvac,body.aB .att-dot.as-workvac{background:#FDFAF1!important}
+body.aB .as-workvac .num,body.aB .as-workvac .lbl{color:#9C8D63!important}
+@media(max-width:900px){.gc-body{grid-template-columns:1fr}.gc-arr{transform:rotate(90deg)}}
+
 </style>
 </head>
-<body>
+<body class="t1 t2 t4 wB aB r1 m1 m3 e2 e3 e5">
 
 <!-- HEADER -->
 <div class="header">
@@ -252,23 +448,28 @@
     <div id="tab-monthly" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-reports" style="display:none"><div class="loading">⏳ Loading...</div></div>
     <div id="tab-sheets" style="display:none">
-      <div class="card">
+      <div class="card es-wrap">
         <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>EOM Sheets</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">
-          <a href="https://docs.google.com/spreadsheets/d/1m7IFY99UNOLDHPsPbTsBH0o_DX9o6Qg1q8069ZWKh1A/edit" target="_blank" rel="noopener" class="sheet-link">
+        <div class="es-grid">
+          <a href="https://docs.google.com/spreadsheets/d/1m7IFY99UNOLDHPsPbTsBH0o_DX9o6Qg1q8069ZWKh1A/edit" target="_blank" rel="noopener" class="sheet-link" style="--c:#B08A5A;--bg:#F7EFE1">
             <div class="sheet-ico">🏅</div>
             <div class="sheet-name">Call Center EOM 26</div>
-            <div class="sheet-sub">Open in Google Sheets ↗</div>
+            <div class="es-desc">EOM scores & ranking</div><div class="sheet-sub">Open in Google Sheets ↗</div>
           </a>
-          <a href="https://docs.google.com/spreadsheets/d/1I7S7ah4i39yrfDnO8GMWkG22HsDAhrDHh3HHk0epDHc/edit" target="_blank" rel="noopener" class="sheet-link">
+          <a href="https://docs.google.com/spreadsheets/d/1I7S7ah4i39yrfDnO8GMWkG22HsDAhrDHh3HHk0epDHc/edit" target="_blank" rel="noopener" class="sheet-link" style="--c:#8A7FA8;--bg:#EFECF6">
             <div class="sheet-ico">📞</div>
             <div class="sheet-name">Calls Quality</div>
-            <div class="sheet-sub">Open in Google Sheets ↗</div>
+            <div class="es-desc">Calls QA evaluations</div><div class="sheet-sub">Open in Google Sheets ↗</div>
           </a>
-          <a href="https://docs.google.com/spreadsheets/d/16ZzTUvIDmJnokaNJCTLb3AHXm7x_n2Kx_537H2gcCCI/edit" target="_blank" rel="noopener" class="sheet-link">
+          <a href="https://docs.google.com/spreadsheets/d/16ZzTUvIDmJnokaNJCTLb3AHXm7x_n2Kx_537H2gcCCI/edit" target="_blank" rel="noopener" class="sheet-link" style="--c:#7A93A8;--bg:#EAF0F5">
             <div class="sheet-ico">🎫</div>
             <div class="sheet-name">Inbound Ticket Quality</div>
-            <div class="sheet-sub">Open in Google Sheets ↗</div>
+            <div class="es-desc">Ticket quality checks</div><div class="sheet-sub">Open in Google Sheets ↗</div>
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1IbMi0XDcA5y4knQG6wBOmBzAkFvp4t3GyCOUJmtMorc/edit?gid=1982018294#gid=1982018294" target="_blank" rel="noopener" class="sheet-link" style="--c:#7E9A72;--bg:#EEF4EA">
+            <div class="sheet-ico">🚗</div>
+            <div class="sheet-name">CDK Quality</div>
+            <div class="es-desc">CDK quality checks</div><div class="sheet-sub">Open in Google Sheets ↗</div>
           </a>
         </div>
       </div>
@@ -283,9 +484,10 @@ const GID = {
   checklist:'1272140156', coaching:'144857263',
   improvement:'115510114', perfgap:'1669804764',
   monthly:'413119919',
-  reports:'2136858309'
+  reports:'2136858309',
+  agents:'ext:1MRUWG3v9Neac-UselMf_HzlfiLtX64a9iJsIUV5FmRU:Agent'   // Inbound Dashboard sheet → "Agent" tab
 };
-const AGENTS=[
+let AGENTS=[
   'Asmaa M. Bawayan',
   'Bayan Jazzar',
   'Ghadeer Motadares',
@@ -347,11 +549,15 @@ const GID_TO_NAME = {
 const GVIZ_BASE = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq';
 
 function fetchCSVOnce(gid){
-  const sheetName = GID_TO_NAME[String(gid)] || ('gid ' + gid);
+  const isExt = String(gid).indexOf('ext:')===0;            // ext:<spreadsheetId>:<tab name>
+  const extParts = isExt ? String(gid).slice(4).split(':') : null;
+  const byName = isExt || String(gid).indexOf('name:')===0;
+  const sheetName = isExt ? extParts.slice(1).join(':') : (byName ? String(gid).slice(5) : (GID_TO_NAME[String(gid)] || ('gid ' + gid)));
+  const base = isExt ? 'https://docs.google.com/spreadsheets/d/' + extParts[0] + '/gviz/tq' : GVIZ_BASE;
   return new Promise(function(resolve, reject){
     const cbName = 'gvcb_' + Math.random().toString(36).slice(2) + Date.now();
     const tqx = 'out:json;responseHandler:' + cbName;
-    const url = GVIZ_BASE + '?gid=' + encodeURIComponent(gid)
+    const url = base + (byName ? '?sheet=' + encodeURIComponent(sheetName) : '?gid=' + encodeURIComponent(gid))
               + '&headers=0&tqx=' + encodeURIComponent(tqx)
               + '&_ts=' + Date.now();
     const script = document.createElement('script');
@@ -494,23 +700,23 @@ function renderMonthly(rows){
   const html=`
   <div class="sec-label">📊 Monthly Agents Performance &amp; EOM Slide Inbound</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;align-items:stretch">
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Monthly Agents Performance</div>
+    <div class="card mo-card" style="margin-bottom:0;--c:#7A6248;--bg:#F3E9D8">
+      <div class="card-title mo-t"><span class="dot" style="background:var(--teal-mid)"></span>Monthly Agents Performance<span class="mo-cnt">${PERF.length} metrics</span></div>
       <div style="overflow-x:auto"><table class="tbl">
         <thead><tr><th style="width:42%">Metric</th><th>Description</th></tr></thead>
         <tbody>${PERF.map(m=>`<tr><td style="font-weight:600;color:var(--text)">${m.metric}</td><td style="color:var(--muted)">${m.desc}</td></tr>`).join('')}</tbody>
       </table></div>
     </div>
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>EOM Slide Inbound</div>
+    <div class="card mo-card" style="margin-bottom:0;--c:#9A7A4E;--bg:#F7EFE1">
+      <div class="card-title mo-t"><span class="dot" style="background:var(--amber)"></span>EOM Slide Inbound<span class="mo-cnt">${EOM.length} fields</span></div>
       <div style="overflow-x:auto"><table class="tbl">
         <thead><tr><th style="width:55%">Field</th><th>Source</th></tr></thead>
-        <tbody>${EOM.map(r=>`<tr><td style="font-weight:600;color:var(--text)">${r.field}</td><td style="color:var(--muted)">${r.source}</td></tr>`).join('')}</tbody>
+        <tbody>${EOM.map(r=>`<tr><td style="font-weight:600;color:var(--text)">${r.field}</td><td style="color:var(--muted)"><span class="mo-arr">←</span><span class="mo-src">${r.source}</span></td></tr>`).join('')}</tbody>
       </table></div>
     </div>
   </div>
   <div class="sec-label">📋 Inbound CC — Agent Performance</div>
-  <div class="card" style="margin-bottom:18px">
+  <div class="card mo-cct" style="margin-bottom:18px;--c:#7A6248;--bg:#F3E9D8">
     <div style="overflow-x:auto"><table class="tbl">
       <thead><tr>
         <th style="width:24%">Points</th>
@@ -527,8 +733,8 @@ function renderMonthly(rows){
     </table></div>
   </div>
   <div class="sec-label">✅ Calls Quality Assurance — Total: ${total} pts</div>
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria</div>
+  <div class="card mo-card" style="--c:#7A6248;--bg:#F3E9D8">
+    <div class="card-title mo-t"><span class="dot" style="background:var(--teal-mid)"></span>QA Evaluation Criteria<span class="mo-cnt">${QA.length} criteria · ${total} pts</span></div>
     <div style="overflow-x:auto"><table class="tbl">
       <thead><tr><th>Criteria</th><th style="text-align:center">Score</th><th>Detail</th></tr></thead>
       <tbody>${QA.map(r=>`<tr>
@@ -607,12 +813,12 @@ function renderReports(rows){
   const SECTION_COLORS=['#7A6248','#9385A8','#8296A8'];
   const SECTION_BG=['#F3E9D8','#ECE8F2','#EAEEF2'];
 
-  let html='<div class="sec-label">📄 Reports Reference Guide</div>';
+  let html='<div class="rA"><div class="sec-label">📄 Reports Reference Guide</div>';
   sections.forEach((sec,si)=>{
     if(!sec.items.length) return;
     const col=SECTION_COLORS[si%SECTION_COLORS.length];
-    html+=`<div style="margin-bottom:16px">
-      <div class="card-title" style="color:${col};margin-bottom:9px;justify-content:center"><span class="dot" style="background:${col}"></span>${sec.title}</div>
+    html+=`<div class="ra-sec" style="margin-bottom:16px;--c:${col};--bg:${SECTION_BG[si%SECTION_BG.length]}">
+      <div class="card-title" style="color:${col};margin-bottom:9px;justify-content:center"><span class="dot" style="background:${col}"></span>${sec.title}<span class="ra-cnt">${sec.items.length} reports</span></div>
       <div style="overflow-x:auto"><table class="tbl">
         <thead><tr>
           <th style="width:30%">Report</th>
@@ -627,6 +833,7 @@ function renderReports(rows){
       </table></div>
     </div>`;
   });
+  html+='</div>';
   document.getElementById('tab-reports').innerHTML=html;
 }
 
@@ -655,6 +862,8 @@ async function loadAll(){
   if(cachedKpi) renderKPIs(cachedKpi);
   const cachedCl = getCachedSheet(GID.checklist);
   if(cachedCl && document.getElementById('tab-checklist')) renderChecklist(cachedCl);
+  const cachedAgents = getCachedSheet(GID.agents);
+  if(cachedAgents) applyAgents(cachedAgents);
   const cachedCoach = getCachedSheet(GID.coaching);
   if(cachedCoach) renderCoaching(cachedCoach);
   const cachedImp = getCachedSheet(GID.improvement);
@@ -681,7 +890,8 @@ async function loadAll(){
     { gid: GID.improvement, tabs:['improvement'],        render: renderImprovement },
     { gid: GID.perfgap,     tabs:['perfgap'],            render: renderPerfGap },
     { gid: GID.monthly,     tabs:['monthly'],            render: renderMonthly,  staticFallback:true },
-    { gid: GID.reports,     tabs:['reports'],            render: renderReports,  staticFallback:true }
+    { gid: GID.reports,     tabs:['reports'],            render: renderReports,  staticFallback:true },
+    { gid: GID.agents,      tabs:[],                     render: rows=>{ if(applyAgents(rows)){ const c=getCachedSheet(GID.coaching); if(c) renderCoaching(c); } } }
   ];
 
   await Promise.allSettled(JOBS.map(function(job){
@@ -1090,6 +1300,26 @@ const AV_COLORS=[
 function avColor(i){return AV_COLORS[i%AV_COLORS.length];}
 function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 
+
+// ══ AGENTS — read live from the Inbound Dashboard sheet ("Agent" tab, column "Agent Name").
+// Falls back to the built-in list if the tab can't be read.
+function applyAgents(rows){
+  rows=rows||[];
+  let col=-1, start=0;
+  for(let ri=0; ri<Math.min(rows.length,5) && col<0; ri++){
+    (rows[ri]||[]).forEach((v,ci)=>{ if(col<0 && /^agent\s*name$/i.test(String(v||'').trim())){ col=ci; start=ri+1; } });
+  }
+  if(col<0) col=0;
+  const list=[];
+  rows.slice(start).forEach(r=>{
+    const v=String((r||[])[col]||'').trim();
+    if(!v || /^agent\s*name$/i.test(v)) return;
+    if(list.indexOf(v)<0) list.push(v);
+  });
+  if(list.length){ list.sort((a,b)=>a.localeCompare(b)); AGENTS=list; return true; }
+  return false;
+}
+
 // ══ INBOUND ══
 function renderInbound(rows){
   const daily=[],weekly=[],other=[];
@@ -1149,8 +1379,7 @@ function renderInbound(rows){
 // ══ WORK DONE ══
 function renderWorkDone(rows){
   const items=[];
-  // The sheet keeps "Work Done" in its own column (currently col D), separate from the
-  // daily-tasks column. Find the header cell wherever it is, then read down that column.
+  // "Work Done" lives in its own column (col D); the column right after it (col E) is "Category".
   let wdCol=-1, wdRow=-1;
   for(let ri=0; ri<rows.length && wdCol<0; ri++){
     const row=rows[ri]||[];
@@ -1162,48 +1391,48 @@ function renderWorkDone(rows){
   if(wdCol>=0){
     for(let ri=wdRow+1; ri<rows.length; ri++){
       const v=String((rows[ri]||[])[wdCol]||'').trim();
-      if(v) items.push(v);
+      const c=String((rows[ri]||[])[wdCol+1]||'').trim();
+      if(v) items.push({text:v,cat:(c.toLowerCase()==='category'?'':c)});
     }
   }
+  const KNOWN={'tool / project':'#9385A8','operations':'#B79A6F','support':'#B07A6E','people':'#B08A5A','quality':'#8296A8','achievement':'#A08C76'};
+  const EXTRA=['#7E9A72','#A07A96','#6F94A0','#B0956A','#8A8FB0','#A88068'];
   function getCat(item){
     const t=item.toLowerCase();
-    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return{label:'Tool / Project',color:'#9385A8',bg:'#ECE8F2',dot:'#9385A8'};
-    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return{label:'Operations',color:'#7A6248',bg:'#F3E9D8',dot:'#B79A6F'};
-    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return{label:'Support',color:'#B07A6E',bg:'#F6ECE9',dot:'#B07A6E'};
-    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return{label:'People',color:'#B08A5A',bg:'#F7EFE1',dot:'#B08A5A'};
-    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return{label:'Quality',color:'#8296A8',bg:'#EAEEF2',dot:'#8296A8'};
-    return{label:'Achievement',color:'#7A6248',bg:'#F3E9D8',dot:'#B79A6F'};
+    if(t.includes('dashboard')||t.includes('sheet')||t.includes('monitoring')||t.includes('reference'))return'Tool / Project';
+    if(t.includes('whatsapp')||t.includes('calls')||t.includes('rotation'))return'Operations';
+    if(t.includes('complaint')||t.includes('escalation')||t.includes('ticket')||t.includes('support'))return'Support';
+    if(t.includes('training')||t.includes('employee')||t.includes('new')||t.includes('assist'))return'People';
+    if(t.includes('survey')||t.includes('quality')||t.includes('email'))return'Quality';
+    return'Achievement';
   }
-  // Group achievements by category so they're always tidy, even if the sheet is unsorted
-  const CAT_ORDER=['Tool / Project','Operations','Support','People','Quality','Achievement'];
-  const groups={};
-  items.forEach(item=>{
-    const cat=getCat(item);
-    (groups[cat.label]=groups[cat.label]||{cat,list:[]}).list.push(item);
+  const CAT_ORDER=['Tool / Project','Operations','Support','People','Quality'];
+  const groups={}, seen=[];
+  items.forEach(it=>{
+    let label=it.cat||getCat(it.text);
+    const k=Object.keys(groups).find(x=>x.toLowerCase()===label.toLowerCase());
+    if(k) label=k;
+    if(!groups[label]){groups[label]=[];seen.push(label);}
+    groups[label].push(it.text);
   });
-  const orderedLabels=CAT_ORDER.filter(l=>groups[l]);
+  const ordered=CAT_ORDER.filter(l=>groups[l]).concat(seen.filter(l=>CAT_ORDER.indexOf(l)<0));
+  let extraI=0;
+  const colorOf=l=>KNOWN[l.toLowerCase()]||EXTRA[(extraI++)%EXTRA.length];
 
-  let cards='';
-  orderedLabels.forEach(label=>{
-    const g=groups[label];
-    cards+=`<div style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <span style="width:9px;height:9px;border-radius:50%;background:${g.cat.dot}"></span>
-        <span style="font-size:12px;font-weight:700;color:${g.cat.color}">${label}</span>
-        <span style="font-size:9px;font-weight:700;color:#fff;background:${g.cat.dot};border-radius:20px;padding:1px 8px">${g.list.length}</span>
-      </div>
-      <div class="wd-grid">
-        ${g.list.map(item=>`<div style="background:#fff;border:1px solid var(--border);border-radius:10px;border-left:4px solid ${g.cat.dot};padding:9px 13px;font-size:12px;font-weight:500;color:var(--text);line-height:1.4">${item}</div>`).join('')}
-      </div>
-    </div>`;
+  let cards='<div class="wd-wrap">';
+  ordered.forEach(label=>{
+    const list=groups[label], c=colorOf(label);
+    cards+=`<div class="wd-group" style="--c:${c}"><div class="wd-head"><span class="wd-dot"></span><span class="wd-lbl">${label}</span><span class="wd-n">${list.length}</span></div><div class="wd-grid">${list.map((t,i)=>`<div class="wd-item"><span class="wd-i">${String(i+1).padStart(2,'0')}</span>${t}</div>`).join('')}</div></div>`;
   });
+  cards+='</div>';
+  const curMon=today.toLocaleDateString('en-US',{month:'short'});
 
   document.getElementById('tab-workdone').innerHTML=`
     <div class="stat-grid" style="margin-bottom:16px">
       <div class="stat"><div class="stat-num" style="color:var(--teal)">${items.length}</div><div class="stat-lbl">Total achievements</div></div>
-      <div class="stat"><div class="stat-num">${orderedLabels.length}</div><div class="stat-lbl">Categories</div></div>
+      <div class="stat"><div class="stat-num">${ordered.length}</div><div class="stat-lbl">Categories</div></div>
       <div class="stat"><div class="stat-num" style="color:var(--teal)">Jan</div><div class="stat-lbl">Start</div></div>
-      <div class="stat"><div class="stat-num" style="color:var(--amber)">Jun</div><div class="stat-lbl">Current</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--amber)">${curMon}</div><div class="stat-lbl">Current</div></div>
     </div>
     ${cards}`;
 }
@@ -1237,47 +1466,17 @@ function renderKPIs(rows){
     'Process Enhancement':{cls:'b-green',txt:'✓ Done (Inbound Dashboard)'},
     'Performance Gap Identification & Development Plan':{cls:'b-amber',txt:'In progress'}
   };
-  let html=`<div class="sec-label">Supervisor KPIs</div>
-    <div style="margin-bottom:18px">
-      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators</div>
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr>
-          <th style="width:26%">KPI</th>
-          <th>Description</th>
-          <th style="width:8%;text-align:center">Wt</th>
-          <th style="width:16%;text-align:center">Status</th>
-        </tr></thead>
-        <tbody>`;
-  supervisorKPIs.forEach(k=>{
+  const stCls=s=>s.cls==='b-green'?'ok':(s.cls==='b-amber'?'ip':'');
+  let html=`<div class="kh"><span class="dot" style="background:var(--teal-mid)"></span>Supervisor Performance Indicators<span class="kh-n">${supervisorKPIs.length} KPIs</span></div>`;
+  supervisorKPIs.forEach((k,i)=>{
     const s=STATUS[k.cat]||{cls:'b-gray',txt:'—'};
-    html+=`<tr>
-      <td style="font-weight:600;color:var(--text)">${k.cat}</td>
-      <td style="color:var(--muted)">${k.measure}${k.note?`<div style="font-size:9px;color:var(--amber);margin-top:3px;direction:rtl;text-align:right">${k.note}</div>`:''}</td>
-      <td style="text-align:center;font-weight:700;color:var(--amber)">${k.weight}</td>
-      <td style="text-align:center"><span class="badge ${s.cls}">${s.txt}</span></td>
-    </tr>`;
+    html+=`<div class="krow2 ${stCls(s)}"><div class="kr-num">${String(i+1).padStart(2,'0')}</div><div class="kr-main"><div class="kr-name">${k.cat}</div><div class="kr-desc">${k.measure}</div>${k.note?`<div class="kr-note">${k.note}</div>`:''}</div><div class="kr-wt"><b>${k.weight}</b><small>Weight</small></div><div class="kr-st"><span class="badge ${s.cls}">${s.txt}</span></div></div>`;
   });
-  html+=`</tbody></table></div>
-    </div><div class="sec-label">Inbound Performance KPIs</div>
-    <div>
-      <div class="card-title" style="margin-bottom:10px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards</div>
-      <div style="overflow-x:auto"><table class="tbl">
-        <thead><tr>
-          <th style="width:28%">KPI</th>
-          <th>KPIs Covered</th>
-          <th style="width:8%;text-align:center">Wt</th>
-        </tr></thead>
-        <tbody>`;
-  inboundPerf.forEach(k=>{
+  html+=`<div class="kh" style="margin-top:24px"><span class="dot" style="background:var(--purple)"></span>Agent Team Standards<span class="kh-n">${inboundPerf.length} KPIs</span></div>`;
+  inboundPerf.forEach((k,i)=>{
     const bullets=k.kpis.split('\n').map(x=>x.trim()).filter(Boolean);
-    html+=`<tr>
-      <td style="font-weight:600;color:var(--text)">${k.cat}</td>
-      <td style="color:var(--muted)">${bullets.map(b=>'• '+b).join('<br>')}</td>
-      <td style="text-align:center;font-weight:700;color:var(--amber)">${k.weight}</td>
-    </tr>`;
+    html+=`<div class="krow2 ib"><div class="kr-num">${String(i+1).padStart(2,'0')}</div><div class="kr-main"><div class="kr-name">${k.cat}</div><ul class="kr-list">${bullets.map(b=>'<li>'+b+'</li>').join('')}</ul></div><div class="kr-wt"><b>${k.weight}</b><small>Weight</small></div><div class="kr-st"></div></div>`;
   });
-  html+=`</tbody></table></div>
-    </div>`;
   document.getElementById('tab-kpis').innerHTML=html;
 }
 
@@ -1319,6 +1518,7 @@ function renderCal(){
   const counts={office:0,off:0,vacation:0,workvac:0,sick:0,remote:0};
   for(let d=1;d<=dim;d++){
     const key=String(calMonth+1).padStart(2,'0')+'/'+String(d).padStart(2,'0')+'/'+calYear;
+    if(new Date(calYear,calMonth,d)>today) continue; // don't count future days (e.g. pre-filled Off)
     const s=_attMap[key];if(s&&counts[s]!==undefined)counts[s]++;
   }
   let html=`<div class="month-nav">
@@ -1327,12 +1527,12 @@ function renderCal(){
     <button onclick="changeMonth(1)">›</button>
   </div>
   <div class="att-stats">
-    <div class="att-stat" style="background:#E7EFE6"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
-    <div class="att-stat" style="background:#E6EAF1"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
-    <div class="att-stat" style="background:#F1E7D6"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
-    <div class="att-stat" style="background:#F3EAD2"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
-    <div class="att-stat" style="background:#F0E0DB"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
-    <div class="att-stat" style="background:#ECE7DE"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
+    <div class="att-stat as-office" style="background:#E7EFE6"><div class="num" style="color:#4e7256">${counts.office}</div><div class="lbl" style="color:#4e7256">Office</div></div>
+    <div class="att-stat as-remote" style="background:#E6EAF1"><div class="num" style="color:#5a6b8a">${counts.remote}</div><div class="lbl" style="color:#5a6b8a">Remote</div></div>
+    <div class="att-stat as-vacation" style="background:#F1E7D6"><div class="num" style="color:#9a6f2e">${counts.vacation}</div><div class="lbl" style="color:#9a6f2e">Vacation</div></div>
+    <div class="att-stat as-workvac" style="background:#F3EAD2"><div class="num" style="color:#8a6d1a">${counts.workvac}</div><div class="lbl" style="color:#8a6d1a">Work Vac</div></div>
+    <div class="att-stat as-sick" style="background:#F0E0DB"><div class="num" style="color:#a05545">${counts.sick}</div><div class="lbl" style="color:#a05545">Sick</div></div>
+    <div class="att-stat as-off" style="background:#ECE7DE"><div class="num" style="color:#8a8172">${counts.off}</div><div class="lbl" style="color:#8a8172">Off</div></div>
   </div>
   <div class="card">
     <div class="cal-header-row">${DAYS.map(d=>'<div class="cal-day-name">'+d+'</div>').join('')}</div>
@@ -1346,12 +1546,12 @@ function renderCal(){
   }
   html+=`</div>
   <div class="att-legend">
-    <div class="att-legend-item"><div class="att-dot" style="background:#E7EFE6"></div>Office</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#E6EAF1"></div>Remote</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#F1E7D6"></div>Vacation</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#F3EAD2"></div>Work Vac</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#F0E0DB"></div>Sick</div>
-    <div class="att-legend-item"><div class="att-dot" style="background:#ECE7DE"></div>Off</div>
+    <div class="att-legend-item"><div class="att-dot as-office" style="background:#E7EFE6"></div>Office</div>
+    <div class="att-legend-item"><div class="att-dot as-remote" style="background:#E6EAF1"></div>Remote</div>
+    <div class="att-legend-item"><div class="att-dot as-vacation" style="background:#F1E7D6"></div>Vacation</div>
+    <div class="att-legend-item"><div class="att-dot as-workvac" style="background:#F3EAD2"></div>Work Vac</div>
+    <div class="att-legend-item"><div class="att-dot as-sick" style="background:#F0E0DB"></div>Sick</div>
+    <div class="att-legend-item"><div class="att-dot as-off" style="background:#ECE7DE"></div>Off</div>
   </div></div>`;
   document.getElementById('tab-attendance').innerHTML=html;
   window.changeMonth=function(dir){
@@ -1404,40 +1604,17 @@ function renderCoaching(rows){
     if(!sessionMap[name])sessionMap[name]=[];
     sessionMap[name].push({date:r[1]||'',notes:r[2]||'',next:r[3]||''});
   });
-  const done=Object.keys(sessionMap).length;
-  const total=rows.slice(1).filter(r=>r[0]).length;
-  let html=`<div class="stat-grid" style="margin-bottom:14px">
-    <div class="stat"><div class="stat-num" style="color:var(--teal)">${total}</div><div class="stat-lbl">Total sessions</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--teal)">${done}</div><div class="stat-lbl">Agents coached</div></div>
-    <div class="stat"><div class="stat-num" style="color:var(--amber)">${AGENTS.length-done}</div><div class="stat-lbl">Pending</div></div>
-    <div class="stat"><div class="stat-num">${AGENTS.length}</div><div class="stat-lbl">Total agents</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--teal-mid)"></span>Coaching Sessions Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">1 session / agent / month</span></div>
-    <div style="overflow-x:auto"><table class="tbl"><thead><tr>
-      <th>#</th><th>Agent</th><th style="text-align:center">Sessions</th>
-      <th style="text-align:center">Last Date</th><th>Notes</th>
-      <th style="text-align:center">Next</th><th style="text-align:center">Status</th>
-    </tr></thead><tbody>`;
-  AGENTS.forEach((agent,i)=>{
-    const sessions=sessionMap[agent]||[];
-    const last=sessions[sessions.length-1]||null;
-    const c=avColor(i);
-    html+=`<tr>
-      <td style="color:#ccc;font-size:10px">${i+1}</td>
-      <td><div style="display:flex;align-items:center;gap:8px">
-        <div style="width:28px;height:28px;border-radius:50%;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">${initials(agent)}</div>
-        <span style="font-weight:600;font-size:12px">${agent}</span></div></td>
-      <td style="text-align:center"><span style="background:${sessions.length?'var(--teal-light)':'var(--gray)'};color:${sessions.length?'var(--teal)':'#999'};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${sessions.length}</span></td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">${last?last.date:'—'}</td>
-      <td style="font-size:11px;color:var(--muted);max-width:180px">${last?last.notes:'—'}</td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">${last&&last.next?last.next:'—'}</td>
-      <td style="text-align:center">${sessions.length
-        ?'<span style="background:var(--teal-light);color:var(--teal);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">✓ Done</span>'
-        :'<span style="background:var(--amber-light);color:var(--amber);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">Pending</span>'}</td>
-    </tr>`;
-  });
-  html+=`</tbody></table></div></div>`;
+  const coached=AGENTS.filter(a=>(sessionMap[a]||[]).length);
+  const done=coached.length;
+  const pct=AGENTS.length?Math.round(done/AGENTS.length*100):0;
+  const av=(name,i,sz)=>{const c=avColor(i);return `<span class="cav" style="width:${sz}px;height:${sz}px;background:${c.bg};color:${c.text}">${initials(name)}</span>`;};
+  const order=AGENTS.map((g,i)=>[g,i]).sort((p,q)=>((sessionMap[p[0]]||[]).length?1:0)-((sessionMap[q[0]]||[]).length?1:0));
+  let html=`<div class="cprog"><div><b>${done}</b><span> / ${AGENTS.length} agents coached</span></div><div class="cp-track"><i style="width:${pct}%"></i></div><div class="cp-pct">${pct}%</div></div>
+  <div class="cgrid">${order.map(([g,i])=>{
+    const ss=sessionMap[g]||[]; const x=ss[ss.length-1];
+    const sub=x?('Last: '+(x.date||'—')+(x.next?' · Next: '+x.next:'')+(ss.length>1?' · '+ss.length+' sessions':'')):'No session yet';
+    return `<div class="ccard ${x?'done':'pend'}"><div class="cc-top">${av(g,i,34)}<div><div class="cc-name">${g}</div><div class="cc-sub">${sub}</div></div></div>${x&&x.notes?`<div class="cc-note">${x.notes}</div>`:''}<span class="badge ${x?'b-green':'b-amber'} cc-badge">${x?'✓ Done':'Pending'}</span></div>`;
+  }).join('')}</div>`;
   document.getElementById('tab-coaching').innerHTML=html;
 }
 
@@ -1452,6 +1629,7 @@ function renderImprovement(rows){
     if(v.includes('done')||v.includes('complet'))return{bg:'var(--teal-light)',color:'var(--teal)',label:'Done'};
     return{bg:'var(--gray)',color:'var(--muted)',label:s||'Pending'};
   }
+  const cls=s=>{const v=(s||'').toLowerCase();if(v.includes('progress'))return['ip','b-amber','In Progress'];if(v.includes('done')||v.includes('complet'))return['ok','b-green','Done'];return['pd','b-gray',s||'Pending'];};
   let html=`<div class="stat-grid" style="margin-bottom:14px">
     <div class="stat"><div class="stat-num" style="color:var(--teal)">${plans.length}</div><div class="stat-lbl">Total plans</div></div>
     <div class="stat"><div class="stat-num" style="color:var(--amber)">${active}</div><div class="stat-lbl">In progress</div></div>
@@ -1460,19 +1638,9 @@ function renderImprovement(rows){
   if(!plans.length){
     html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">📋</div><div style="font-size:13px;font-weight:600">No improvement plans yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Improvement Plans</div></div>';
   } else {
-    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--amber)"></span>Improvement Plans</div>
-      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
-        <th>#</th><th>Agent</th><th>Reason</th><th style="text-align:center">Start Date</th><th style="text-align:center">Status</th><th>Notes</th>
-      </tr></thead><tbody>
-      ${plans.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
-        <td style="color:#ccc;font-size:10px">${i+1}</td>
-        <td style="font-weight:600">${r[0]||'—'}</td>
-        <td>${r[1]||'—'}</td>
-        <td style="text-align:center;color:var(--muted);font-size:11px">${r[2]||'—'}</td>
-        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
-        <td style="color:var(--muted)">${r[4]||'—'}</td>
-      </tr>`;}).join('')}
-      </tbody></table></div></div>`;
+    html+=`<div class="kh"><span class="dot" style="background:var(--amber)"></span>Improvement Plans<span class="kh-n">${plans.length} plans</span></div>`;
+    html+=plans.map((r,i)=>{const t=cls(r[3]);const name=String(r[0]||'—').trim();const ix=AGENTS.indexOf(name);const c=avColor(ix<0?i:ix);
+      return `<div class="krow2 ${t[0]}" style="grid-template-columns:36px minmax(0,1fr) 80px 120px"><span class="cav" style="width:30px;height:30px;background:${c.bg};color:${c.text}">${initials(name)}</span><div class="kr-main"><div class="kr-name">${name}${r[1]?` <span style="font-weight:500;color:var(--muted)">· ${r[1]}</span>`:''}</div>${r[4]?`<div class="kr-desc">${r[4]}</div>`:''}</div><div class="kr-wt"><b style="font-size:12px">${r[2]||'—'}</b><small>Start</small></div><div class="kr-st"><span class="badge ${t[1]}">${t[2]}</span></div></div>`;}).join('');
   }
   document.getElementById('tab-improvement').innerHTML=html;
 }
@@ -1493,21 +1661,28 @@ function renderPerfGap(rows){
     <div class="stat"><div class="stat-num" style="color:var(--red)">${open}</div><div class="stat-lbl">Open</div></div>
     <div class="stat"><div class="stat-num" style="color:var(--teal)">${resolved}</div><div class="stat-lbl">Resolved</div></div>
   </div>`;
+  // Weekly strip: last 6 weeks (Sun–Sat), ✓ if at least one gap was logged that week
+  function parseWk(v){
+    v=String(v||'').trim(); if(!v) return null;
+    let d=new Date(v);
+    if(isNaN(d) || !/\d{4}/.test(v)) d=new Date(v+' '+today.getFullYear());
+    if(isNaN(d)) return null;
+    if(d>today && !/\d{4}/.test(v)) d.setFullYear(d.getFullYear()-1);
+    return d;
+  }
+  const dates=gaps.map(r=>parseWk(r[0])).filter(Boolean);
+  if(dates.length){
+    const sun=new Date(today.getFullYear(),today.getMonth(),today.getDate()-today.getDay());
+    const weeks=[];
+    for(let w=5;w>=0;w--){const st=new Date(sun);st.setDate(sun.getDate()-7*w);const en=new Date(st);en.setDate(st.getDate()+7);
+      weeks.push({lbl:st.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),has:dates.some(d=>d>=st&&d<en)});}
+    html+=`<div class="gstrip"><span class="gs-l">Weekly target · min. 1 gap</span>${weeks.map(w=>`<span class="gs-w ${w.has?'y':'n'}">${w.has?'✓':'✗'}<small>${w.lbl}</small></span>`).join('')}</div>`;
+  }
   if(!gaps.length){
     html+='<div class="card" style="text-align:center;padding:48px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔍</div><div style="font-size:13px;font-weight:600">No performance gaps recorded yet</div><div style="font-size:11px;margin-top:5px">Add data in Google Sheets → Performance Gap</div></div>';
   } else {
-    html+=`<div class="card"><div class="card-title"><span class="dot" style="background:var(--purple)"></span>Performance Gap Tracker <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:auto">Min. 1 gap / week</span></div>
-      <div style="overflow-x:auto"><table class="tbl"><thead><tr>
-        <th>#</th><th style="text-align:center">Week</th><th>Gap Identified</th><th>Action Plan</th><th style="text-align:center">Status</th>
-      </tr></thead><tbody>
-      ${gaps.map((r,i)=>{const s=stStyle(r[3]);return`<tr>
-        <td style="color:#ccc;font-size:10px">${i+1}</td>
-        <td style="text-align:center"><span style="background:var(--purple-light);color:var(--purple);padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${r[0]||'—'}</span></td>
-        <td style="font-weight:500">${r[1]||'—'}</td>
-        <td style="color:var(--muted)">${r[2]||'—'}</td>
-        <td style="text-align:center"><span style="background:${s.bg};color:${s.color};padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700">${s.label}</span></td>
-      </tr>`;}).join('')}
-      </tbody></table></div></div>`;
+    const cls=s=>{const v=(s||'').toLowerCase();if(v.includes('done')||v.includes('resolved'))return['ok','b-green','Resolved'];if(v.includes('progress'))return['ip','b-amber','In Progress'];return['op','b-red','Open'];};
+    html+=gaps.map(r=>{const t=cls(r[3]);return `<div class="gcard ${t[0]}"><div class="gc-head"><span class="badge" style="background:var(--purple-light);color:var(--purple)">Week of ${r[0]||'—'}</span><span class="badge ${t[1]}">${t[2]}</span></div><div class="gc-body"><div class="gc-col gap"><span>Gap</span><p>${r[1]||'—'}</p></div><div class="gc-arr">→</div><div class="gc-col act"><span>Action plan</span><p>${r[2]||'—'}</p></div></div></div>`;}).join('');
   }
   document.getElementById('tab-perfgap').innerHTML=html;
 }
