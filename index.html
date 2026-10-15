@@ -797,6 +797,23 @@ html body.fd #tab-sheets .es-wrap>.card-title{display:none!important}
 html body.fd .header .av{background:#EADCD7!important;color:#7A5D55!important}
 html body.fd .ref-btn{background:#EADCD7!important;color:#7A5D55!important}
 html body.fd .ref-btn:hover{background:#E0CDC6!important}
+/* ═══ Side tabs (preview) ═══ */
+@media(min-width:901px){
+html body.fd .body-wrap{display:flex!important;align-items:flex-start;gap:0}
+html body.fd .fd-tabs{flex-direction:column;align-items:stretch;gap:5px;width:190px;flex-shrink:0;padding:18px 0 0 0;overflow:visible;position:sticky;top:12px}
+html body.fd .fd-tabs a{border-radius:12px 0 0 12px;padding:11px 14px;margin-left:12px;font-size:13px}
+html body.fd .fd-tabs a.on{margin-left:0;padding:13px 14px 13px 18px}
+html body.fd .content.content{flex:1;min-width:0;border-radius:18px!important}
+html body.fd.right .body-wrap{flex-direction:row-reverse}
+html body.fd.right .fd-tabs a{border-radius:0 12px 12px 0;margin-left:0;margin-right:12px}
+html body.fd.right .fd-tabs a.on{margin-right:0;padding:13px 18px 13px 14px}
+}
+@media(min-width:901px){
+html body.fd .body-wrap{padding-bottom:16px!important}
+html body.fd .content.content{min-height:calc(100vh - 190px)!important}
+}
+/* background L2 */
+html body.fd{background:#F7F4EF!important}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
