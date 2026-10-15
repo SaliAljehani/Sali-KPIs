@@ -872,6 +872,35 @@ html body.fd #tab-monthly .tbl td span[style*="teal-light"]{background:#F5F1EA!i
 @media(max-width:900px){.sk-foot{padding:12px 16px;font-size:12.5px}}
 .sk-foot{padding:7px 26px!important;font-size:12px!important;border-top-width:1px!important;margin-top:4px!important}
 @media(max-width:900px){.sk-foot{padding:7px 16px!important;font-size:11px!important}}
+
+/* ===== Round 6: unified type scale + one light highlight ===== */
+/* page titles centred */
+html body.fd .content .sec-label.sec-label{font-size:16px!important;text-align:center!important;justify-content:center!important;margin:26px 0 14px!important}
+html body.fd .content .sec-label.sec-label:first-child{margin-top:0!important}
+/* section headings: 15px */
+html body.fd .card-title.card-title,html body.fd .mo-t,html body.fd .wdacc-h,html body.fd .month-label,html body.fd .gs-l{font-size:14px!important;font-weight:700!important}
+/* body text: 13px */
+html body.fd .content .tbl td,html body.fd .content .tbl td span:not([class]):not(.pct-pill),html body.fd .wdacc-t,html body.fd .sheet-name,html body.fd #tab-inbound .card span:not([class]),html body.fd .stat-lbl,html body.fd .w3 span{font-size:13px!important}
+html body.fd .wdacc-t{background:none!important;padding:0!important;margin:0!important}
+/* secondary text: 12px */
+html body.fd .wdacc-d,html body.fd .es-desc,html body.fd .att-legend-item,html body.fd .content .tbl th,html body.fd .cal-day-name{font-size:12px!important}
+/* Arabic note smaller */
+html body.fd .kt-note{font-size:12.5px!important;font-weight:400!important}
+/* one light highlight for every tag / badge / pill / count */
+html body.fd .content .freq,html body.fd .content .ra-cnt,html body.fd .content .pct-pill,html body.fd .content .mo-src,html body.fd .content .sheet-sub,html body.fd .content .wdacc-n,html body.fd .content .wdacc-h b,html body.fd .content .cav,html body.fd .content .gs-w,html body.fd .content .kt-wt b,html body.fd .sheet-ico{background:#F5F1EA!important;color:#6B5D4C!important;border-color:#ECE5D9!important}
+html body.fd .content .freq,html body.fd .content .ra-cnt,html body.fd .content .pct-pill,html body.fd .content .mo-src,html body.fd .content .sheet-sub,html body.fd .content .gs-w,html body.fd .content .kt-wt b{font-size:11.5px!important;font-weight:600!important}
+/* hover rows + selected = same light sand */
+html body.fd .tbl tr:hover td,html body.fd .sheet-link:hover,html body.fd .wdacc-r:hover{background:#F8F5EF!important}
+/* Work Done: clickable filter chips */
+html body.fd .w3 span{cursor:pointer;transition:background .15s}
+html body.fd .w3 span.ghost{cursor:default}
+html body.fd .w3 span.tot{background:#F8F5EF!important;border-color:#ECE5D9!important;font-weight:400!important}
+html body.fd .w3 span:not(.ghost):hover{background:#F3EFE7!important}
+html body.fd .w3 span.on,html body.fd .w3 span.tot.on{background:#ECE5D9!important;border-color:#E2D8C8!important;font-weight:600!important}
+/* Reports: space between the blocks */
+html body.fd #tab-reports .card-title.card-title{margin-top:40px!important}
+html body.fd #tab-reports .card-title.card-title.r-first{margin-top:0!important}
+html body.fd .card-title .badge,html body.fd .card-title .ra-cnt{background:#F5F1EA!important;color:#6B5D4C!important}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
@@ -3321,6 +3350,14 @@ document.addEventListener('DOMContentLoaded', loadAll);
       var row=document.createElement('div'); row.className='w3';
       row.innerHTML='<span class="tot">All<b>'+tot+'</b></span>'+chips.join('')+'<span class="ghost">Jan → '+m+'</span>';
       wd.insertBefore(row, wd.firstChild);
+      var cards=[].slice.call(wd.querySelectorAll('.wdacc'));
+      [].slice.call(row.querySelectorAll('span:not(.ghost)')).forEach(function(sp,i){
+        sp.onclick=function(){
+          row.querySelectorAll('span').forEach(function(x){x.classList.remove('on');}); sp.classList.add('on');
+          cards.forEach(function(c,j){ c.style.display=(i===0||j===i-1)?'':'none'; });
+        };
+      });
+      row.querySelector('.tot').classList.add('on');
     }
     if(wd){ w3(); new MutationObserver(w3).observe(wd,{childList:true}); }
     function clean(){
@@ -3337,6 +3374,8 @@ document.addEventListener('DOMContentLoaded', loadAll);
       });
       var m=document.querySelector('#tab-monthly .sec-label'); if(m && /Monthly Agents Performance\s*&/.test(m.textContent)) m.style.display='none';
     }
+    function rFirst(){ var t=document.querySelector('#tab-reports .card-title'); if(t) t.classList.add('r-first'); }
+    rFirst(); new MutationObserver(rFirst).observe(document.getElementById('tab-reports'),{childList:true});
     clean(); new MutationObserver(clean).observe(document.querySelector('.content'),{childList:true,subtree:true});
     var pg=document.getElementById('tab-perfgap');
     function pgTable(){
