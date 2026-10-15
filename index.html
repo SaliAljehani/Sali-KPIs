@@ -866,6 +866,12 @@ html body.fd .pg-cnt{margin-left:auto;font-size:11px!important;font-weight:500!i
 html body.fd .pct-pill,html body.fd .kt-wt.kt-wt{display:inline-block;background:#F5F1EA!important;color:#6B5D4C!important;border:none!important;border-radius:5px!important;padding:2px 9px!important;font-size:12.5px!important;font-weight:600!important;line-height:1.5}
 html body.fd .kt-wt b{font-size:12.5px!important}
 html body.fd #tab-monthly .tbl td span[style*="teal-light"]{background:#F5F1EA!important;color:#6B5D4C!important;border-radius:5px!important;padding:2px 9px!important;font-size:12.5px!important;font-weight:600!important}
+/* footer */
+.sk-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#FCFAF6;border-top:1.5px solid #8A7466;padding:12px 26px;font-size:13.5px;color:#8A7466;margin-top:6px}
+.sk-foot b{font-weight:500;color:#8A7466}
+@media(max-width:900px){.sk-foot{padding:12px 16px;font-size:12.5px}}
+.sk-foot{padding:7px 26px!important;font-size:12px!important;border-top-width:1px!important;margin-top:4px!important}
+@media(max-width:900px){.sk-foot{padding:7px 16px!important;font-size:11px!important}}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
@@ -3349,6 +3355,13 @@ document.addEventListener('DOMContentLoaded', loadAll);
       cards.forEach(function(c){c.remove();});
     }
     if(pg){ pgTable(); new MutationObserver(pgTable).observe(pg,{childList:true}); }
+    if(!document.querySelector('.sk-foot')){
+      var ft=document.createElement('footer'); ft.className='sk-foot';
+      ft.innerHTML='<span id="skNow"></span><span>Designed &amp; developed by Sali Aljehani</span>';
+      var bw=document.querySelector('.body-wrap'); (bw&&bw.parentNode?bw.parentNode:document.body).insertBefore(ft, bw?bw.nextSibling:null);
+      var tick=function(){var d=new Date();document.getElementById('skNow').textContent=d.toLocaleDateString('en-GB',{weekday:'long'})+', '+d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});};
+      tick(); setInterval(tick,30000);
+    }
     var orig=window.showTab; window.showTab=function(n){orig(n);setTab(n);};
     var act=document.querySelector('.nav-item.active'); setTab(act?act.id.replace('nav-',''):'inbound');
   }
