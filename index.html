@@ -747,6 +747,56 @@ html body.fd .ref-btn:hover{background:#634C45!important}
 html body.fd .acct-strip{padding:14px 30px 14px 44px!important}
 html body.fd .acct-chip{background:#FCFAF6!important;color:#635C55!important}
 @media(max-width:900px){html body.fd .header.header{margin:12px 12px 0!important;padding:14px!important}html body.fd .acct-strip{padding:12px 14px!important}}
+
+/* ═══ Round 2 ═══ */
+/* full-height paper */
+html body.fd .content.content{display:flex!important;flex-direction:column;min-height:calc(100vh - 250px)}
+html body.fd .content>.fd-ph{flex:none}
+html body.fd .content>div[id^="tab-"]{flex:1 0 auto}
+html body.fd .content.noph>.fd-ph{display:none!important}
+html body.fd .content.noph>div[id^="tab-"]{border-radius:6px;padding-top:26px}
+
+/* clearer headings */
+html body.fd .sec-label.sec-label{font-size:18px!important;font-weight:700!important;color:#45403A!important;text-transform:none!important;letter-spacing:0!important;margin:18px 0 10px!important}
+html body.fd .sec-label.sec-label:first-child{margin-top:0!important}
+html body.fd .card-title.card-title,html body.fd .mo-t,html body.fd .wdacc-h{font-size:15px!important;font-weight:700!important;color:#45403A!important;text-transform:none!important;letter-spacing:0!important;display:flex!important;align-items:center;gap:8px;margin:6px 0 10px!important}
+html body.fd .card-title.card-title:before,html body.fd .mo-t:before,html body.fd .wdacc-h:before{content:"";width:4px;height:16px;border-radius:2px;background:#B59A92;flex-shrink:0}
+html body.fd .rA .ra-cnt{display:inline-block!important;margin-left:auto;font-size:11px!important;font-weight:500!important;background:#F3ECE9!important;color:#7A5D55!important;padding:2px 8px!important;border-radius:4px!important}
+html body.fd .card-title .badge{margin-left:auto}
+/* table headers */
+html body.fd .tbl th{background:#F3ECE9!important;color:#7A5D55!important;font-weight:700!important;font-size:12px!important;padding:10px 9px!important;border-bottom:none!important}
+html body.fd .tbl th:first-child{border-radius:6px 0 0 6px}
+html body.fd .tbl th:last-child{border-radius:0 6px 6px 0}
+
+/* Inbound: pearl outline card (C) */
+html body.fd #tab-inbound .stat-grid.stat-grid{background:#F6F3ED!important;border:1.5px solid #DCC8C1!important}
+html body.fd #tab-inbound .stat-num.stat-num,html body.fd #tab-inbound .stat-num.stat-num *{color:#45403A!important}
+html body.fd #tab-inbound .stat-lbl.stat-lbl{color:#89827A!important}
+html body.fd #tab-inbound .stat-grid>.stat.stat{border-top-color:#E7E1D7!important}
+html body.fd #tab-inbound .progress-bar{background:#E7E1D7!important}
+html body.fd #tab-inbound .progress-fill{background:#B59A92!important}
+
+/* Work Done / Coaching / Perf. Gap: numbers as a tag row on top */
+html body.fd .content>#tab-workdone:not([style*="none"]),html body.fd .content>#tab-coaching:not([style*="none"]),html body.fd .content>#tab-perfgap:not([style*="none"]){display:block!important}
+html body.fd #tab-coaching .stat-grid.stat-grid,html body.fd #tab-perfgap .stat-grid.stat-grid{display:flex!important;flex-wrap:wrap;gap:8px!important;background:transparent!important;padding:0!important;border-radius:0!important;position:static!important;margin:0 0 20px!important}
+html body.fd #tab-coaching .stat-grid>.stat.stat,html body.fd #tab-perfgap .stat-grid>.stat.stat{flex-direction:row-reverse!important;justify-content:flex-start;align-items:center!important;gap:8px;padding:8px 14px!important;border:1px solid #E7E1D7!important;border-radius:10px!important;background:#F6F3ED!important;flex-wrap:nowrap}
+html body.fd #tab-coaching .stat-grid>.stat.stat:first-child,html body.fd #tab-perfgap .stat-grid>.stat.stat:first-child{background:#F3ECE9!important;border-color:#DCC8C1!important}
+html body.fd #tab-coaching .stat-num.stat-num,html body.fd #tab-coaching .stat-num.stat-num *,html body.fd #tab-perfgap .stat-num.stat-num,html body.fd #tab-perfgap .stat-num.stat-num *{font-size:13px!important;color:#7A5D55!important;line-height:1.2!important}
+html body.fd #tab-coaching .stat-lbl.stat-lbl,html body.fd #tab-perfgap .stat-lbl.stat-lbl{color:#45403A!important;font-size:13px!important;margin:0!important}
+html body.fd #tab-workdone .stat-grid.stat-grid{display:none!important}
+.w3{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.w3 span{padding:8px 14px;border-radius:10px;background:#F6F3ED;border:1px solid #E7E1D7;font-size:13px;color:#45403A}
+.w3 span b{margin-left:6px;color:#7A5D55}
+.w3 span.tot{background:#F3ECE9;border-color:#DCC8C1;font-weight:600}
+.w3 span.ghost{background:transparent;color:#89827A}
+/* duplicate page-title headings */
+html body.fd #tab-reports .rA>.sec-label:first-child{display:none!important}
+html body.fd #tab-sheets .es-wrap>.card-title{display:none!important}
+
+/* SA + Refresh : light clay rose (C) */
+html body.fd .header .av{background:#EADCD7!important;color:#7A5D55!important}
+html body.fd .ref-btn{background:#EADCD7!important;color:#7A5D55!important}
+html body.fd .ref-btn:hover{background:#E0CDC6!important}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
@@ -3170,7 +3220,8 @@ document.addEventListener('DOMContentLoaded', loadAll);
 <script>
 /* ═══════════ FOLDERS LAYOUT ═══════════ */
 (function(){
-  var COLORS=['#F6F3ED','#EADCD7','#E7E1D7','#ECDBD0','#E1E0D3'];
+  var COLORS=['#F2EBE0','#EFE4D5','#F0E0D7','#F3E5DB','#EEE2DE','#F1E9D6','#EAE9DA','#E9E5DD','#EDE7E0','#ECE4DA'];
+  var NOPH=['inbound','workdone','attendance','kpis','coaching','improvement','perfgap','reports','monthly','sheets'];
   var SUB={inbound:'Daily tasks',workdone:'Achievements log',attendance:'Monthly calendar',kpis:'Supervisor & team KPIs',coaching:'Sessions tracker',improvement:'Improvement plans',perfgap:'Performance gaps',reports:'Reports reference guide',monthly:'Monthly performance & EOM',sheets:'Google Sheets links'};
   function build(){
     var content=document.querySelector('.content'); if(!content||document.querySelector('.fd-tabs')) return;
@@ -3186,6 +3237,26 @@ document.addEventListener('DOMContentLoaded', loadAll);
     var ph=document.createElement('section'); ph.className='fd-ph';
     ph.innerHTML='<div class="in"><h2 id="fdTitle"></h2><span id="fdSub"></span></div>';
     content.insertBefore(ph,content.firstChild);
+    var wd=document.getElementById('tab-workdone');
+    function w3(){
+      if(!wd||wd.querySelector(':scope > .w3')) return;
+      var hs=[].slice.call(wd.querySelectorAll('.wdacc-h')); if(!hs.length) return;
+      var tot=0, chips=hs.map(function(h){var b=h.querySelector('b');var c=b?parseInt(b.textContent,10)||0:0;tot+=c;var t=h.textContent.replace(b?b.textContent:'','').trim();return '<span>'+t+'<b>'+c+'</b></span>';});
+      var m=new Date().toLocaleDateString('en-US',{month:'short'});
+      var row=document.createElement('div'); row.className='w3';
+      row.innerHTML='<span class="tot">All<b>'+tot+'</b></span>'+chips.join('')+'<span class="ghost">Jan → '+m+'</span>';
+      wd.insertBefore(row, wd.firstChild);
+    }
+    if(wd){ w3(); new MutationObserver(w3).observe(wd,{childList:true}); }
+    function clean(){
+      document.querySelectorAll('.content .sec-label').forEach(function(e){
+        if(e.children.length) return;
+        var t=e.textContent, c=t.replace(/^[^A-Za-z0-9\u0600-\u06FF]+/,'');
+        if(c!==t) e.textContent=c;
+      });
+      var m=document.querySelector('#tab-monthly .sec-label'); if(m && /Monthly Agents Performance\s*&/.test(m.textContent)) m.style.display='none';
+    }
+    clean(); new MutationObserver(clean).observe(document.querySelector('.content'),{childList:true,subtree:true});
     var orig=window.showTab; window.showTab=function(n){orig(n);setTab(n);};
     var act=document.querySelector('.nav-item.active'); setTab(act?act.id.replace('nav-',''):'inbound');
   }
@@ -3199,7 +3270,8 @@ document.addEventListener('DOMContentLoaded', loadAll);
       on.scrollIntoView({block:'nearest',inline:'nearest'});
     }
     var d=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'});
-    document.getElementById('fdSub').textContent=(SUB[n]||'')+' · '+d;
+    document.getElementById('fdSub').textContent=(SUB[n]||'');
+    document.querySelector('.content').classList.toggle('noph',NOPH.indexOf(n)>-1);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',build); else build();
 })();
