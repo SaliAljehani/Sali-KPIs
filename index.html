@@ -910,6 +910,27 @@ html body.fd .header.header{background:#ECE5D9!important;border:none!important;b
 html body.fd .header .av,html body.fd .ref-btn{background:#F6F2EB!important;color:#5E5243!important}
 html body.fd .ref-btn:hover{background:#FBF8F3!important}
 html body.fd .pill,html body.fd .pill a{background:#F6F2EB!important;color:#6B5D4C!important}
+
+/* ═══ Round 11 ═══ */
+/* compact tables: KPI, Coaching, Improvement, Perf. Gap, Reports, Monthly */
+html body.fd #tab-kpis .tbl td,html body.fd #tab-coaching .tbl td,html body.fd #tab-improvement .tbl td,html body.fd #tab-perfgap .tbl td,html body.fd #tab-reports .tbl td,html body.fd #tab-monthly .tbl td{padding:6px 8px!important;line-height:1.35!important}
+html body.fd #tab-kpis .tbl th,html body.fd #tab-coaching .tbl th,html body.fd #tab-improvement .tbl th,html body.fd #tab-perfgap .tbl th,html body.fd #tab-reports .tbl th,html body.fd #tab-monthly .tbl th{padding:7px 9px!important}
+html body.fd #tab-coaching .tbl td div[style*="border-radius:50%"],html body.fd #tab-coaching .cav,html body.fd #tab-improvement .cav{width:24px!important;height:24px!important;min-width:24px!important;font-size:9px!important}
+/* KPI headings: K1 */
+html body.fd .kx-sub{font-weight:500!important;color:#8A7466!important;margin-left:4px}
+/* Monthly titles: left, 14px, sand bar */
+html body.fd #tab-monthly .sec-label.sec-label{text-align:left!important;justify-content:flex-start!important;font-size:14px!important;display:flex;align-items:center;gap:8px}
+html body.fd #tab-monthly .sec-label.sec-label:before{content:"";width:4px;height:16px;border-radius:2px;background:#C8B79E;flex-shrink:0}
+/* Perf. Gap: P1 timeline */
+html body.fd .pt-tl{position:relative;padding-left:26px}
+html body.fd .pt-tl:before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:#ECE5D9}
+html body.fd .pt-it{position:relative;margin-bottom:14px}
+html body.fd .pt-it:before{content:"";position:absolute;left:-23px;top:4px;width:12px;height:12px;border-radius:50%;background:#C8B79E}
+html body.fd .pt-wk{font-weight:700;font-size:13px;display:flex;gap:10px;align-items:center;margin-bottom:6px;color:#4E382D}
+html body.fd .pt-box{border:1px solid #ECE5D9;border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:1fr 34px 1fr;gap:10px;align-items:center;font-size:13px;line-height:1.5;color:#4E382D}
+html body.fd .pt-lab{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#A3968A;margin-bottom:4px}
+html body.fd .pt-arr{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#F5F1EA;color:#8A7466;font-size:16px;font-weight:700}
+@media(max-width:700px){html body.fd .pt-box{grid-template-columns:1fr}html body.fd .pt-arr{transform:rotate(90deg);margin:0 auto}}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
@@ -3385,21 +3406,38 @@ document.addEventListener('DOMContentLoaded', loadAll);
     }
     function rFirst(){ var t=document.querySelector('#tab-reports .card-title'); if(t) t.classList.add('r-first'); }
     rFirst(); new MutationObserver(rFirst).observe(document.getElementById('tab-reports'),{childList:true});
+    function k1(){
+      var t=document.getElementById('tab-kpis'); if(!t) return;
+      [].slice.call(t.querySelectorAll('.sec-label')).forEach(function(sl){
+        if(sl.dataset.k1) return; var ct=null, n=sl.nextElementSibling;
+        while(n&&!ct){ ct=n.classList&&n.classList.contains('card-title')?n:n.querySelector('.card-title'); n=ct?n:n.nextElementSibling; }
+        if(!ct||ct.dataset.k1) return;
+        var main=sl.textContent.trim(), sub=ct.textContent.trim();
+        ct.innerHTML=main+'<span class="kx-sub">· '+sub+'</span>'; ct.dataset.k1=1; sl.dataset.k1=1; sl.style.setProperty('display','none','important');
+      });
+    }
+    function qa(){ document.querySelectorAll('#tab-monthly .mo-t').forEach(function(e){ if(/^\s*QA Evaluation Criteria/.test(e.textContent)) e.style.setProperty('display','none','important'); }); }
+    k1(); qa();
+    new MutationObserver(function(){k1();qa();}).observe(document.querySelector('.content'),{childList:true,subtree:true});
     clean(); new MutationObserver(clean).observe(document.querySelector('.content'),{childList:true,subtree:true});
     var pg=document.getElementById('tab-perfgap');
     function pgTable(){
       if(!pg) return;
       var cards=[].slice.call(pg.querySelectorAll(':scope > .gcard')); if(!cards.length) return;
-      var rows=cards.map(function(c){
+      var items=cards.map(function(c){
         var b=c.querySelectorAll('.gc-head .badge');
-        var wk=(b[0]?b[0].textContent:'').replace(/^Week of\s*/i,'');
+        var wk=(b[0]?b[0].textContent:'').replace(/^Week of\s*/i,'').trim();
         var st=b[1]?b[1].outerHTML:'';
         var g=c.querySelector('.gap p'), a=c.querySelector('.act p');
-        return '<tr><td class="pg-wk">'+wk+'</td><td>'+(g?g.innerHTML:'—')+'</td><td class="pg-act">'+(a?a.innerHTML:'—')+'</td><td style="text-align:center">'+st+'</td></tr>';
-      }).join('');
+        return '<div class="pt-it"><div class="pt-wk">Week of '+wk+' '+st+'</div><div class="pt-box"><div><div class="pt-lab">Gap</div>'+(g?g.innerHTML:'—')+'</div><div class="pt-arr">→</div><div><div class="pt-lab">Action plan</div>'+(a?a.innerHTML:'—')+'</div></div></div>';
+      }).reverse().join('');
       var box=document.createElement('div'); box.className='card pg-box';
-      box.innerHTML='<div class="card-title">Performance Gaps <span class="ra-cnt pg-cnt">'+cards.length+'</span></div><div style="overflow-x:auto"><table class="tbl pg-tbl"><thead><tr><th style="width:14%">Week</th><th style="width:36%">Gap</th><th>Action plan</th><th style="width:12%;text-align:center">Status</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+      box.innerHTML='<div class="card-title">Weekly timeline <span class="ra-cnt pg-cnt">'+cards.length+'</span></div><div class="pt-tl">'+items+'</div>';
       cards[0].parentNode.insertBefore(box,cards[0]);
+      var strip=pg.querySelector('.gstrip'), sg=pg.querySelector(':scope > .stat-grid');
+      if(strip){ var all=strip.querySelectorAll('.gs-w').length, yes=strip.querySelectorAll('.gs-w.y').length;
+        if(sg&&all&&!sg.querySelector('.pt-cov')){ var st2=document.createElement('div'); st2.className='stat pt-cov'; st2.innerHTML='<div class="stat-num">'+yes+' / '+all+'</div><div class="stat-lbl">Weeks covered</div>'; sg.appendChild(st2); }
+        strip.style.setProperty('display','none','important'); }
       cards.forEach(function(c){c.remove();});
     }
     if(pg){ pgTable(); new MutationObserver(pgTable).observe(pg,{childList:true}); }
