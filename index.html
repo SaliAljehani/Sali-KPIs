@@ -969,6 +969,21 @@ html body.fd #tab-reports .card-title.card-title.r-first{margin-top:0!important}
 html body.fd #tab-improvement .cav{width:22px!important;height:22px!important;min-width:22px!important;font-size:8.5px!important}
 /* Supervisor KPIs: Arabic note on the same line */
 html body.fd #tab-kpis .ktbl:not(.ib) .kt-note{display:inline!important;margin:0 0 0 10px!important;color:#A3968A!important;font-size:11.5px!important}
+
+/* ═══ Round 13 ═══ */
+/* every row highlight: one very light shade (no mauve) */
+html body.fd .content.content .tbl tbody tr:hover td{background:#FAF8F4!important}
+html body.fd .content.content :is(.wdacc-r,.sheet-link,.check-item):hover{background:#FAF8F4!important}
+/* Agent Team Standards: same text size as the Supervisor table */
+html body.fd #tab-kpis .ktbl.ib td,html body.fd #tab-kpis .ktbl.ib td span:not([class]){font-size:12px!important;line-height:1.45!important}
+html body.fd #tab-kpis .ktbl.ib th{font-size:11.5px!important;padding:6px 8px!important}
+html body.fd #tab-kpis .ktbl.ib .kt-wt b{font-size:10.5px!important}
+html body.fd #tab-kpis .ktbl.ib td:nth-child(2){font-size:11.5px!important;line-height:1.5!important;color:#8A7466!important}
+/* space between the column-header bar and the first row (all tables) */
+html body.fd .content :is(#tab-inbound,#tab-workdone,#tab-attendance,#tab-kpis,#tab-coaching,#tab-improvement,#tab-perfgap,#tab-reports,#tab-monthly,#tab-sheets) .tbl tbody tr:first-child td{padding-top:10px!important}
+/* no mauve / grey-blue text: Reports 'How to use' column + Coaching avatars */
+html body.fd #tab-reports .tbl td:last-child{color:#6B5D4C!important}
+html body.fd #tab-coaching .tbl td div[style*="border-radius:50%"]{background:#F5F1EA!important;color:#6B5D4C!important}
 </style>
 </head>
 <body class="t4 wB aB r1 m1 m3 e2 e3 e5 fd">
